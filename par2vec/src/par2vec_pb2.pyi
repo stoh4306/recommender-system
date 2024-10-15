@@ -5,6 +5,18 @@ from typing import ClassVar as _ClassVar, Iterable as _Iterable, Optional as _Op
 
 DESCRIPTOR: _descriptor.FileDescriptor
 
+class HelloRequest(_message.Message):
+    __slots__ = ("hello",)
+    HELLO_FIELD_NUMBER: _ClassVar[int]
+    hello: str
+    def __init__(self, hello: _Optional[str] = ...) -> None: ...
+
+class HelloReply(_message.Message):
+    __slots__ = ("reply",)
+    REPLY_FIELD_NUMBER: _ClassVar[int]
+    reply: str
+    def __init__(self, reply: _Optional[str] = ...) -> None: ...
+
 class Par2VecRequest(_message.Message):
     __slots__ = ("paragraph",)
     PARAGRAPH_FIELD_NUMBER: _ClassVar[int]

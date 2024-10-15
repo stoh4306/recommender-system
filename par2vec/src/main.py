@@ -13,6 +13,12 @@ class Par2VecServicer(par2vec_pb2_grpc.Par2VecServicer):
         self.model = SentenceTransformer('paraphrase-MiniLM-L6-v2')
         logging.info("Initialization in Par2VecServicer...done")
 
+    def hello(self, request, context):
+        temp = request.hello
+        temp += "Hi," + temp
+        logging.info(temp)
+        return par2vec_pb2.HelloReply(reply=temp)
+    
     def convertParToVec(self, request, context):
         embeddings = self.model.encode(request.paragraph)
         #logging.info(type(embeddings))

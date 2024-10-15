@@ -34,8 +34,13 @@ class Par2VecStub(object):
         Args:
             channel: A grpc.Channel.
         """
+        self.hello = channel.unary_unary(
+                '/par2vec.Par2Vec/hello',
+                request_serializer=par2vec__pb2.HelloRequest.SerializeToString,
+                response_deserializer=par2vec__pb2.HelloReply.FromString,
+                _registered_method=True)
         self.convertParToVec = channel.unary_unary(
-                '/recommender.Par2Vec/convertParToVec',
+                '/par2vec.Par2Vec/convertParToVec',
                 request_serializer=par2vec__pb2.Par2VecRequest.SerializeToString,
                 response_deserializer=par2vec__pb2.DefaultReply.FromString,
                 _registered_method=True)
@@ -43,6 +48,12 @@ class Par2VecStub(object):
 
 class Par2VecServicer(object):
     """Missing associated documentation comment in .proto file."""
+
+    def hello(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
 
     def convertParToVec(self, request, context):
         """Missing associated documentation comment in .proto file."""
@@ -53,6 +64,11 @@ class Par2VecServicer(object):
 
 def add_Par2VecServicer_to_server(servicer, server):
     rpc_method_handlers = {
+            'hello': grpc.unary_unary_rpc_method_handler(
+                    servicer.hello,
+                    request_deserializer=par2vec__pb2.HelloRequest.FromString,
+                    response_serializer=par2vec__pb2.HelloReply.SerializeToString,
+            ),
             'convertParToVec': grpc.unary_unary_rpc_method_handler(
                     servicer.convertParToVec,
                     request_deserializer=par2vec__pb2.Par2VecRequest.FromString,
@@ -60,14 +76,41 @@ def add_Par2VecServicer_to_server(servicer, server):
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'recommender.Par2Vec', rpc_method_handlers)
+            'par2vec.Par2Vec', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
-    server.add_registered_method_handlers('recommender.Par2Vec', rpc_method_handlers)
+    server.add_registered_method_handlers('par2vec.Par2Vec', rpc_method_handlers)
 
 
  # This class is part of an EXPERIMENTAL API.
 class Par2Vec(object):
     """Missing associated documentation comment in .proto file."""
+
+    @staticmethod
+    def hello(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/par2vec.Par2Vec/hello',
+            par2vec__pb2.HelloRequest.SerializeToString,
+            par2vec__pb2.HelloReply.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
 
     @staticmethod
     def convertParToVec(request,
@@ -83,7 +126,7 @@ class Par2Vec(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/recommender.Par2Vec/convertParToVec',
+            '/par2vec.Par2Vec/convertParToVec',
             par2vec__pb2.Par2VecRequest.SerializeToString,
             par2vec__pb2.DefaultReply.FromString,
             options,

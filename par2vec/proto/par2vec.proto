@@ -1,9 +1,19 @@
 syntax = "proto3";
 
-package recommender;
+package par2vec;
+option go_package = "./recommender/par2vec";
 
 service Par2Vec {
+    rpc hello(HelloRequest) returns (HelloReply) {}
     rpc convertParToVec(Par2VecRequest) returns (DefaultReply) {}
+}
+
+message HelloRequest {
+    string hello = 1;
+}
+
+message HelloReply {
+    string reply = 1;
 }
 
 message Par2VecRequest {
@@ -14,4 +24,3 @@ message DefaultReply {
     uint32  dim         = 1;
     repeated float fVec = 2;
 }
-

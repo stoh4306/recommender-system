@@ -24,17 +24,22 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\rpar2vec.proto\x12\x0brecommender\"#\n\x0ePar2VecRequest\x12\x11\n\tparagraph\x18\x01 \x01(\t\")\n\x0c\x44\x65\x66\x61ultReply\x12\x0b\n\x03\x64im\x18\x01 \x01(\r\x12\x0c\n\x04\x66Vec\x18\x02 \x03(\x02\x32V\n\x07Par2Vec\x12K\n\x0f\x63onvertParToVec\x12\x1b.recommender.Par2VecRequest\x1a\x19.recommender.DefaultReply\"\x00\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\rpar2vec.proto\x12\x07par2vec\"\x1d\n\x0cHelloRequest\x12\r\n\x05hello\x18\x01 \x01(\t\"\x1b\n\nHelloReply\x12\r\n\x05reply\x18\x01 \x01(\t\"#\n\x0ePar2VecRequest\x12\x11\n\tparagraph\x18\x01 \x01(\t\")\n\x0c\x44\x65\x66\x61ultReply\x12\x0b\n\x03\x64im\x18\x01 \x01(\r\x12\x0c\n\x04\x66Vec\x18\x02 \x03(\x02\x32\x85\x01\n\x07Par2Vec\x12\x35\n\x05hello\x12\x15.par2vec.HelloRequest\x1a\x13.par2vec.HelloReply\"\x00\x12\x43\n\x0f\x63onvertParToVec\x12\x17.par2vec.Par2VecRequest\x1a\x15.par2vec.DefaultReply\"\x00\x42\x17Z\x15./recommender/par2vecb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'par2vec_pb2', _globals)
 if not _descriptor._USE_C_DESCRIPTORS:
-  DESCRIPTOR._loaded_options = None
-  _globals['_PAR2VECREQUEST']._serialized_start=30
-  _globals['_PAR2VECREQUEST']._serialized_end=65
-  _globals['_DEFAULTREPLY']._serialized_start=67
-  _globals['_DEFAULTREPLY']._serialized_end=108
-  _globals['_PAR2VEC']._serialized_start=110
-  _globals['_PAR2VEC']._serialized_end=196
+  _globals['DESCRIPTOR']._loaded_options = None
+  _globals['DESCRIPTOR']._serialized_options = b'Z\025./recommender/par2vec'
+  _globals['_HELLOREQUEST']._serialized_start=26
+  _globals['_HELLOREQUEST']._serialized_end=55
+  _globals['_HELLOREPLY']._serialized_start=57
+  _globals['_HELLOREPLY']._serialized_end=84
+  _globals['_PAR2VECREQUEST']._serialized_start=86
+  _globals['_PAR2VECREQUEST']._serialized_end=121
+  _globals['_DEFAULTREPLY']._serialized_start=123
+  _globals['_DEFAULTREPLY']._serialized_end=164
+  _globals['_PAR2VEC']._serialized_start=167
+  _globals['_PAR2VEC']._serialized_end=300
 # @@protoc_insertion_point(module_scope)
