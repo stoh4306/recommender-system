@@ -207,21 +207,20 @@ int VectorSearch::saveIndexToDisk(void* indexPtr, std::string fileName, std::str
     return 0;
 }
 
-int VectorSearch::saveIndexInContainerToDisk(std::string indexName, std::string& err, std::string filePath) {
+int VectorSearch::saveIndexInContainerToDisk(std::string indexName, std::string& err, std::string fileName) {
     if (!indexContainer_.hasIndex(indexName)) {
         err = "Can't find the index in the container: " + indexName;
+        std::cout << err << std::endl;
         return 1;
     }
 
     std::list<Index>::iterator it = indexContainer_.getIndexIterator(indexName);
 
-    std::string indexFilePath = filePath;
+    std::string indexFilePath = indexDataPathBase_ + "/" + fileName;
 
-    if (filePath=="") indexFilePath = it->dataFilePath;
+    if (fileName=="") indexFilePath = it->dataFilePath;
 
-    if (saveIndexToDisk(it->indexPtr, indexFilePath, err) != 0 ) {
-        return 2;
-    }
+    faiss::write_index((faiss::IndexFlatL2*)it->indexPtr, indexFilePath.c_str());
     
     err = "";
     return 0;
@@ -288,6 +287,7 @@ IndexContainer*    VectorSearch::indexContainer() {
 
 void VectorSearch::setIndexDataPathBase(std::string path) {
     indexDataPathBase_ = path;
+    std::cout << "- Set IndexDataPathBase : " << path << std::endl;
 }
 
 int VectorSearch::loadIndexFromDB(std::string indexName, std::string& err) {
@@ -467,7 +467,9 @@ int VectorSearch::setDatabase(std::string url, std::string dbName, std::string d
     return 0;
 }
 
-VectorSearch::VectorSearch() {}
+VectorSearch::VectorSearch() {
+    indexDataPathBase_ = ".";
+}
 
 VectorSearch::~VectorSearch() {}
 

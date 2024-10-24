@@ -41,9 +41,15 @@ public:
         for(unsigned long i = 0; i < nb*dim; ++i) {
             request.add_vecdata(v[i]);
         }
-
+        std::cout << "num vectors = " << request.mutable_vecdata()->size() / dim << std::endl;
         DefaultReply response;
-        stub_->createIndex(&context, request, &response);
+        Status stat = stub_->createIndex(&context, request, &response);
+        if (stat.ok()) {
+            std::cout << "gRPC call createIndex : SUCCESS" << std::endl;
+        } else {
+            std::cout << "gRPC call create index : FAILURE" << std::endl;
+            std::cout << stat.error_code() << ", " << stat.error_message() << "," << stat.error_details() << std::endl;
+        }
 
         std::cout << "Response:" << response.status() << ",\n" << response.message() << std::endl;
     }
@@ -56,6 +62,18 @@ public:
 
         DefaultReply response;
         stub_->loadIndex(&context, request, &response);
+
+        std::cout << "Response:" << response.status() << ",\n" << response.message() << std::endl;
+    }
+
+    void unloadIndex(std::string indexName) {
+        ClientContext context;
+
+        DefaultRequest request;
+        request.set_indexname(indexName);
+
+        DefaultReply response;
+        stub_->unloadIndex(&context, request, &response);
 
         std::cout << "Response:" << response.status() << ",\n" << response.message() << std::endl;
     }
@@ -82,8 +100,13 @@ void createVectors(unsigned long nb, unsigned long dim, float*& v) {
 
 int main(int argc, char** argv) {
     // Create a client instance
-    VectorSearchGrpcClient client(
-        grpc::CreateChannel("192.168.0.20:50053", grpc::InsecureChannelCredentials()));
+    grpc::ChannelArguments channel_args;
+    channel_args.SetMaxSendMessageSize(1024 * 1024 * 1024);
+    channel_args.SetMaxReceiveMessageSize(1024 * 1024 * 1024);
+    auto channel = grpc::CreateCustomChannel(  "192.168.0.20:50053", 
+                                grpc::InsecureChannelCredentials(),
+                                channel_args);
+    VectorSearchGrpcClient client(channel);
 
     // Generate vectors to make an index
     unsigned long nb, dim;
@@ -96,6 +119,7 @@ int main(int argc, char** argv) {
     
     client.createIndex("index-1", dim, nb, xb);
     client.loadIndex("index");
+    client.unloadIndex("index-1");
     
     return 0;
 }

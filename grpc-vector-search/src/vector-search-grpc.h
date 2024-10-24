@@ -31,6 +31,7 @@ public:
     Status searchNeighbors(ServerContext* context, const SearchRequest* request, SearchReply* reply) override;
 
     int setDatabase(std::string dbUrl, std::string table, std::string dbUser, std::string dbPassword);
+    void setIndexFilePathBase(std::string basePath);
 
     VectorSearchGrpcImpl();
     ~VectorSearchGrpcImpl();

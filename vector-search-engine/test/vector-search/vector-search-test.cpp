@@ -259,6 +259,11 @@ int main(int argc, char** argv) {
         std::cout << "[ERROR] " << err << std::endl;
     }
 
+    if (vecSearch.saveIndexInContainerToDisk("test-index-3", err, "test-index-3.dat") != 0) {
+        std::cout << "[ERROR] " << err << std::endl;
+    }
+
+    /*
     // Search 
     unsigned long dim = 348;
     

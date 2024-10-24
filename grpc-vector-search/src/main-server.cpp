@@ -12,10 +12,14 @@ void RunServer(uint16_t port) {
         std::cerr << "[ERROR] Cannot start the gRPC server because of connection failure to database " << std::endl;
         return;
     }
+    service.setIndexFilePathBase("/home/stoh/Codes/recommender-system/data/");
 
     grpc::EnableDefaultHealthCheckService(true);
     grpc::reflection::InitProtoReflectionServerBuilderPlugin();
     ServerBuilder builder;
+    builder.SetMaxReceiveMessageSize(1024 * 1024 * 1024);  // 1 GB
+    builder.SetMaxSendMessageSize(1024 * 1024 * 1024);     // 1 GB
+
     // Listen on the given address without any authentication mechanism.
     builder.AddListeningPort(server_address, grpc::InsecureServerCredentials());
     // Register "service" as the instance through which we'll communicate with
