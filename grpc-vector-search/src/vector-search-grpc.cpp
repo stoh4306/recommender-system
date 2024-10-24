@@ -57,7 +57,33 @@ Status VectorSearchGrpcImpl::createIndex(ServerContext* context, const CreateInd
 }
 
 Status VectorSearchGrpcImpl::deleteIndex(ServerContext* context, const DefaultRequest* request, DefaultReply* reply) {
-    //TODO: Needs to implement
+    std::cout << "- deleteIndex() called..." << std::endl;
+    
+    std::string indexName = request->indexname();
+    
+    // First, remove the index from DB 
+    int result;
+    std::string err;
+    result = vecSearch_.removeIndexFromDB(indexName, err);
+    if (result !=0) {
+        reply->set_status("Failure");
+        reply->set_message("Failed to delete index: " + indexName + ", "+ err);
+        std::cout << "Failed to delete index: " + indexName + ", "+ err << std::endl;
+        return Status(grpc::StatusCode::INTERNAL, "Failed to delete index: " + indexName + ", "+ err);
+    }
+
+    // Now, delete the index from container
+    result = vecSearch_.deleteIndexFromContainer(indexName, err);
+    if (result != 0) {
+        reply->set_status("Failuer");
+        reply->set_message("Failed to delete index: " + indexName + ", " + err);
+        std::cout << "Failed to delete index: " + indexName + ", "+ err << std::endl;
+        return Status(grpc::StatusCode::INTERNAL, "Failed to delete index: " + indexName + ", "+ err);
+    }
+
+    std::cout << "- deleteIndex() successfully executed" << std::endl;
+    reply->set_status("Success");
+    reply->set_message("Deleted the index : " + indexName);
     return Status::OK;
 }
 

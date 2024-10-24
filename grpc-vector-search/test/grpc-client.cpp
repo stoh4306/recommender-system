@@ -54,6 +54,21 @@ public:
         std::cout << "Response:" << response.status() << ",\n" << response.message() << std::endl;
     }
 
+    void deleteIndex(std::string indexName) {
+        ClientContext context;
+
+        DefaultRequest request;
+        request.set_indexname(indexName);
+
+        DefaultReply response;
+        Status stat = stub_->deleteIndex(&context, request, &response);
+        if (!stat.ok()) {
+            std::cout << "- [ERROR] Failed to delete index : " << indexName << std::endl;
+            std::cout << stat.error_code() << ", " << stat.error_message() << "," << stat.error_details() << std::endl;
+        }
+        std::cout << "- Response : " << response.status() << ", " << response.message() << std::endl;
+    }
+
     void loadIndex(std::string indexName) {
         ClientContext context;
 
@@ -118,8 +133,9 @@ int main(int argc, char** argv) {
     createVectors(nb, dim, xb);
     
     client.createIndex("index-1", dim, nb, xb);
-    client.loadIndex("index");
-    client.unloadIndex("index-1");
+    client.deleteIndex("index-1");
+    //client.loadIndex("index");
+    //client.unloadIndex("index-1");
     
     return 0;
 }
