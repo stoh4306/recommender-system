@@ -82,15 +82,21 @@ public:
     }
 
     void unloadIndex(std::string indexName) {
+        std::cout << "- Call grpc unloadIndex()" << std::endl;
+
         ClientContext context;
 
         DefaultRequest request;
         request.set_indexname(indexName);
 
         DefaultReply response;
-        stub_->unloadIndex(&context, request, &response);
+        Status stat = stub_->unloadIndex(&context, request, &response);
+        if (!stat.ok()) {
+            std::cout << "- [ERROR] Failed to unload index : " << indexName << std::endl;
+            std::cout << stat.error_code() << ", " << stat.error_message() << "," << stat.error_details() << std::endl;
+        }
 
-        std::cout << "Response:" << response.status() << ",\n" << response.message() << std::endl;
+        std::cout << "- Response:" << response.status() << ",\n" << response.message() << std::endl;
     }
 private:
     std::unique_ptr<VectorSearchGrpc::Stub> stub_;
@@ -133,6 +139,9 @@ int main(int argc, char** argv) {
     createVectors(nb, dim, xb);
     
     client.createIndex("index-1", dim, nb, xb);
+    //client.deleteIndex("index-1");
+    client.unloadIndex("index-1");
+    client.loadIndex("index-1");
     client.deleteIndex("index-1");
     //client.loadIndex("index");
     //client.unloadIndex("index-1");

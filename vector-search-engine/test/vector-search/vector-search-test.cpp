@@ -166,7 +166,7 @@ int vector_search_test_() {
     std::cout << findex->d << ", " << findex->ntotal << ", " << findex->get_xb() << std::endl;
     
     std::string indexName = "test-index-3";
-    if (vecSearch.addIndexToContainer(indexName, indexPtr, indexFilePath, err) > 0) {
+    if (vecSearch.addIndexToContainer(indexName, indexPtr, indexFilePath, false, err) > 0) {
         std::cout << "[ERROR] " << err << std::endl;
         return 1;
     } else {
@@ -182,7 +182,7 @@ int vector_search_test_() {
         std::cout << "- Successfully loaded the index : " << indexFilePath << ", " << indexPtr << std::endl;
     }
     indexName = "test-index-2";
-    if (vecSearch.addIndexToContainer(indexName, indexPtr, indexFilePath, err) > 0) {
+    if (vecSearch.addIndexToContainer(indexName, indexPtr, indexFilePath, false, err) > 0) {
         std::cout << "[ERROR] " << err << std::endl;
         return 1;
     } else {

@@ -4,6 +4,7 @@
 #include <fstream>
 #include <chrono>
 #include <memory>
+#include <cstdio>
 
 #include <mysql/jdbc.h>
 
@@ -134,7 +135,7 @@ int VectorSearch::readVectorsFromFile(std::string filename, unsigned long& ntota
 }
 
 int VectorSearch::addIndexToContainer(std::string indexName, unsigned long dim, unsigned long ntotal, float* xb, 
-                                    std::string dataFileName, std::string& err) {
+                                    std::string dataFileName, bool isFullPath, std::string& err) {
     if (indexContainer_.hasIndex(indexName))
     {
         err = "There already exists an index with the same name : " + indexName;
@@ -156,7 +157,10 @@ int VectorSearch::addIndexToContainer(std::string indexName, unsigned long dim, 
     newIndex.vecData = findex->get_xb();
     newIndex.indexPtr = findex;
     newIndex.quantizerPtr = nullptr; // NOTE : Quantizer deletion is not necessary (index type= FlatL2)
-    newIndex.dataFilePath = indexDataPathBase_ + "/" + dataFileName;
+    if (isFullPath) 
+        newIndex.dataFilePath = dataFileName;
+    else 
+        newIndex.dataFilePath = indexDataPathBase_ + "/" + dataFileName;
 
     indexContainer_.add(newIndex);
 
@@ -164,7 +168,7 @@ int VectorSearch::addIndexToContainer(std::string indexName, unsigned long dim, 
     return 0;
 }
 
-int VectorSearch::addIndexToContainer(std::string indexName, void* indexPtr, std::string dataFileName, std::string& err) {
+int VectorSearch::addIndexToContainer(std::string indexName, void* indexPtr, std::string dataFileName, bool isFullPath, std::string& err) {
     if (indexContainer_.hasIndex(indexName))
     {
         err = "There already exists an index with the same name : " + indexName;
@@ -183,7 +187,11 @@ int VectorSearch::addIndexToContainer(std::string indexName, void* indexPtr, std
     newIndex.vecData = findex->get_xb();
     newIndex.indexPtr = findex;
     newIndex.quantizerPtr = nullptr; // NOTE : Quantizer deletion is not necessary (index type= FlatL2)
-    newIndex.dataFilePath = indexDataPathBase_ + "/" + dataFileName; 
+
+    if (isFullPath)
+        newIndex.dataFilePath = dataFileName;
+    else
+        newIndex.dataFilePath = indexDataPathBase_ + "/" + dataFileName; 
 
     indexContainer_.add(newIndex);
 
@@ -266,10 +274,39 @@ int VectorSearch::loadIndexFromDiskToContainer(std::string indexName, std::strin
         return 2;
     }
 
-    if (addIndexToContainer(indexName, indexPtr, indexFilePath, err) > 0) {
+    if (addIndexToContainer(indexName, indexPtr, indexFilePath, true, err) > 0) {
         return 3;
     }
 
+    return 0;
+}
+
+int VectorSearch::deleteIndexDataFile(std::string indexName, std::string& err) {
+    if (!indexContainer_.hasIndex(indexName)) {
+        err = "Can't find the index in the container : " + indexName;
+        return 1;
+    }
+
+    std::string filePath = indexContainer_.getIndexFilePath(indexName);
+
+    if (remove(filePath.c_str()) != 0) {
+        err = "Failed to delete the index data file : " + filePath;
+        return 2;
+    }
+
+    std::cout << "- Index data file deleted : " << indexName << std::endl;
+    err = "";
+    return 0;
+}
+
+int VectorSearch::deleteIndexDataFileWithFullPath(std::string indexDataFilePath, std::string& err) {
+    if (remove(indexDataFilePath.c_str()) != 0) {
+        err = "Failed to delete the index data file : " + indexDataFilePath;
+        return 1;
+    }
+
+    std::cout << "- Index data file deleted : " << indexDataFilePath << std::endl;
+    err = "";
     return 0;
 }
 

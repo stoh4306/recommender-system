@@ -20,7 +20,7 @@ Status VectorSearchGrpcImpl::createIndex(ServerContext* context, const CreateInd
     std::string err;
 
     // Add index to container
-    int result = vecSearch_.addIndexToContainer(indexName, dim, nb, xb.data(), dataFileName, err);
+    int result = vecSearch_.addIndexToContainer(indexName, dim, nb, xb.data(), dataFileName, false, err);
     if (result != 0) {
         reply->set_status("Failure");
         reply->set_message("Failed to add the index to container");
@@ -61,9 +61,19 @@ Status VectorSearchGrpcImpl::deleteIndex(ServerContext* context, const DefaultRe
     
     std::string indexName = request->indexname();
     
-    // First, remove the index from DB 
     int result;
     std::string err;
+
+    // First, delete the data file
+    result = vecSearch_.deleteIndexDataFile(indexName, err);
+    if (result !=0) {
+        reply->set_status("Failure");
+        reply->set_message("Failed to delete index: " + indexName + ", "+ err);
+        std::cout << "Failed to delete index: " + indexName + ", "+ err << std::endl;
+        return Status(grpc::StatusCode::INTERNAL, "Failed to delete index: " + indexName + ", "+ err);
+    }
+
+    // Remove the index from DB 
     result = vecSearch_.removeIndexFromDB(indexName, err);
     if (result !=0) {
         reply->set_status("Failure");
@@ -72,10 +82,10 @@ Status VectorSearchGrpcImpl::deleteIndex(ServerContext* context, const DefaultRe
         return Status(grpc::StatusCode::INTERNAL, "Failed to delete index: " + indexName + ", "+ err);
     }
 
-    // Now, delete the index from container
+    // Delete the index from container
     result = vecSearch_.deleteIndexFromContainer(indexName, err);
     if (result != 0) {
-        reply->set_status("Failuer");
+        reply->set_status("Failure");
         reply->set_message("Failed to delete index: " + indexName + ", " + err);
         std::cout << "Failed to delete index: " + indexName + ", "+ err << std::endl;
         return Status(grpc::StatusCode::INTERNAL, "Failed to delete index: " + indexName + ", "+ err);
@@ -88,19 +98,44 @@ Status VectorSearchGrpcImpl::deleteIndex(ServerContext* context, const DefaultRe
 }
 
 Status VectorSearchGrpcImpl::loadIndex(ServerContext* context, const DefaultRequest* request, DefaultReply* reply) {
-    //TODO: Needs to implement
-    std::cout << "Executing loadIndex() rpc..." << std::endl;
+    std::cout << "- loadIndex() called..." << std::endl;
+
+    std::string indexName = request->indexname();
+    std::string err;
+    int result = vecSearch_.loadIndexFromDB(indexName, err);
+    if (result != 0) {
+        reply->set_status("Failure");
+        reply->set_message("Failed to load index: " + indexName + ", " + err);
+        std::cout << "Failed to load index: " + indexName + ", "+ err << std::endl;
+        return Status(grpc::StatusCode::INTERNAL, "Failed to load index: " + indexName + ", "+ err);
+    }
+
     reply->set_status("Success");
-    reply->set_message("This is a test for loadIndex.");
-    std::cout << "done" << std::endl;
+    reply->set_message("Loaded the index : " + indexName);
+    std::cout << "- Loaded the index : " + indexName << std::endl;
 
     return Status::OK;
 }
 
 Status VectorSearchGrpcImpl::unloadIndex(ServerContext* context, const DefaultRequest* request, DefaultReply* reply) {
-    //TODO: Needs to implement
+    std::cout << "- unloadIndex() called..." << std::endl;
+
+    std::string indexName = request->indexname();
+
+    std::string err;
+    int result = vecSearch_.deleteIndexFromContainer(indexName, err);
+
+    if (result != 0) {
+        reply->set_status("Failuer");
+        reply->set_message("Failed to unload index: " + indexName + ", " + err);
+        std::cout << "Failed to unload index: " + indexName + ", "+ err << std::endl;
+        return Status(grpc::StatusCode::INTERNAL, "Failed to unload index: " + indexName + ", "+ err);
+    }
+
     reply->set_status("Success");
-    reply->set_message("This is a test for unloadIndex.");
+    reply->set_message("Unloaded the index : " + indexName);
+    std::cout << "- unloaded index : " + indexName << std::endl;
+
     return Status::OK;
 }
 
