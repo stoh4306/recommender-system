@@ -34,7 +34,7 @@ message SearchReply {
 
     uint32 numQueryVectors = 3;
     uint32 numNeighbors = 4;
-    repeated uint32 I = 5;
+    repeated int64 I = 5;
     repeated float  D = 6;
 }
 

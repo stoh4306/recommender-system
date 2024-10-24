@@ -1,5 +1,6 @@
 #include <iostream>
 #include <random>
+#include <sstream>
 
 #include <grpc/grpc.h>
 #include <grpcpp/channel.h>
@@ -76,7 +77,11 @@ public:
         request.set_indexname(indexName);
 
         DefaultReply response;
-        stub_->loadIndex(&context, request, &response);
+        Status stat = stub_->loadIndex(&context, request, &response);
+        if (!stat.ok()) {
+            std::cout << "- [ERROR] Failed to load index : " << indexName << std::endl;
+            std::cout << stat.error_code() << ", " << stat.error_message() << "," << stat.error_details() << std::endl;
+        }
 
         std::cout << "Response:" << response.status() << ",\n" << response.message() << std::endl;
     }
@@ -97,6 +102,51 @@ public:
         }
 
         std::cout << "- Response:" << response.status() << ",\n" << response.message() << std::endl;
+    }
+
+    void searchIndex(std::string indexName, 
+        unsigned int dim, unsigned int nq, const float* xq, unsigned int k) {
+        ClientContext context;
+
+        SearchRequest request;
+        request.set_indexname(indexName);
+        request.set_dim(dim);
+        request.set_numqueryvectors(nq);
+        request.set_numneighbors(k);
+        for(unsigned long i = 0; i < nq*dim; ++i) {
+            request.add_vecdata(xq[i]);
+        }
+
+        SearchReply response;
+        Status stat = stub_->searchNeighbors(&context, request, &response);
+        if (!stat.ok()) {
+            std::cout << "- [ERROR] Failed to search index : " << indexName << std::endl;
+            std::cout << stat.error_code() << ", " << stat.error_message() << "," << stat.error_details() << std::endl;
+            return;
+        }
+        
+        // Get search result
+        uint32_t r_nq = response.numqueryvectors();
+        uint32_t r_k = response.numneighbors();
+        const long* I = response.i().data();
+        const float* D = response.d().data();
+
+        std::ostringstream searchResult;
+        searchResult << "I=\n";
+        for (unsigned long i = 0; i < nq; ++i) {
+            for (unsigned long j = 0; j < k; ++j) {
+                searchResult << I[i * k + j] << " ";
+            }
+            searchResult << "\n";
+        }
+        searchResult << "D=\n";
+        for (unsigned long i = 0; i < nq; ++i) {
+            for (unsigned long j = 0; j < k; ++j) {
+                searchResult << D[i * k + j] << " ";
+            }
+            searchResult << "\n";
+        }
+        std::cout << "search result=" << searchResult.str() << std::endl;
     }
 private:
     std::unique_ptr<VectorSearchGrpc::Stub> stub_;
@@ -140,11 +190,16 @@ int main(int argc, char** argv) {
     
     client.createIndex("index-1", dim, nb, xb);
     //client.deleteIndex("index-1");
-    client.unloadIndex("index-1");
-    client.loadIndex("index-1");
-    client.deleteIndex("index-1");
-    //client.loadIndex("index");
     //client.unloadIndex("index-1");
+    //client.loadIndex("index-1");
+    //client.deleteIndex("index-1");
+
+    unsigned long nq = 2;
+    float* xq; 
+    createVectors(nq, dim, xq);
+
+    uint32_t k = 4;
+    client.searchIndex("index-1", dim, nq, (const float*)xq, k );
     
     return 0;
 }

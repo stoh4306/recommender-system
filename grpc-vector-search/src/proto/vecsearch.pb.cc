@@ -233,7 +233,7 @@ const char descriptor_table_protodef_vecsearch_2eproto[] PROTOBUF_SECTION_VARIAB
     "\007vecData\030\004 \003(\002\022\024\n\014numNeighbors\030\005 \001(\r\"s\n\013"
     "SearchReply\022\016\n\006status\030\001 \001(\t\022\017\n\007message\030\002"
     " \001(\t\022\027\n\017numQueryVectors\030\003 \001(\r\022\024\n\014numNeig"
-    "hbors\030\004 \001(\r\022\t\n\001I\030\005 \003(\r\022\t\n\001D\030\006 \003(\002\"#\n\016Def"
+    "hbors\030\004 \001(\r\022\t\n\001I\030\005 \003(\003\022\t\n\001D\030\006 \003(\002\"#\n\016Def"
     "aultRequest\022\021\n\tindexName\030\001 \001(\t\"/\n\014Defaul"
     "tReply\022\016\n\006status\030\001 \001(\t\022\017\n\007message\030\002 \001(\t2"
     "\217\003\n\020VectorSearchGrpc\022M\n\013createIndex\022!.ve"
@@ -1084,13 +1084,13 @@ const char* SearchReply::_InternalParse(const char* ptr, ::_pbi::ParseContext* c
           goto handle_unusual;
         }
         continue;
-      // repeated uint32 I = 5;
+      // repeated int64 I = 5;
       case 5:
         if (PROTOBUF_PREDICT_TRUE(static_cast<::uint8_t>(tag) == 42)) {
-          ptr = ::PROTOBUF_NAMESPACE_ID::internal::PackedUInt32Parser(_internal_mutable_i(), ptr, ctx);
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::PackedInt64Parser(_internal_mutable_i(), ptr, ctx);
           CHK_(ptr);
         } else if (static_cast<::uint8_t>(tag) == 40) {
-          _internal_add_i(::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr));
+          _internal_add_i(::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr));
           CHK_(ptr);
         } else {
           goto handle_unusual;
@@ -1167,11 +1167,11 @@ failure:
         4, this->_internal_numneighbors(), target);
   }
 
-  // repeated uint32 I = 5;
+  // repeated int64 I = 5;
   {
     int byte_size = _impl_._i_cached_byte_size_.Get();
     if (byte_size > 0) {
-      target = stream->WriteUInt32Packed(5, _internal_i(),
+      target = stream->WriteInt64Packed(5, _internal_i(),
                                                  byte_size, target);
     }
   }
@@ -1197,9 +1197,9 @@ failure:
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  // repeated uint32 I = 5;
+  // repeated int64 I = 5;
   {
-    std::size_t data_size = ::_pbi::WireFormatLite::UInt32Size(
+    std::size_t data_size = ::_pbi::WireFormatLite::Int64Size(
         this->_internal_i())
     ;
     _impl_._i_cached_byte_size_.Set(::_pbi::ToCachedSize(data_size));

@@ -64,7 +64,7 @@ public:
 
     int searchNeighbors(std::string indexName, unsigned long dim, unsigned long nq, std::string vectors, 
                         unsigned long k, long* I, float* D, std::string& err );
-    int searchNeighbors(std::string indexName, unsigned long dim, unsigned long nq, float* xq, 
+    int searchNeighbors(std::string indexName, unsigned long dim, unsigned long nq, const float* xq, 
                         unsigned long k, long* I, float* D, std::string& err );
 
     int setDatabase(std::string url, std::string dbName_, std::string dbUserName, std::string dbPassword);

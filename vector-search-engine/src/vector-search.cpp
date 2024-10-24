@@ -50,7 +50,7 @@ int VectorSearch::searchNeighbors(std::string indexName, unsigned long dim, unsi
     err = "";
     return 0;
 }
-int VectorSearch::searchNeighbors(std::string indexName, unsigned long dim, unsigned long nq, float* xq, 
+int VectorSearch::searchNeighbors(std::string indexName, unsigned long dim, unsigned long nq, const float* xq, 
 
                         unsigned long k, long* I, float* D, std::string& err ) {
     if (!indexContainer_.hasIndex(indexName)) {

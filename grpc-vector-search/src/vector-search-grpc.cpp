@@ -126,7 +126,7 @@ Status VectorSearchGrpcImpl::unloadIndex(ServerContext* context, const DefaultRe
     int result = vecSearch_.deleteIndexFromContainer(indexName, err);
 
     if (result != 0) {
-        reply->set_status("Failuer");
+        reply->set_status("Failure");
         reply->set_message("Failed to unload index: " + indexName + ", " + err);
         std::cout << "Failed to unload index: " + indexName + ", "+ err << std::endl;
         return Status(grpc::StatusCode::INTERNAL, "Failed to unload index: " + indexName + ", "+ err);
@@ -140,7 +140,41 @@ Status VectorSearchGrpcImpl::unloadIndex(ServerContext* context, const DefaultRe
 }
 
 Status VectorSearchGrpcImpl::searchNeighbors(ServerContext* context, const SearchRequest* request, SearchReply* reply) {
-    //TODO: Needs to implement
+    std::cout << "- searchNeighbors() called..." << std::endl;
+    
+    std::string indexName = request->indexname();
+    unsigned long d = request->dim();
+    unsigned long nq = request->numqueryvectors();
+    const float* xq = request->vecdata().data();
+    unsigned long k = request->numneighbors();
+
+    std::vector<long> I(nq*k);
+    std::vector<float> D(nq*k);
+    std::string err;
+
+    int result = vecSearch_.searchNeighbors(indexName, d, nq, xq, k, I.data(), D.data(), err);
+    if (result != 0) {
+        reply->set_status("Failure");
+        reply->set_message("Failed to search in the index : " + indexName + ", " + err);
+        reply->set_numneighbors(k);
+        reply->set_numqueryvectors(nq);
+        
+        std::cout << "Failed to search in the index: " + indexName + ", "+ err << std::endl;
+        return Status(grpc::StatusCode::INTERNAL, "Failed to search in the index: " + indexName + ", "+ err);
+    }
+
+    reply->set_status("Success");
+    reply->set_message("Neighbor search in the index : " + indexName + ", " + err);
+    reply->set_numneighbors(k);
+    reply->set_numqueryvectors(nq);
+    for(unsigned long i = 0; i < nq; ++i){
+        for(unsigned long j = 0; j < k; ++j) {
+            reply->add_i(I[i*k+j]);
+            reply->add_d(D[i*k+j]);
+        }
+    }
+
+    std::cout << "- Neighbor search successful : " << indexName << std::endl;
     return Status::OK;
 }
 

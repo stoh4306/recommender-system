@@ -656,24 +656,24 @@ class SearchReply final :
     kNumQueryVectorsFieldNumber = 3,
     kNumNeighborsFieldNumber = 4,
   };
-  // repeated uint32 I = 5;
+  // repeated int64 I = 5;
   int i_size() const;
   private:
   int _internal_i_size() const;
 
   public:
   void clear_i() ;
-  ::uint32_t i(int index) const;
-  void set_i(int index, ::uint32_t value);
-  void add_i(::uint32_t value);
-  const ::PROTOBUF_NAMESPACE_ID::RepeatedField<::uint32_t>& i() const;
-  ::PROTOBUF_NAMESPACE_ID::RepeatedField<::uint32_t>* mutable_i();
+  ::int64_t i(int index) const;
+  void set_i(int index, ::int64_t value);
+  void add_i(::int64_t value);
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField<::int64_t>& i() const;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField<::int64_t>* mutable_i();
 
   private:
-  ::uint32_t _internal_i(int index) const;
-  void _internal_add_i(::uint32_t value);
-  const ::PROTOBUF_NAMESPACE_ID::RepeatedField<::uint32_t>& _internal_i() const;
-  ::PROTOBUF_NAMESPACE_ID::RepeatedField<::uint32_t>* _internal_mutable_i();
+  ::int64_t _internal_i(int index) const;
+  void _internal_add_i(::int64_t value);
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField<::int64_t>& _internal_i() const;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField<::int64_t>* _internal_mutable_i();
 
   public:
   // repeated float D = 6;
@@ -764,7 +764,7 @@ class SearchReply final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
-    ::PROTOBUF_NAMESPACE_ID::RepeatedField<::uint32_t> i_;
+    ::PROTOBUF_NAMESPACE_ID::RepeatedField<::int64_t> i_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _i_cached_byte_size_;
     ::PROTOBUF_NAMESPACE_ID::RepeatedField<float> d_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr status_;
@@ -1569,7 +1569,7 @@ inline void SearchReply::_internal_set_numneighbors(::uint32_t value) {
   _impl_.numneighbors_ = value;
 }
 
-// repeated uint32 I = 5;
+// repeated int64 I = 5;
 inline int SearchReply::_internal_i_size() const {
   return _impl_.i_.size();
 }
@@ -1579,37 +1579,37 @@ inline int SearchReply::i_size() const {
 inline void SearchReply::clear_i() {
   _internal_mutable_i()->Clear();
 }
-inline ::uint32_t SearchReply::i(int index) const {
+inline ::int64_t SearchReply::i(int index) const {
   // @@protoc_insertion_point(field_get:vecsearchgrpc.SearchReply.I)
   return _internal_i(index);
 }
-inline void SearchReply::set_i(int index, ::uint32_t value) {
+inline void SearchReply::set_i(int index, ::int64_t value) {
   _internal_mutable_i()->Set(index, value);
   // @@protoc_insertion_point(field_set:vecsearchgrpc.SearchReply.I)
 }
-inline void SearchReply::add_i(::uint32_t value) {
+inline void SearchReply::add_i(::int64_t value) {
   _internal_add_i(value);
   // @@protoc_insertion_point(field_add:vecsearchgrpc.SearchReply.I)
 }
-inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField<::uint32_t>& SearchReply::i() const {
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField<::int64_t>& SearchReply::i() const {
   // @@protoc_insertion_point(field_list:vecsearchgrpc.SearchReply.I)
   return _internal_i();
 }
-inline ::PROTOBUF_NAMESPACE_ID::RepeatedField<::uint32_t>* SearchReply::mutable_i() {
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField<::int64_t>* SearchReply::mutable_i() {
   // @@protoc_insertion_point(field_mutable_list:vecsearchgrpc.SearchReply.I)
   return _internal_mutable_i();
 }
 
-inline ::uint32_t SearchReply::_internal_i(int index) const {
+inline ::int64_t SearchReply::_internal_i(int index) const {
   return _internal_i().Get(index);
 }
-inline void SearchReply::_internal_add_i(::uint32_t value) {
+inline void SearchReply::_internal_add_i(::int64_t value) {
   _internal_mutable_i()->Add(value);
 }
-inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField<::uint32_t>& SearchReply::_internal_i() const {
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField<::int64_t>& SearchReply::_internal_i() const {
   return _impl_.i_;
 }
-inline ::PROTOBUF_NAMESPACE_ID::RepeatedField<::uint32_t>* SearchReply::_internal_mutable_i() {
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField<::int64_t>* SearchReply::_internal_mutable_i() {
   return &_impl_.i_;
 }
 
