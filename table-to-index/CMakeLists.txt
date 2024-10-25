@@ -99,9 +99,11 @@ ${_PROTOBUF_LIBPROTOBUF} )
 include_directories(
     src/
     src/proto
+    /usr/local/mysql/connector-c++-8.0.33/include/ # mysql-connector
 )
 
 link_directories(
+    /usr/local/mysql/connector-c++-8.0.33/lib64 # mysql-connector
 )
 
 add_executable(table-to-index 
@@ -113,4 +115,5 @@ target_link_libraries(table-to-index
     ${_REFLECTION}
     ${_GRPC_GRPCPP}
     ${_PROTOBUF_LIBPROTOBUF}
+    mysqlcppconn
 )
