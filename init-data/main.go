@@ -11,6 +11,10 @@ import (
 )
 
 func main() {
+	//create_initial_data_from_csv();
+}
+
+func create_initial_data_from_csv() {
 	dbinfo := "grida:MM22mm01#@tcp(192.168.0.5:3306)/recommder"
 
 	db, err := sql.Open("mysql", dbinfo)
@@ -69,7 +73,6 @@ func load_csv_file(filepath string) ([][]string, error) {
 	}
 	return records, nil
 }
-
 func add_project_data(db *sql.DB, records [][]string) error {
 	query := "INSERT INTO project (title, description, skills) VALUES (?, ?, ?)"
 	for _, record := range records {
