@@ -42,7 +42,7 @@ public:
         }
     }
 
-    void par2vec(std::string par) {
+    void par2vec(std::string par, uint32_t& dim, std::vector<float>& tv) {
         ClientContext context;
 
         Par2VecRequest request;
@@ -51,13 +51,19 @@ public:
         par2vec::DefaultReply response;
         Status stat = stub_->convertParToVec(&context, request, &response);
         if (stat.ok()) {
-            std::cout << "- [RESPONSE] " << "dim=" << response.dim() << ",\n";
-            uint32_t d = response.dim();
-            const float* v = response.fvec().data();
-            for (uint32_t i = 0; i < d; ++i) {
-                std::cout << v[i] << ", ";
-            }
-            std::cout << std::endl;
+            std::cout << "- [RESPONSE] dim=" << response.dim() << ", " 
+                << response.fvec().data()[0] << "..." << response.fvec().data()[response.dim()-1] << std::endl;
+            tv = std::vector<float>(response.fvec().begin(), response.fvec().end());
+            dim = response.dim();
+            assert(dim == (uint32_t)tv.size());
+            
+            //std::cout << "- [RESPONSE] " << "dim=" << response.dim() << ",\n";
+            //uint32_t d = response.dim();
+            //const float* v = response.fvec().data();
+            //for (uint32_t i = 0; i < d; ++i) {
+            //    std::cout << v[i] << ", ";
+            //}
+            //std::cout << std::endl;
         } else {
             std::cout << "- [ERROR] Failed to call convertPar2Vec() :";
             std::cout << stat.error_code() << ", " << stat.error_message() << ",  " << stat.error_details() << std::endl;
