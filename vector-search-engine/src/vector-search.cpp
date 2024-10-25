@@ -339,11 +339,11 @@ int VectorSearch::loadIndexFromDB(std::string indexName, std::string& err) {
         // Connect to the database schema (e.g., test)
         con->setSchema("recommder");
 
-        sql::PreparedStatement* pstmt_1(
+        std::unique_ptr<sql::PreparedStatement> pstmt_1(
             con->prepareStatement("SELECT * FROM search_index WHERE name = ? LIMIT 1")
         );
         pstmt_1->setString(1, indexName);
-        sql::ResultSet* res = pstmt_1->executeQuery();
+        std::unique_ptr<sql::ResultSet> res(pstmt_1->executeQuery());
         if (res->next()) {
             dataPath = res->getString("data_path");
         } else {
@@ -385,7 +385,7 @@ int VectorSearch::removeIndexFromDB(std::string indexName, std::string& err) {
         // Connect to the database schema (e.g., test)
         con->setSchema("recommder");
 
-        sql::PreparedStatement* pstmt_1(
+        std::unique_ptr<sql::PreparedStatement> pstmt_1(
             con->prepareStatement("SELECT * FROM search_index WHERE name = ?  LIMIT 1")
         );
         pstmt_1->setString(1, indexName);
@@ -396,7 +396,7 @@ int VectorSearch::removeIndexFromDB(std::string indexName, std::string& err) {
             return 0;
         } 
 
-        sql::PreparedStatement* pstmt2(
+        std::unique_ptr<sql::PreparedStatement> pstmt2(
             con->prepareStatement("DELETE FROM search_index WHERE name = ?")
         );
         pstmt2->setString(1, indexName);
@@ -444,7 +444,7 @@ int VectorSearch::storeIndexToDB(std::string indexName, std::string& err) {
         // Connect to the database schema (e.g., test)
         con->setSchema("recommder");
 
-        sql::PreparedStatement* pstmt_1(
+        std::unique_ptr<sql::PreparedStatement> pstmt_1(
             con->prepareStatement("SELECT * FROM search_index WHERE name = ?  LIMIT 1")
         );
         pstmt_1->setString(1, indexName);
