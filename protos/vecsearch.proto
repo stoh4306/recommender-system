@@ -1,9 +1,10 @@
 syntax = "proto3";
 
 package vecsearchgrpc;
-//option go_package = "./recommender/par2vec";
+option go_package = "./recommender/vecsearchgrpc";
 
 service VectorSearchGrpc {
+    rpc getIndexFromContainer(DefaultRequest) returns (IndexInfo);
     rpc createIndex(CreateIndexRequest)     returns (DefaultReply);
     rpc deleteIndex(DefaultRequest)         returns (DefaultReply);
 
@@ -11,6 +12,11 @@ service VectorSearchGrpc {
     rpc unloadIndex(DefaultRequest)         returns (DefaultReply);
 
     rpc searchNeighbors(SearchRequest)     returns (SearchReply) {};
+}
+
+message IndexInfo {
+    string  indexName = 1;
+    string  dataFilePath = 2;  
 }
 
 message CreateIndexRequest {

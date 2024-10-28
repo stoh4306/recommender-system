@@ -35,6 +35,13 @@ class VectorSearchGrpc final {
   class StubInterface {
    public:
     virtual ~StubInterface() {}
+    virtual ::grpc::Status getIndexFromContainer(::grpc::ClientContext* context, const ::vecsearchgrpc::DefaultRequest& request, ::vecsearchgrpc::IndexInfo* response) = 0;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::vecsearchgrpc::IndexInfo>> AsyncgetIndexFromContainer(::grpc::ClientContext* context, const ::vecsearchgrpc::DefaultRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::vecsearchgrpc::IndexInfo>>(AsyncgetIndexFromContainerRaw(context, request, cq));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::vecsearchgrpc::IndexInfo>> PrepareAsyncgetIndexFromContainer(::grpc::ClientContext* context, const ::vecsearchgrpc::DefaultRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::vecsearchgrpc::IndexInfo>>(PrepareAsyncgetIndexFromContainerRaw(context, request, cq));
+    }
     virtual ::grpc::Status createIndex(::grpc::ClientContext* context, const ::vecsearchgrpc::CreateIndexRequest& request, ::vecsearchgrpc::DefaultReply* response) = 0;
     std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::vecsearchgrpc::DefaultReply>> AsynccreateIndex(::grpc::ClientContext* context, const ::vecsearchgrpc::CreateIndexRequest& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::vecsearchgrpc::DefaultReply>>(AsynccreateIndexRaw(context, request, cq));
@@ -73,6 +80,8 @@ class VectorSearchGrpc final {
     class async_interface {
      public:
       virtual ~async_interface() {}
+      virtual void getIndexFromContainer(::grpc::ClientContext* context, const ::vecsearchgrpc::DefaultRequest* request, ::vecsearchgrpc::IndexInfo* response, std::function<void(::grpc::Status)>) = 0;
+      virtual void getIndexFromContainer(::grpc::ClientContext* context, const ::vecsearchgrpc::DefaultRequest* request, ::vecsearchgrpc::IndexInfo* response, ::grpc::ClientUnaryReactor* reactor) = 0;
       virtual void createIndex(::grpc::ClientContext* context, const ::vecsearchgrpc::CreateIndexRequest* request, ::vecsearchgrpc::DefaultReply* response, std::function<void(::grpc::Status)>) = 0;
       virtual void createIndex(::grpc::ClientContext* context, const ::vecsearchgrpc::CreateIndexRequest* request, ::vecsearchgrpc::DefaultReply* response, ::grpc::ClientUnaryReactor* reactor) = 0;
       virtual void deleteIndex(::grpc::ClientContext* context, const ::vecsearchgrpc::DefaultRequest* request, ::vecsearchgrpc::DefaultReply* response, std::function<void(::grpc::Status)>) = 0;
@@ -88,6 +97,8 @@ class VectorSearchGrpc final {
     virtual class async_interface* async() { return nullptr; }
     class async_interface* experimental_async() { return async(); }
    private:
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::vecsearchgrpc::IndexInfo>* AsyncgetIndexFromContainerRaw(::grpc::ClientContext* context, const ::vecsearchgrpc::DefaultRequest& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::vecsearchgrpc::IndexInfo>* PrepareAsyncgetIndexFromContainerRaw(::grpc::ClientContext* context, const ::vecsearchgrpc::DefaultRequest& request, ::grpc::CompletionQueue* cq) = 0;
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::vecsearchgrpc::DefaultReply>* AsynccreateIndexRaw(::grpc::ClientContext* context, const ::vecsearchgrpc::CreateIndexRequest& request, ::grpc::CompletionQueue* cq) = 0;
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::vecsearchgrpc::DefaultReply>* PrepareAsynccreateIndexRaw(::grpc::ClientContext* context, const ::vecsearchgrpc::CreateIndexRequest& request, ::grpc::CompletionQueue* cq) = 0;
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::vecsearchgrpc::DefaultReply>* AsyncdeleteIndexRaw(::grpc::ClientContext* context, const ::vecsearchgrpc::DefaultRequest& request, ::grpc::CompletionQueue* cq) = 0;
@@ -102,6 +113,13 @@ class VectorSearchGrpc final {
   class Stub final : public StubInterface {
    public:
     Stub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, const ::grpc::StubOptions& options = ::grpc::StubOptions());
+    ::grpc::Status getIndexFromContainer(::grpc::ClientContext* context, const ::vecsearchgrpc::DefaultRequest& request, ::vecsearchgrpc::IndexInfo* response) override;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::vecsearchgrpc::IndexInfo>> AsyncgetIndexFromContainer(::grpc::ClientContext* context, const ::vecsearchgrpc::DefaultRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::vecsearchgrpc::IndexInfo>>(AsyncgetIndexFromContainerRaw(context, request, cq));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::vecsearchgrpc::IndexInfo>> PrepareAsyncgetIndexFromContainer(::grpc::ClientContext* context, const ::vecsearchgrpc::DefaultRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::vecsearchgrpc::IndexInfo>>(PrepareAsyncgetIndexFromContainerRaw(context, request, cq));
+    }
     ::grpc::Status createIndex(::grpc::ClientContext* context, const ::vecsearchgrpc::CreateIndexRequest& request, ::vecsearchgrpc::DefaultReply* response) override;
     std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::vecsearchgrpc::DefaultReply>> AsynccreateIndex(::grpc::ClientContext* context, const ::vecsearchgrpc::CreateIndexRequest& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::vecsearchgrpc::DefaultReply>>(AsynccreateIndexRaw(context, request, cq));
@@ -140,6 +158,8 @@ class VectorSearchGrpc final {
     class async final :
       public StubInterface::async_interface {
      public:
+      void getIndexFromContainer(::grpc::ClientContext* context, const ::vecsearchgrpc::DefaultRequest* request, ::vecsearchgrpc::IndexInfo* response, std::function<void(::grpc::Status)>) override;
+      void getIndexFromContainer(::grpc::ClientContext* context, const ::vecsearchgrpc::DefaultRequest* request, ::vecsearchgrpc::IndexInfo* response, ::grpc::ClientUnaryReactor* reactor) override;
       void createIndex(::grpc::ClientContext* context, const ::vecsearchgrpc::CreateIndexRequest* request, ::vecsearchgrpc::DefaultReply* response, std::function<void(::grpc::Status)>) override;
       void createIndex(::grpc::ClientContext* context, const ::vecsearchgrpc::CreateIndexRequest* request, ::vecsearchgrpc::DefaultReply* response, ::grpc::ClientUnaryReactor* reactor) override;
       void deleteIndex(::grpc::ClientContext* context, const ::vecsearchgrpc::DefaultRequest* request, ::vecsearchgrpc::DefaultReply* response, std::function<void(::grpc::Status)>) override;
@@ -161,6 +181,8 @@ class VectorSearchGrpc final {
    private:
     std::shared_ptr< ::grpc::ChannelInterface> channel_;
     class async async_stub_{this};
+    ::grpc::ClientAsyncResponseReader< ::vecsearchgrpc::IndexInfo>* AsyncgetIndexFromContainerRaw(::grpc::ClientContext* context, const ::vecsearchgrpc::DefaultRequest& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::vecsearchgrpc::IndexInfo>* PrepareAsyncgetIndexFromContainerRaw(::grpc::ClientContext* context, const ::vecsearchgrpc::DefaultRequest& request, ::grpc::CompletionQueue* cq) override;
     ::grpc::ClientAsyncResponseReader< ::vecsearchgrpc::DefaultReply>* AsynccreateIndexRaw(::grpc::ClientContext* context, const ::vecsearchgrpc::CreateIndexRequest& request, ::grpc::CompletionQueue* cq) override;
     ::grpc::ClientAsyncResponseReader< ::vecsearchgrpc::DefaultReply>* PrepareAsynccreateIndexRaw(::grpc::ClientContext* context, const ::vecsearchgrpc::CreateIndexRequest& request, ::grpc::CompletionQueue* cq) override;
     ::grpc::ClientAsyncResponseReader< ::vecsearchgrpc::DefaultReply>* AsyncdeleteIndexRaw(::grpc::ClientContext* context, const ::vecsearchgrpc::DefaultRequest& request, ::grpc::CompletionQueue* cq) override;
@@ -171,6 +193,7 @@ class VectorSearchGrpc final {
     ::grpc::ClientAsyncResponseReader< ::vecsearchgrpc::DefaultReply>* PrepareAsyncunloadIndexRaw(::grpc::ClientContext* context, const ::vecsearchgrpc::DefaultRequest& request, ::grpc::CompletionQueue* cq) override;
     ::grpc::ClientAsyncResponseReader< ::vecsearchgrpc::SearchReply>* AsyncsearchNeighborsRaw(::grpc::ClientContext* context, const ::vecsearchgrpc::SearchRequest& request, ::grpc::CompletionQueue* cq) override;
     ::grpc::ClientAsyncResponseReader< ::vecsearchgrpc::SearchReply>* PrepareAsyncsearchNeighborsRaw(::grpc::ClientContext* context, const ::vecsearchgrpc::SearchRequest& request, ::grpc::CompletionQueue* cq) override;
+    const ::grpc::internal::RpcMethod rpcmethod_getIndexFromContainer_;
     const ::grpc::internal::RpcMethod rpcmethod_createIndex_;
     const ::grpc::internal::RpcMethod rpcmethod_deleteIndex_;
     const ::grpc::internal::RpcMethod rpcmethod_loadIndex_;
@@ -183,6 +206,7 @@ class VectorSearchGrpc final {
    public:
     Service();
     virtual ~Service();
+    virtual ::grpc::Status getIndexFromContainer(::grpc::ServerContext* context, const ::vecsearchgrpc::DefaultRequest* request, ::vecsearchgrpc::IndexInfo* response);
     virtual ::grpc::Status createIndex(::grpc::ServerContext* context, const ::vecsearchgrpc::CreateIndexRequest* request, ::vecsearchgrpc::DefaultReply* response);
     virtual ::grpc::Status deleteIndex(::grpc::ServerContext* context, const ::vecsearchgrpc::DefaultRequest* request, ::vecsearchgrpc::DefaultReply* response);
     virtual ::grpc::Status loadIndex(::grpc::ServerContext* context, const ::vecsearchgrpc::DefaultRequest* request, ::vecsearchgrpc::DefaultReply* response);
@@ -190,12 +214,32 @@ class VectorSearchGrpc final {
     virtual ::grpc::Status searchNeighbors(::grpc::ServerContext* context, const ::vecsearchgrpc::SearchRequest* request, ::vecsearchgrpc::SearchReply* response);
   };
   template <class BaseClass>
+  class WithAsyncMethod_getIndexFromContainer : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithAsyncMethod_getIndexFromContainer() {
+      ::grpc::Service::MarkMethodAsync(0);
+    }
+    ~WithAsyncMethod_getIndexFromContainer() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status getIndexFromContainer(::grpc::ServerContext* /*context*/, const ::vecsearchgrpc::DefaultRequest* /*request*/, ::vecsearchgrpc::IndexInfo* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void RequestgetIndexFromContainer(::grpc::ServerContext* context, ::vecsearchgrpc::DefaultRequest* request, ::grpc::ServerAsyncResponseWriter< ::vecsearchgrpc::IndexInfo>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncUnary(0, context, request, response, new_call_cq, notification_cq, tag);
+    }
+  };
+  template <class BaseClass>
   class WithAsyncMethod_createIndex : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithAsyncMethod_createIndex() {
-      ::grpc::Service::MarkMethodAsync(0);
+      ::grpc::Service::MarkMethodAsync(1);
     }
     ~WithAsyncMethod_createIndex() override {
       BaseClassMustBeDerivedFromService(this);
@@ -206,7 +250,7 @@ class VectorSearchGrpc final {
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     void RequestcreateIndex(::grpc::ServerContext* context, ::vecsearchgrpc::CreateIndexRequest* request, ::grpc::ServerAsyncResponseWriter< ::vecsearchgrpc::DefaultReply>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
-      ::grpc::Service::RequestAsyncUnary(0, context, request, response, new_call_cq, notification_cq, tag);
+      ::grpc::Service::RequestAsyncUnary(1, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
   template <class BaseClass>
@@ -215,7 +259,7 @@ class VectorSearchGrpc final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithAsyncMethod_deleteIndex() {
-      ::grpc::Service::MarkMethodAsync(1);
+      ::grpc::Service::MarkMethodAsync(2);
     }
     ~WithAsyncMethod_deleteIndex() override {
       BaseClassMustBeDerivedFromService(this);
@@ -226,7 +270,7 @@ class VectorSearchGrpc final {
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     void RequestdeleteIndex(::grpc::ServerContext* context, ::vecsearchgrpc::DefaultRequest* request, ::grpc::ServerAsyncResponseWriter< ::vecsearchgrpc::DefaultReply>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
-      ::grpc::Service::RequestAsyncUnary(1, context, request, response, new_call_cq, notification_cq, tag);
+      ::grpc::Service::RequestAsyncUnary(2, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
   template <class BaseClass>
@@ -235,7 +279,7 @@ class VectorSearchGrpc final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithAsyncMethod_loadIndex() {
-      ::grpc::Service::MarkMethodAsync(2);
+      ::grpc::Service::MarkMethodAsync(3);
     }
     ~WithAsyncMethod_loadIndex() override {
       BaseClassMustBeDerivedFromService(this);
@@ -246,7 +290,7 @@ class VectorSearchGrpc final {
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     void RequestloadIndex(::grpc::ServerContext* context, ::vecsearchgrpc::DefaultRequest* request, ::grpc::ServerAsyncResponseWriter< ::vecsearchgrpc::DefaultReply>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
-      ::grpc::Service::RequestAsyncUnary(2, context, request, response, new_call_cq, notification_cq, tag);
+      ::grpc::Service::RequestAsyncUnary(3, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
   template <class BaseClass>
@@ -255,7 +299,7 @@ class VectorSearchGrpc final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithAsyncMethod_unloadIndex() {
-      ::grpc::Service::MarkMethodAsync(3);
+      ::grpc::Service::MarkMethodAsync(4);
     }
     ~WithAsyncMethod_unloadIndex() override {
       BaseClassMustBeDerivedFromService(this);
@@ -266,7 +310,7 @@ class VectorSearchGrpc final {
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     void RequestunloadIndex(::grpc::ServerContext* context, ::vecsearchgrpc::DefaultRequest* request, ::grpc::ServerAsyncResponseWriter< ::vecsearchgrpc::DefaultReply>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
-      ::grpc::Service::RequestAsyncUnary(3, context, request, response, new_call_cq, notification_cq, tag);
+      ::grpc::Service::RequestAsyncUnary(4, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
   template <class BaseClass>
@@ -275,7 +319,7 @@ class VectorSearchGrpc final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithAsyncMethod_searchNeighbors() {
-      ::grpc::Service::MarkMethodAsync(4);
+      ::grpc::Service::MarkMethodAsync(5);
     }
     ~WithAsyncMethod_searchNeighbors() override {
       BaseClassMustBeDerivedFromService(this);
@@ -286,23 +330,50 @@ class VectorSearchGrpc final {
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     void RequestsearchNeighbors(::grpc::ServerContext* context, ::vecsearchgrpc::SearchRequest* request, ::grpc::ServerAsyncResponseWriter< ::vecsearchgrpc::SearchReply>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
-      ::grpc::Service::RequestAsyncUnary(4, context, request, response, new_call_cq, notification_cq, tag);
+      ::grpc::Service::RequestAsyncUnary(5, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
-  typedef WithAsyncMethod_createIndex<WithAsyncMethod_deleteIndex<WithAsyncMethod_loadIndex<WithAsyncMethod_unloadIndex<WithAsyncMethod_searchNeighbors<Service > > > > > AsyncService;
+  typedef WithAsyncMethod_getIndexFromContainer<WithAsyncMethod_createIndex<WithAsyncMethod_deleteIndex<WithAsyncMethod_loadIndex<WithAsyncMethod_unloadIndex<WithAsyncMethod_searchNeighbors<Service > > > > > > AsyncService;
+  template <class BaseClass>
+  class WithCallbackMethod_getIndexFromContainer : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithCallbackMethod_getIndexFromContainer() {
+      ::grpc::Service::MarkMethodCallback(0,
+          new ::grpc::internal::CallbackUnaryHandler< ::vecsearchgrpc::DefaultRequest, ::vecsearchgrpc::IndexInfo>(
+            [this](
+                   ::grpc::CallbackServerContext* context, const ::vecsearchgrpc::DefaultRequest* request, ::vecsearchgrpc::IndexInfo* response) { return this->getIndexFromContainer(context, request, response); }));}
+    void SetMessageAllocatorFor_getIndexFromContainer(
+        ::grpc::MessageAllocator< ::vecsearchgrpc::DefaultRequest, ::vecsearchgrpc::IndexInfo>* allocator) {
+      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::GetHandler(0);
+      static_cast<::grpc::internal::CallbackUnaryHandler< ::vecsearchgrpc::DefaultRequest, ::vecsearchgrpc::IndexInfo>*>(handler)
+              ->SetMessageAllocator(allocator);
+    }
+    ~WithCallbackMethod_getIndexFromContainer() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status getIndexFromContainer(::grpc::ServerContext* /*context*/, const ::vecsearchgrpc::DefaultRequest* /*request*/, ::vecsearchgrpc::IndexInfo* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    virtual ::grpc::ServerUnaryReactor* getIndexFromContainer(
+      ::grpc::CallbackServerContext* /*context*/, const ::vecsearchgrpc::DefaultRequest* /*request*/, ::vecsearchgrpc::IndexInfo* /*response*/)  { return nullptr; }
+  };
   template <class BaseClass>
   class WithCallbackMethod_createIndex : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithCallbackMethod_createIndex() {
-      ::grpc::Service::MarkMethodCallback(0,
+      ::grpc::Service::MarkMethodCallback(1,
           new ::grpc::internal::CallbackUnaryHandler< ::vecsearchgrpc::CreateIndexRequest, ::vecsearchgrpc::DefaultReply>(
             [this](
                    ::grpc::CallbackServerContext* context, const ::vecsearchgrpc::CreateIndexRequest* request, ::vecsearchgrpc::DefaultReply* response) { return this->createIndex(context, request, response); }));}
     void SetMessageAllocatorFor_createIndex(
         ::grpc::MessageAllocator< ::vecsearchgrpc::CreateIndexRequest, ::vecsearchgrpc::DefaultReply>* allocator) {
-      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::GetHandler(0);
+      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::GetHandler(1);
       static_cast<::grpc::internal::CallbackUnaryHandler< ::vecsearchgrpc::CreateIndexRequest, ::vecsearchgrpc::DefaultReply>*>(handler)
               ->SetMessageAllocator(allocator);
     }
@@ -323,13 +394,13 @@ class VectorSearchGrpc final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithCallbackMethod_deleteIndex() {
-      ::grpc::Service::MarkMethodCallback(1,
+      ::grpc::Service::MarkMethodCallback(2,
           new ::grpc::internal::CallbackUnaryHandler< ::vecsearchgrpc::DefaultRequest, ::vecsearchgrpc::DefaultReply>(
             [this](
                    ::grpc::CallbackServerContext* context, const ::vecsearchgrpc::DefaultRequest* request, ::vecsearchgrpc::DefaultReply* response) { return this->deleteIndex(context, request, response); }));}
     void SetMessageAllocatorFor_deleteIndex(
         ::grpc::MessageAllocator< ::vecsearchgrpc::DefaultRequest, ::vecsearchgrpc::DefaultReply>* allocator) {
-      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::GetHandler(1);
+      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::GetHandler(2);
       static_cast<::grpc::internal::CallbackUnaryHandler< ::vecsearchgrpc::DefaultRequest, ::vecsearchgrpc::DefaultReply>*>(handler)
               ->SetMessageAllocator(allocator);
     }
@@ -350,13 +421,13 @@ class VectorSearchGrpc final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithCallbackMethod_loadIndex() {
-      ::grpc::Service::MarkMethodCallback(2,
+      ::grpc::Service::MarkMethodCallback(3,
           new ::grpc::internal::CallbackUnaryHandler< ::vecsearchgrpc::DefaultRequest, ::vecsearchgrpc::DefaultReply>(
             [this](
                    ::grpc::CallbackServerContext* context, const ::vecsearchgrpc::DefaultRequest* request, ::vecsearchgrpc::DefaultReply* response) { return this->loadIndex(context, request, response); }));}
     void SetMessageAllocatorFor_loadIndex(
         ::grpc::MessageAllocator< ::vecsearchgrpc::DefaultRequest, ::vecsearchgrpc::DefaultReply>* allocator) {
-      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::GetHandler(2);
+      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::GetHandler(3);
       static_cast<::grpc::internal::CallbackUnaryHandler< ::vecsearchgrpc::DefaultRequest, ::vecsearchgrpc::DefaultReply>*>(handler)
               ->SetMessageAllocator(allocator);
     }
@@ -377,13 +448,13 @@ class VectorSearchGrpc final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithCallbackMethod_unloadIndex() {
-      ::grpc::Service::MarkMethodCallback(3,
+      ::grpc::Service::MarkMethodCallback(4,
           new ::grpc::internal::CallbackUnaryHandler< ::vecsearchgrpc::DefaultRequest, ::vecsearchgrpc::DefaultReply>(
             [this](
                    ::grpc::CallbackServerContext* context, const ::vecsearchgrpc::DefaultRequest* request, ::vecsearchgrpc::DefaultReply* response) { return this->unloadIndex(context, request, response); }));}
     void SetMessageAllocatorFor_unloadIndex(
         ::grpc::MessageAllocator< ::vecsearchgrpc::DefaultRequest, ::vecsearchgrpc::DefaultReply>* allocator) {
-      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::GetHandler(3);
+      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::GetHandler(4);
       static_cast<::grpc::internal::CallbackUnaryHandler< ::vecsearchgrpc::DefaultRequest, ::vecsearchgrpc::DefaultReply>*>(handler)
               ->SetMessageAllocator(allocator);
     }
@@ -404,13 +475,13 @@ class VectorSearchGrpc final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithCallbackMethod_searchNeighbors() {
-      ::grpc::Service::MarkMethodCallback(4,
+      ::grpc::Service::MarkMethodCallback(5,
           new ::grpc::internal::CallbackUnaryHandler< ::vecsearchgrpc::SearchRequest, ::vecsearchgrpc::SearchReply>(
             [this](
                    ::grpc::CallbackServerContext* context, const ::vecsearchgrpc::SearchRequest* request, ::vecsearchgrpc::SearchReply* response) { return this->searchNeighbors(context, request, response); }));}
     void SetMessageAllocatorFor_searchNeighbors(
         ::grpc::MessageAllocator< ::vecsearchgrpc::SearchRequest, ::vecsearchgrpc::SearchReply>* allocator) {
-      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::GetHandler(4);
+      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::GetHandler(5);
       static_cast<::grpc::internal::CallbackUnaryHandler< ::vecsearchgrpc::SearchRequest, ::vecsearchgrpc::SearchReply>*>(handler)
               ->SetMessageAllocator(allocator);
     }
@@ -425,15 +496,32 @@ class VectorSearchGrpc final {
     virtual ::grpc::ServerUnaryReactor* searchNeighbors(
       ::grpc::CallbackServerContext* /*context*/, const ::vecsearchgrpc::SearchRequest* /*request*/, ::vecsearchgrpc::SearchReply* /*response*/)  { return nullptr; }
   };
-  typedef WithCallbackMethod_createIndex<WithCallbackMethod_deleteIndex<WithCallbackMethod_loadIndex<WithCallbackMethod_unloadIndex<WithCallbackMethod_searchNeighbors<Service > > > > > CallbackService;
+  typedef WithCallbackMethod_getIndexFromContainer<WithCallbackMethod_createIndex<WithCallbackMethod_deleteIndex<WithCallbackMethod_loadIndex<WithCallbackMethod_unloadIndex<WithCallbackMethod_searchNeighbors<Service > > > > > > CallbackService;
   typedef CallbackService ExperimentalCallbackService;
+  template <class BaseClass>
+  class WithGenericMethod_getIndexFromContainer : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithGenericMethod_getIndexFromContainer() {
+      ::grpc::Service::MarkMethodGeneric(0);
+    }
+    ~WithGenericMethod_getIndexFromContainer() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status getIndexFromContainer(::grpc::ServerContext* /*context*/, const ::vecsearchgrpc::DefaultRequest* /*request*/, ::vecsearchgrpc::IndexInfo* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+  };
   template <class BaseClass>
   class WithGenericMethod_createIndex : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithGenericMethod_createIndex() {
-      ::grpc::Service::MarkMethodGeneric(0);
+      ::grpc::Service::MarkMethodGeneric(1);
     }
     ~WithGenericMethod_createIndex() override {
       BaseClassMustBeDerivedFromService(this);
@@ -450,7 +538,7 @@ class VectorSearchGrpc final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithGenericMethod_deleteIndex() {
-      ::grpc::Service::MarkMethodGeneric(1);
+      ::grpc::Service::MarkMethodGeneric(2);
     }
     ~WithGenericMethod_deleteIndex() override {
       BaseClassMustBeDerivedFromService(this);
@@ -467,7 +555,7 @@ class VectorSearchGrpc final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithGenericMethod_loadIndex() {
-      ::grpc::Service::MarkMethodGeneric(2);
+      ::grpc::Service::MarkMethodGeneric(3);
     }
     ~WithGenericMethod_loadIndex() override {
       BaseClassMustBeDerivedFromService(this);
@@ -484,7 +572,7 @@ class VectorSearchGrpc final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithGenericMethod_unloadIndex() {
-      ::grpc::Service::MarkMethodGeneric(3);
+      ::grpc::Service::MarkMethodGeneric(4);
     }
     ~WithGenericMethod_unloadIndex() override {
       BaseClassMustBeDerivedFromService(this);
@@ -501,7 +589,7 @@ class VectorSearchGrpc final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithGenericMethod_searchNeighbors() {
-      ::grpc::Service::MarkMethodGeneric(4);
+      ::grpc::Service::MarkMethodGeneric(5);
     }
     ~WithGenericMethod_searchNeighbors() override {
       BaseClassMustBeDerivedFromService(this);
@@ -513,12 +601,32 @@ class VectorSearchGrpc final {
     }
   };
   template <class BaseClass>
+  class WithRawMethod_getIndexFromContainer : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithRawMethod_getIndexFromContainer() {
+      ::grpc::Service::MarkMethodRaw(0);
+    }
+    ~WithRawMethod_getIndexFromContainer() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status getIndexFromContainer(::grpc::ServerContext* /*context*/, const ::vecsearchgrpc::DefaultRequest* /*request*/, ::vecsearchgrpc::IndexInfo* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void RequestgetIndexFromContainer(::grpc::ServerContext* context, ::grpc::ByteBuffer* request, ::grpc::ServerAsyncResponseWriter< ::grpc::ByteBuffer>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncUnary(0, context, request, response, new_call_cq, notification_cq, tag);
+    }
+  };
+  template <class BaseClass>
   class WithRawMethod_createIndex : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithRawMethod_createIndex() {
-      ::grpc::Service::MarkMethodRaw(0);
+      ::grpc::Service::MarkMethodRaw(1);
     }
     ~WithRawMethod_createIndex() override {
       BaseClassMustBeDerivedFromService(this);
@@ -529,7 +637,7 @@ class VectorSearchGrpc final {
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     void RequestcreateIndex(::grpc::ServerContext* context, ::grpc::ByteBuffer* request, ::grpc::ServerAsyncResponseWriter< ::grpc::ByteBuffer>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
-      ::grpc::Service::RequestAsyncUnary(0, context, request, response, new_call_cq, notification_cq, tag);
+      ::grpc::Service::RequestAsyncUnary(1, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
   template <class BaseClass>
@@ -538,7 +646,7 @@ class VectorSearchGrpc final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithRawMethod_deleteIndex() {
-      ::grpc::Service::MarkMethodRaw(1);
+      ::grpc::Service::MarkMethodRaw(2);
     }
     ~WithRawMethod_deleteIndex() override {
       BaseClassMustBeDerivedFromService(this);
@@ -549,7 +657,7 @@ class VectorSearchGrpc final {
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     void RequestdeleteIndex(::grpc::ServerContext* context, ::grpc::ByteBuffer* request, ::grpc::ServerAsyncResponseWriter< ::grpc::ByteBuffer>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
-      ::grpc::Service::RequestAsyncUnary(1, context, request, response, new_call_cq, notification_cq, tag);
+      ::grpc::Service::RequestAsyncUnary(2, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
   template <class BaseClass>
@@ -558,7 +666,7 @@ class VectorSearchGrpc final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithRawMethod_loadIndex() {
-      ::grpc::Service::MarkMethodRaw(2);
+      ::grpc::Service::MarkMethodRaw(3);
     }
     ~WithRawMethod_loadIndex() override {
       BaseClassMustBeDerivedFromService(this);
@@ -569,7 +677,7 @@ class VectorSearchGrpc final {
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     void RequestloadIndex(::grpc::ServerContext* context, ::grpc::ByteBuffer* request, ::grpc::ServerAsyncResponseWriter< ::grpc::ByteBuffer>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
-      ::grpc::Service::RequestAsyncUnary(2, context, request, response, new_call_cq, notification_cq, tag);
+      ::grpc::Service::RequestAsyncUnary(3, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
   template <class BaseClass>
@@ -578,7 +686,7 @@ class VectorSearchGrpc final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithRawMethod_unloadIndex() {
-      ::grpc::Service::MarkMethodRaw(3);
+      ::grpc::Service::MarkMethodRaw(4);
     }
     ~WithRawMethod_unloadIndex() override {
       BaseClassMustBeDerivedFromService(this);
@@ -589,7 +697,7 @@ class VectorSearchGrpc final {
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     void RequestunloadIndex(::grpc::ServerContext* context, ::grpc::ByteBuffer* request, ::grpc::ServerAsyncResponseWriter< ::grpc::ByteBuffer>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
-      ::grpc::Service::RequestAsyncUnary(3, context, request, response, new_call_cq, notification_cq, tag);
+      ::grpc::Service::RequestAsyncUnary(4, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
   template <class BaseClass>
@@ -598,7 +706,7 @@ class VectorSearchGrpc final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithRawMethod_searchNeighbors() {
-      ::grpc::Service::MarkMethodRaw(4);
+      ::grpc::Service::MarkMethodRaw(5);
     }
     ~WithRawMethod_searchNeighbors() override {
       BaseClassMustBeDerivedFromService(this);
@@ -609,8 +717,30 @@ class VectorSearchGrpc final {
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     void RequestsearchNeighbors(::grpc::ServerContext* context, ::grpc::ByteBuffer* request, ::grpc::ServerAsyncResponseWriter< ::grpc::ByteBuffer>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
-      ::grpc::Service::RequestAsyncUnary(4, context, request, response, new_call_cq, notification_cq, tag);
+      ::grpc::Service::RequestAsyncUnary(5, context, request, response, new_call_cq, notification_cq, tag);
     }
+  };
+  template <class BaseClass>
+  class WithRawCallbackMethod_getIndexFromContainer : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithRawCallbackMethod_getIndexFromContainer() {
+      ::grpc::Service::MarkMethodRawCallback(0,
+          new ::grpc::internal::CallbackUnaryHandler< ::grpc::ByteBuffer, ::grpc::ByteBuffer>(
+            [this](
+                   ::grpc::CallbackServerContext* context, const ::grpc::ByteBuffer* request, ::grpc::ByteBuffer* response) { return this->getIndexFromContainer(context, request, response); }));
+    }
+    ~WithRawCallbackMethod_getIndexFromContainer() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status getIndexFromContainer(::grpc::ServerContext* /*context*/, const ::vecsearchgrpc::DefaultRequest* /*request*/, ::vecsearchgrpc::IndexInfo* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    virtual ::grpc::ServerUnaryReactor* getIndexFromContainer(
+      ::grpc::CallbackServerContext* /*context*/, const ::grpc::ByteBuffer* /*request*/, ::grpc::ByteBuffer* /*response*/)  { return nullptr; }
   };
   template <class BaseClass>
   class WithRawCallbackMethod_createIndex : public BaseClass {
@@ -618,7 +748,7 @@ class VectorSearchGrpc final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithRawCallbackMethod_createIndex() {
-      ::grpc::Service::MarkMethodRawCallback(0,
+      ::grpc::Service::MarkMethodRawCallback(1,
           new ::grpc::internal::CallbackUnaryHandler< ::grpc::ByteBuffer, ::grpc::ByteBuffer>(
             [this](
                    ::grpc::CallbackServerContext* context, const ::grpc::ByteBuffer* request, ::grpc::ByteBuffer* response) { return this->createIndex(context, request, response); }));
@@ -640,7 +770,7 @@ class VectorSearchGrpc final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithRawCallbackMethod_deleteIndex() {
-      ::grpc::Service::MarkMethodRawCallback(1,
+      ::grpc::Service::MarkMethodRawCallback(2,
           new ::grpc::internal::CallbackUnaryHandler< ::grpc::ByteBuffer, ::grpc::ByteBuffer>(
             [this](
                    ::grpc::CallbackServerContext* context, const ::grpc::ByteBuffer* request, ::grpc::ByteBuffer* response) { return this->deleteIndex(context, request, response); }));
@@ -662,7 +792,7 @@ class VectorSearchGrpc final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithRawCallbackMethod_loadIndex() {
-      ::grpc::Service::MarkMethodRawCallback(2,
+      ::grpc::Service::MarkMethodRawCallback(3,
           new ::grpc::internal::CallbackUnaryHandler< ::grpc::ByteBuffer, ::grpc::ByteBuffer>(
             [this](
                    ::grpc::CallbackServerContext* context, const ::grpc::ByteBuffer* request, ::grpc::ByteBuffer* response) { return this->loadIndex(context, request, response); }));
@@ -684,7 +814,7 @@ class VectorSearchGrpc final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithRawCallbackMethod_unloadIndex() {
-      ::grpc::Service::MarkMethodRawCallback(3,
+      ::grpc::Service::MarkMethodRawCallback(4,
           new ::grpc::internal::CallbackUnaryHandler< ::grpc::ByteBuffer, ::grpc::ByteBuffer>(
             [this](
                    ::grpc::CallbackServerContext* context, const ::grpc::ByteBuffer* request, ::grpc::ByteBuffer* response) { return this->unloadIndex(context, request, response); }));
@@ -706,7 +836,7 @@ class VectorSearchGrpc final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithRawCallbackMethod_searchNeighbors() {
-      ::grpc::Service::MarkMethodRawCallback(4,
+      ::grpc::Service::MarkMethodRawCallback(5,
           new ::grpc::internal::CallbackUnaryHandler< ::grpc::ByteBuffer, ::grpc::ByteBuffer>(
             [this](
                    ::grpc::CallbackServerContext* context, const ::grpc::ByteBuffer* request, ::grpc::ByteBuffer* response) { return this->searchNeighbors(context, request, response); }));
@@ -723,12 +853,39 @@ class VectorSearchGrpc final {
       ::grpc::CallbackServerContext* /*context*/, const ::grpc::ByteBuffer* /*request*/, ::grpc::ByteBuffer* /*response*/)  { return nullptr; }
   };
   template <class BaseClass>
+  class WithStreamedUnaryMethod_getIndexFromContainer : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithStreamedUnaryMethod_getIndexFromContainer() {
+      ::grpc::Service::MarkMethodStreamed(0,
+        new ::grpc::internal::StreamedUnaryHandler<
+          ::vecsearchgrpc::DefaultRequest, ::vecsearchgrpc::IndexInfo>(
+            [this](::grpc::ServerContext* context,
+                   ::grpc::ServerUnaryStreamer<
+                     ::vecsearchgrpc::DefaultRequest, ::vecsearchgrpc::IndexInfo>* streamer) {
+                       return this->StreamedgetIndexFromContainer(context,
+                         streamer);
+                  }));
+    }
+    ~WithStreamedUnaryMethod_getIndexFromContainer() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable regular version of this method
+    ::grpc::Status getIndexFromContainer(::grpc::ServerContext* /*context*/, const ::vecsearchgrpc::DefaultRequest* /*request*/, ::vecsearchgrpc::IndexInfo* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    // replace default version of method with streamed unary
+    virtual ::grpc::Status StreamedgetIndexFromContainer(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::vecsearchgrpc::DefaultRequest,::vecsearchgrpc::IndexInfo>* server_unary_streamer) = 0;
+  };
+  template <class BaseClass>
   class WithStreamedUnaryMethod_createIndex : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithStreamedUnaryMethod_createIndex() {
-      ::grpc::Service::MarkMethodStreamed(0,
+      ::grpc::Service::MarkMethodStreamed(1,
         new ::grpc::internal::StreamedUnaryHandler<
           ::vecsearchgrpc::CreateIndexRequest, ::vecsearchgrpc::DefaultReply>(
             [this](::grpc::ServerContext* context,
@@ -755,7 +912,7 @@ class VectorSearchGrpc final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithStreamedUnaryMethod_deleteIndex() {
-      ::grpc::Service::MarkMethodStreamed(1,
+      ::grpc::Service::MarkMethodStreamed(2,
         new ::grpc::internal::StreamedUnaryHandler<
           ::vecsearchgrpc::DefaultRequest, ::vecsearchgrpc::DefaultReply>(
             [this](::grpc::ServerContext* context,
@@ -782,7 +939,7 @@ class VectorSearchGrpc final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithStreamedUnaryMethod_loadIndex() {
-      ::grpc::Service::MarkMethodStreamed(2,
+      ::grpc::Service::MarkMethodStreamed(3,
         new ::grpc::internal::StreamedUnaryHandler<
           ::vecsearchgrpc::DefaultRequest, ::vecsearchgrpc::DefaultReply>(
             [this](::grpc::ServerContext* context,
@@ -809,7 +966,7 @@ class VectorSearchGrpc final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithStreamedUnaryMethod_unloadIndex() {
-      ::grpc::Service::MarkMethodStreamed(3,
+      ::grpc::Service::MarkMethodStreamed(4,
         new ::grpc::internal::StreamedUnaryHandler<
           ::vecsearchgrpc::DefaultRequest, ::vecsearchgrpc::DefaultReply>(
             [this](::grpc::ServerContext* context,
@@ -836,7 +993,7 @@ class VectorSearchGrpc final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithStreamedUnaryMethod_searchNeighbors() {
-      ::grpc::Service::MarkMethodStreamed(4,
+      ::grpc::Service::MarkMethodStreamed(5,
         new ::grpc::internal::StreamedUnaryHandler<
           ::vecsearchgrpc::SearchRequest, ::vecsearchgrpc::SearchReply>(
             [this](::grpc::ServerContext* context,
@@ -857,9 +1014,9 @@ class VectorSearchGrpc final {
     // replace default version of method with streamed unary
     virtual ::grpc::Status StreamedsearchNeighbors(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::vecsearchgrpc::SearchRequest,::vecsearchgrpc::SearchReply>* server_unary_streamer) = 0;
   };
-  typedef WithStreamedUnaryMethod_createIndex<WithStreamedUnaryMethod_deleteIndex<WithStreamedUnaryMethod_loadIndex<WithStreamedUnaryMethod_unloadIndex<WithStreamedUnaryMethod_searchNeighbors<Service > > > > > StreamedUnaryService;
+  typedef WithStreamedUnaryMethod_getIndexFromContainer<WithStreamedUnaryMethod_createIndex<WithStreamedUnaryMethod_deleteIndex<WithStreamedUnaryMethod_loadIndex<WithStreamedUnaryMethod_unloadIndex<WithStreamedUnaryMethod_searchNeighbors<Service > > > > > > StreamedUnaryService;
   typedef Service SplitStreamedService;
-  typedef WithStreamedUnaryMethod_createIndex<WithStreamedUnaryMethod_deleteIndex<WithStreamedUnaryMethod_loadIndex<WithStreamedUnaryMethod_unloadIndex<WithStreamedUnaryMethod_searchNeighbors<Service > > > > > StreamedService;
+  typedef WithStreamedUnaryMethod_getIndexFromContainer<WithStreamedUnaryMethod_createIndex<WithStreamedUnaryMethod_deleteIndex<WithStreamedUnaryMethod_loadIndex<WithStreamedUnaryMethod_unloadIndex<WithStreamedUnaryMethod_searchNeighbors<Service > > > > > > StreamedService;
 };
 
 }  // namespace vecsearchgrpc

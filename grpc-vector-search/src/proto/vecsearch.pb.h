@@ -60,6 +60,9 @@ extern DefaultReplyDefaultTypeInternal _DefaultReply_default_instance_;
 class DefaultRequest;
 struct DefaultRequestDefaultTypeInternal;
 extern DefaultRequestDefaultTypeInternal _DefaultRequest_default_instance_;
+class IndexInfo;
+struct IndexInfoDefaultTypeInternal;
+extern IndexInfoDefaultTypeInternal _IndexInfo_default_instance_;
 class SearchReply;
 struct SearchReplyDefaultTypeInternal;
 extern SearchReplyDefaultTypeInternal _SearchReply_default_instance_;
@@ -75,6 +78,8 @@ template <>
 template <>
 ::vecsearchgrpc::DefaultRequest* Arena::CreateMaybeMessage<::vecsearchgrpc::DefaultRequest>(Arena*);
 template <>
+::vecsearchgrpc::IndexInfo* Arena::CreateMaybeMessage<::vecsearchgrpc::IndexInfo>(Arena*);
+template <>
 ::vecsearchgrpc::SearchReply* Arena::CreateMaybeMessage<::vecsearchgrpc::SearchReply>(Arena*);
 template <>
 ::vecsearchgrpc::SearchRequest* Arena::CreateMaybeMessage<::vecsearchgrpc::SearchRequest>(Arena*);
@@ -86,6 +91,193 @@ namespace vecsearchgrpc {
 
 
 // -------------------------------------------------------------------
+
+class IndexInfo final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vecsearchgrpc.IndexInfo) */ {
+ public:
+  inline IndexInfo() : IndexInfo(nullptr) {}
+  ~IndexInfo() override;
+  template<typename = void>
+  explicit PROTOBUF_CONSTEXPR IndexInfo(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  IndexInfo(const IndexInfo& from);
+  IndexInfo(IndexInfo&& from) noexcept
+    : IndexInfo() {
+    *this = ::std::move(from);
+  }
+
+  inline IndexInfo& operator=(const IndexInfo& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline IndexInfo& operator=(IndexInfo&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance);
+  }
+  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const IndexInfo& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const IndexInfo* internal_default_instance() {
+    return reinterpret_cast<const IndexInfo*>(
+               &_IndexInfo_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    0;
+
+  friend void swap(IndexInfo& a, IndexInfo& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(IndexInfo* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(IndexInfo* other) {
+    if (other == this) return;
+    ABSL_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  IndexInfo* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<IndexInfo>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const IndexInfo& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const IndexInfo& from) {
+    IndexInfo::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  ::size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  ::uint8_t* _InternalSerialize(
+      ::uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(IndexInfo* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::absl::string_view FullMessageName() {
+    return "vecsearchgrpc.IndexInfo";
+  }
+  protected:
+  explicit IndexInfo(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kIndexNameFieldNumber = 1,
+    kDataFilePathFieldNumber = 2,
+  };
+  // string indexName = 1;
+  void clear_indexname() ;
+  const std::string& indexname() const;
+
+
+
+
+  template <typename Arg_ = const std::string&, typename... Args_>
+  void set_indexname(Arg_&& arg, Args_... args);
+  std::string* mutable_indexname();
+  PROTOBUF_NODISCARD std::string* release_indexname();
+  void set_allocated_indexname(std::string* ptr);
+
+  private:
+  const std::string& _internal_indexname() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_indexname(
+      const std::string& value);
+  std::string* _internal_mutable_indexname();
+
+  public:
+  // string dataFilePath = 2;
+  void clear_datafilepath() ;
+  const std::string& datafilepath() const;
+
+
+
+
+  template <typename Arg_ = const std::string&, typename... Args_>
+  void set_datafilepath(Arg_&& arg, Args_... args);
+  std::string* mutable_datafilepath();
+  PROTOBUF_NODISCARD std::string* release_datafilepath();
+  void set_allocated_datafilepath(std::string* ptr);
+
+  private:
+  const std::string& _internal_datafilepath() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_datafilepath(
+      const std::string& value);
+  std::string* _internal_mutable_datafilepath();
+
+  public:
+  // @@protoc_insertion_point(class_scope:vecsearchgrpc.IndexInfo)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr indexname_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr datafilepath_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_vecsearch_2eproto;
+};// -------------------------------------------------------------------
 
 class CreateIndexRequest final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vecsearchgrpc.CreateIndexRequest) */ {
@@ -143,7 +335,7 @@ class CreateIndexRequest final :
                &_CreateIndexRequest_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    0;
+    1;
 
   friend void swap(CreateIndexRequest& a, CreateIndexRequest& b) {
     a.Swap(&b);
@@ -354,7 +546,7 @@ class SearchRequest final :
                &_SearchRequest_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    1;
+    2;
 
   friend void swap(SearchRequest& a, SearchRequest& b) {
     a.Swap(&b);
@@ -577,7 +769,7 @@ class SearchReply final :
                &_SearchReply_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    2;
+    3;
 
   friend void swap(SearchReply& a, SearchReply& b) {
     a.Swap(&b);
@@ -833,7 +1025,7 @@ class DefaultRequest final :
                &_DefaultRequest_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    3;
+    4;
 
   friend void swap(DefaultRequest& a, DefaultRequest& b) {
     a.Swap(&b);
@@ -998,7 +1190,7 @@ class DefaultReply final :
                &_DefaultReply_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    4;
+    5;
 
   friend void swap(DefaultReply& a, DefaultReply& b) {
     a.Swap(&b);
@@ -1141,6 +1333,104 @@ class DefaultReply final :
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wstrict-aliasing"
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
+// IndexInfo
+
+// string indexName = 1;
+inline void IndexInfo::clear_indexname() {
+  _impl_.indexname_.ClearToEmpty();
+}
+inline const std::string& IndexInfo::indexname() const {
+  // @@protoc_insertion_point(field_get:vecsearchgrpc.IndexInfo.indexName)
+  return _internal_indexname();
+}
+template <typename Arg_, typename... Args_>
+inline PROTOBUF_ALWAYS_INLINE void IndexInfo::set_indexname(Arg_&& arg,
+                                                     Args_... args) {
+  ;
+  _impl_.indexname_.Set(static_cast<Arg_&&>(arg), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:vecsearchgrpc.IndexInfo.indexName)
+}
+inline std::string* IndexInfo::mutable_indexname() {
+  std::string* _s = _internal_mutable_indexname();
+  // @@protoc_insertion_point(field_mutable:vecsearchgrpc.IndexInfo.indexName)
+  return _s;
+}
+inline const std::string& IndexInfo::_internal_indexname() const {
+  return _impl_.indexname_.Get();
+}
+inline void IndexInfo::_internal_set_indexname(const std::string& value) {
+  ;
+
+
+  _impl_.indexname_.Set(value, GetArenaForAllocation());
+}
+inline std::string* IndexInfo::_internal_mutable_indexname() {
+  ;
+  return _impl_.indexname_.Mutable( GetArenaForAllocation());
+}
+inline std::string* IndexInfo::release_indexname() {
+  // @@protoc_insertion_point(field_release:vecsearchgrpc.IndexInfo.indexName)
+  return _impl_.indexname_.Release();
+}
+inline void IndexInfo::set_allocated_indexname(std::string* value) {
+  _impl_.indexname_.SetAllocated(value, GetArenaForAllocation());
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+        if (_impl_.indexname_.IsDefault()) {
+          _impl_.indexname_.Set("", GetArenaForAllocation());
+        }
+  #endif  // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:vecsearchgrpc.IndexInfo.indexName)
+}
+
+// string dataFilePath = 2;
+inline void IndexInfo::clear_datafilepath() {
+  _impl_.datafilepath_.ClearToEmpty();
+}
+inline const std::string& IndexInfo::datafilepath() const {
+  // @@protoc_insertion_point(field_get:vecsearchgrpc.IndexInfo.dataFilePath)
+  return _internal_datafilepath();
+}
+template <typename Arg_, typename... Args_>
+inline PROTOBUF_ALWAYS_INLINE void IndexInfo::set_datafilepath(Arg_&& arg,
+                                                     Args_... args) {
+  ;
+  _impl_.datafilepath_.Set(static_cast<Arg_&&>(arg), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:vecsearchgrpc.IndexInfo.dataFilePath)
+}
+inline std::string* IndexInfo::mutable_datafilepath() {
+  std::string* _s = _internal_mutable_datafilepath();
+  // @@protoc_insertion_point(field_mutable:vecsearchgrpc.IndexInfo.dataFilePath)
+  return _s;
+}
+inline const std::string& IndexInfo::_internal_datafilepath() const {
+  return _impl_.datafilepath_.Get();
+}
+inline void IndexInfo::_internal_set_datafilepath(const std::string& value) {
+  ;
+
+
+  _impl_.datafilepath_.Set(value, GetArenaForAllocation());
+}
+inline std::string* IndexInfo::_internal_mutable_datafilepath() {
+  ;
+  return _impl_.datafilepath_.Mutable( GetArenaForAllocation());
+}
+inline std::string* IndexInfo::release_datafilepath() {
+  // @@protoc_insertion_point(field_release:vecsearchgrpc.IndexInfo.dataFilePath)
+  return _impl_.datafilepath_.Release();
+}
+inline void IndexInfo::set_allocated_datafilepath(std::string* value) {
+  _impl_.datafilepath_.SetAllocated(value, GetArenaForAllocation());
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+        if (_impl_.datafilepath_.IsDefault()) {
+          _impl_.datafilepath_.Set("", GetArenaForAllocation());
+        }
+  #endif  // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:vecsearchgrpc.IndexInfo.dataFilePath)
+}
+
 // -------------------------------------------------------------------
 
 // CreateIndexRequest

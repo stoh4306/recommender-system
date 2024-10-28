@@ -2,6 +2,27 @@
 
 #include <chrono>
 
+Status VectorSearchGrpcImpl::getIndexFromContainer(ServerContext* context, const DefaultRequest* request, IndexInfo* reply) {
+    std::cout << "- GetIndexFromContainer() called..." << std::endl;
+
+    std::string indexName = request->indexname();
+
+    void* indexPtr = vecSearch_.indexPtr(indexName);
+    if (vecSearch_.indexPtr(indexName) == nullptr) {
+        reply->set_indexname(indexName);
+        reply->set_datafilepath("");
+        return Status(grpc::StatusCode::INTERNAL,  "Failed to getIndexFromContainer() : unable to find the index in the container");
+    }
+
+    std::string dataFilePath = vecSearch_.indexContainer()->getIndexFilePath(indexName);
+    reply->set_indexname(indexName);
+    reply->set_datafilepath(dataFilePath);
+
+    std::cout << "- GetIndexFromContainer() successfully executed" << std::endl;
+    
+    return Status::OK;
+}
+
 Status VectorSearchGrpcImpl::createIndex(ServerContext* context, const CreateIndexRequest* request, DefaultReply* reply) {
     std::cout << "- CreateIndex() called..." << std::endl;
     std::string indexName = request->indexname();

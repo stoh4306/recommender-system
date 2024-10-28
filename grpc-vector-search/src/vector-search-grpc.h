@@ -19,9 +19,11 @@ using vecsearchgrpc::DefaultRequest;
 using vecsearchgrpc::DefaultReply;
 using vecsearchgrpc::SearchRequest;
 using vecsearchgrpc::SearchReply;
+using vecsearchgrpc::IndexInfo;
 
 class VectorSearchGrpcImpl final : public VectorSearchGrpc::Service {
 public:
+    Status getIndexFromContainer(ServerContext* context, const DefaultRequest* request, IndexInfo* reply) override;
     Status createIndex(ServerContext* context, const CreateIndexRequest* request, DefaultReply* reply) override;
     Status deleteIndex(ServerContext* context, const DefaultRequest* request, DefaultReply* reply) override;
 

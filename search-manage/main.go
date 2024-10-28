@@ -10,6 +10,7 @@ import (
 var logger = logrus.New()
 
 var par2VecGrpcURL_ string = "192.168.0.20:50052"
+var vecSearchGrpcURL_ string = "192.168.0.20:50053"
 
 func main() {
 	fmt.Println("*********************************************")
@@ -24,11 +25,14 @@ func main() {
 
 	router.POST(basePath+"/par2vec", convertParToVec)
 
-	// Create, delete and update a search index
-	//router.GET(basePath+"/index", getSearchIndex)
-	//router.POST(basePath+"/index", createSearchIndex)
+	// Create, get and delete a search index
+	//router.GET(basePath+"/index/:name", retrieveSearchIndex)
+	router.POST(basePath+"/index", createSearchIndex)
 	//router.DELETE(basePath+"/index", deleteSearchIndex)
-	//router.PUT(basePath+"/index", updateSearchIndex)
+
+	// Load index from DB to memory
+	router.POST(basePath+"/index/load", loadSearchIndex)
+	//router.POST(basePath+"/index/unload", unloadSearchIndex)
 
 	// Add, delete and update an element
 	//router.GET(basePath+"/index/elements", getElementsOfIndex)
@@ -37,8 +41,7 @@ func main() {
 	//router.PUT(basePath+"/index/elements", updateElementsOfIndex)
 
 	// Search similar elements
-	//router.POST(basePath+"/index/search", searchNeighbors)
-	//router.POST(basePath+"/index/findSimilarity", computeSimilarity)
+	//router.POST(basePath+"/index/elements/search", searchNeighbors)
 
-	router.Run(":8090")
+	router.Run("0.0.0.0:8090")
 }
