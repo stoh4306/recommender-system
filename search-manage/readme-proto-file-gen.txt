@@ -1,0 +1,2 @@
+#NOTE : need to add ~/go/bin to $PATH
+protoc --go_out=/home/stoh/Codes/recommender-system/search-manage/proto --go_opt=paths=source_relative --go-grpc_out=/home/stoh/Codes/recommender-system/search-manage/proto --go-grpc_opt=paths=source_relative -I/home/stoh/Codes/recommender-system/protos/ vecsearch.proto
