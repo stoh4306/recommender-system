@@ -22,6 +22,7 @@
 namespace vecsearchgrpc {
 
 static const char* VectorSearchGrpc_method_names[] = {
+  "/vecsearchgrpc.VectorSearchGrpc/listLoadedIndex",
   "/vecsearchgrpc.VectorSearchGrpc/getIndexFromContainer",
   "/vecsearchgrpc.VectorSearchGrpc/createIndex",
   "/vecsearchgrpc.VectorSearchGrpc/deleteIndex",
@@ -37,13 +38,37 @@ std::unique_ptr< VectorSearchGrpc::Stub> VectorSearchGrpc::NewStub(const std::sh
 }
 
 VectorSearchGrpc::Stub::Stub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, const ::grpc::StubOptions& options)
-  : channel_(channel), rpcmethod_getIndexFromContainer_(VectorSearchGrpc_method_names[0], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
-  , rpcmethod_createIndex_(VectorSearchGrpc_method_names[1], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
-  , rpcmethod_deleteIndex_(VectorSearchGrpc_method_names[2], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
-  , rpcmethod_loadIndex_(VectorSearchGrpc_method_names[3], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
-  , rpcmethod_unloadIndex_(VectorSearchGrpc_method_names[4], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
-  , rpcmethod_searchNeighbors_(VectorSearchGrpc_method_names[5], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  : channel_(channel), rpcmethod_listLoadedIndex_(VectorSearchGrpc_method_names[0], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_getIndexFromContainer_(VectorSearchGrpc_method_names[1], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_createIndex_(VectorSearchGrpc_method_names[2], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_deleteIndex_(VectorSearchGrpc_method_names[3], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_loadIndex_(VectorSearchGrpc_method_names[4], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_unloadIndex_(VectorSearchGrpc_method_names[5], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_searchNeighbors_(VectorSearchGrpc_method_names[6], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
   {}
+
+::grpc::Status VectorSearchGrpc::Stub::listLoadedIndex(::grpc::ClientContext* context, const ::vecsearchgrpc::EmptyRequest& request, ::vecsearchgrpc::IndexList* response) {
+  return ::grpc::internal::BlockingUnaryCall< ::vecsearchgrpc::EmptyRequest, ::vecsearchgrpc::IndexList, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), rpcmethod_listLoadedIndex_, context, request, response);
+}
+
+void VectorSearchGrpc::Stub::async::listLoadedIndex(::grpc::ClientContext* context, const ::vecsearchgrpc::EmptyRequest* request, ::vecsearchgrpc::IndexList* response, std::function<void(::grpc::Status)> f) {
+  ::grpc::internal::CallbackUnaryCall< ::vecsearchgrpc::EmptyRequest, ::vecsearchgrpc::IndexList, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(stub_->channel_.get(), stub_->rpcmethod_listLoadedIndex_, context, request, response, std::move(f));
+}
+
+void VectorSearchGrpc::Stub::async::listLoadedIndex(::grpc::ClientContext* context, const ::vecsearchgrpc::EmptyRequest* request, ::vecsearchgrpc::IndexList* response, ::grpc::ClientUnaryReactor* reactor) {
+  ::grpc::internal::ClientCallbackUnaryFactory::Create< ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(stub_->channel_.get(), stub_->rpcmethod_listLoadedIndex_, context, request, response, reactor);
+}
+
+::grpc::ClientAsyncResponseReader< ::vecsearchgrpc::IndexList>* VectorSearchGrpc::Stub::PrepareAsynclistLoadedIndexRaw(::grpc::ClientContext* context, const ::vecsearchgrpc::EmptyRequest& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc::internal::ClientAsyncResponseReaderHelper::Create< ::vecsearchgrpc::IndexList, ::vecsearchgrpc::EmptyRequest, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), cq, rpcmethod_listLoadedIndex_, context, request);
+}
+
+::grpc::ClientAsyncResponseReader< ::vecsearchgrpc::IndexList>* VectorSearchGrpc::Stub::AsynclistLoadedIndexRaw(::grpc::ClientContext* context, const ::vecsearchgrpc::EmptyRequest& request, ::grpc::CompletionQueue* cq) {
+  auto* result =
+    this->PrepareAsynclistLoadedIndexRaw(context, request, cq);
+  result->StartCall();
+  return result;
+}
 
 ::grpc::Status VectorSearchGrpc::Stub::getIndexFromContainer(::grpc::ClientContext* context, const ::vecsearchgrpc::DefaultRequest& request, ::vecsearchgrpc::IndexInfo* response) {
   return ::grpc::internal::BlockingUnaryCall< ::vecsearchgrpc::DefaultRequest, ::vecsearchgrpc::IndexInfo, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), rpcmethod_getIndexFromContainer_, context, request, response);
@@ -187,6 +212,16 @@ VectorSearchGrpc::Service::Service() {
   AddMethod(new ::grpc::internal::RpcServiceMethod(
       VectorSearchGrpc_method_names[0],
       ::grpc::internal::RpcMethod::NORMAL_RPC,
+      new ::grpc::internal::RpcMethodHandler< VectorSearchGrpc::Service, ::vecsearchgrpc::EmptyRequest, ::vecsearchgrpc::IndexList, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(
+          [](VectorSearchGrpc::Service* service,
+             ::grpc::ServerContext* ctx,
+             const ::vecsearchgrpc::EmptyRequest* req,
+             ::vecsearchgrpc::IndexList* resp) {
+               return service->listLoadedIndex(ctx, req, resp);
+             }, this)));
+  AddMethod(new ::grpc::internal::RpcServiceMethod(
+      VectorSearchGrpc_method_names[1],
+      ::grpc::internal::RpcMethod::NORMAL_RPC,
       new ::grpc::internal::RpcMethodHandler< VectorSearchGrpc::Service, ::vecsearchgrpc::DefaultRequest, ::vecsearchgrpc::IndexInfo, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(
           [](VectorSearchGrpc::Service* service,
              ::grpc::ServerContext* ctx,
@@ -195,7 +230,7 @@ VectorSearchGrpc::Service::Service() {
                return service->getIndexFromContainer(ctx, req, resp);
              }, this)));
   AddMethod(new ::grpc::internal::RpcServiceMethod(
-      VectorSearchGrpc_method_names[1],
+      VectorSearchGrpc_method_names[2],
       ::grpc::internal::RpcMethod::NORMAL_RPC,
       new ::grpc::internal::RpcMethodHandler< VectorSearchGrpc::Service, ::vecsearchgrpc::CreateIndexRequest, ::vecsearchgrpc::DefaultReply, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(
           [](VectorSearchGrpc::Service* service,
@@ -205,7 +240,7 @@ VectorSearchGrpc::Service::Service() {
                return service->createIndex(ctx, req, resp);
              }, this)));
   AddMethod(new ::grpc::internal::RpcServiceMethod(
-      VectorSearchGrpc_method_names[2],
+      VectorSearchGrpc_method_names[3],
       ::grpc::internal::RpcMethod::NORMAL_RPC,
       new ::grpc::internal::RpcMethodHandler< VectorSearchGrpc::Service, ::vecsearchgrpc::DefaultRequest, ::vecsearchgrpc::DefaultReply, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(
           [](VectorSearchGrpc::Service* service,
@@ -215,7 +250,7 @@ VectorSearchGrpc::Service::Service() {
                return service->deleteIndex(ctx, req, resp);
              }, this)));
   AddMethod(new ::grpc::internal::RpcServiceMethod(
-      VectorSearchGrpc_method_names[3],
+      VectorSearchGrpc_method_names[4],
       ::grpc::internal::RpcMethod::NORMAL_RPC,
       new ::grpc::internal::RpcMethodHandler< VectorSearchGrpc::Service, ::vecsearchgrpc::DefaultRequest, ::vecsearchgrpc::DefaultReply, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(
           [](VectorSearchGrpc::Service* service,
@@ -225,7 +260,7 @@ VectorSearchGrpc::Service::Service() {
                return service->loadIndex(ctx, req, resp);
              }, this)));
   AddMethod(new ::grpc::internal::RpcServiceMethod(
-      VectorSearchGrpc_method_names[4],
+      VectorSearchGrpc_method_names[5],
       ::grpc::internal::RpcMethod::NORMAL_RPC,
       new ::grpc::internal::RpcMethodHandler< VectorSearchGrpc::Service, ::vecsearchgrpc::DefaultRequest, ::vecsearchgrpc::DefaultReply, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(
           [](VectorSearchGrpc::Service* service,
@@ -235,7 +270,7 @@ VectorSearchGrpc::Service::Service() {
                return service->unloadIndex(ctx, req, resp);
              }, this)));
   AddMethod(new ::grpc::internal::RpcServiceMethod(
-      VectorSearchGrpc_method_names[5],
+      VectorSearchGrpc_method_names[6],
       ::grpc::internal::RpcMethod::NORMAL_RPC,
       new ::grpc::internal::RpcMethodHandler< VectorSearchGrpc::Service, ::vecsearchgrpc::SearchRequest, ::vecsearchgrpc::SearchReply, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(
           [](VectorSearchGrpc::Service* service,
@@ -247,6 +282,13 @@ VectorSearchGrpc::Service::Service() {
 }
 
 VectorSearchGrpc::Service::~Service() {
+}
+
+::grpc::Status VectorSearchGrpc::Service::listLoadedIndex(::grpc::ServerContext* context, const ::vecsearchgrpc::EmptyRequest* request, ::vecsearchgrpc::IndexList* response) {
+  (void) context;
+  (void) request;
+  (void) response;
+  return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
 }
 
 ::grpc::Status VectorSearchGrpc::Service::getIndexFromContainer(::grpc::ServerContext* context, const ::vecsearchgrpc::DefaultRequest* request, ::vecsearchgrpc::IndexInfo* response) {

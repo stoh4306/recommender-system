@@ -23,6 +23,7 @@ using vecsearchgrpc::IndexInfo;
 
 class VectorSearchGrpcImpl final : public VectorSearchGrpc::Service {
 public:
+    Status listLoadedIndex(ServerContext* context, const EmptyRequest* request, IndexList* reply) override;
     Status getIndexFromContainer(ServerContext* context, const DefaultRequest* request, IndexInfo* reply) override;
     Status createIndex(ServerContext* context, const CreateIndexRequest* request, DefaultReply* reply) override;
     Status deleteIndex(ServerContext* context, const DefaultRequest* request, DefaultReply* reply) override;

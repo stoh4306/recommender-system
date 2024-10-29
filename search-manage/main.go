@@ -29,6 +29,7 @@ func main() {
 	//router.GET(basePath+"/index/:name", retrieveSearchIndex)
 	router.POST(basePath+"/index", createSearchIndex)
 	//router.DELETE(basePath+"/index", deleteSearchIndex)
+	router.GET(basePath+"/index/getList", getSearchIndexList)
 
 	// Load index from DB to memory
 	router.POST(basePath+"/index/load", loadSearchIndex)
@@ -41,7 +42,7 @@ func main() {
 	//router.PUT(basePath+"/index/elements", updateElementsOfIndex)
 
 	// Search similar elements
-	//router.POST(basePath+"/index/elements/search", searchNeighbors)
+	router.POST(basePath+"/index/elements/search", searchNeighbors)
 
 	router.Run("0.0.0.0:8090")
 }

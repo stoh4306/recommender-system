@@ -2,6 +2,7 @@
 
 #include <string>
 #include <list>
+#include <vector>
 
 namespace m2m {
 enum IndexType  {FLATL2, IVFFLAT};
@@ -30,6 +31,7 @@ public:
     void*       getIndexPtr(std::string indexName);
     void*       getQuantizerPtr(std::string indexName);
     std::string getIndexFilePath(std::string indexName);
+    void        getListOfIndices(std::vector<std::string>& name, std::vector<unsigned long>& numVectors, std::vector<unsigned int>& dim);
     
     u_int64_t add(Index newIndex);
     bool remove(std::string indexName);
@@ -61,6 +63,7 @@ public:
     void*           indexPtr(std::string indexName);
     IndexContainer*  indexContainer();
     void setIndexDataPathBase(std::string path);
+    int  getListOfIndicesInContainer(std::vector<std::string>& indexName, std::vector<unsigned long>& numVectors, std::vector<unsigned int>& dim);
 
     int searchNeighbors(std::string indexName, unsigned long dim, unsigned long nq, std::string vectors, 
                         unsigned long k, long* I, float* D, std::string& err );

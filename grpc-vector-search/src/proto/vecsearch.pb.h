@@ -24,6 +24,7 @@
 #include "google/protobuf/io/coded_stream.h"
 #include "google/protobuf/arena.h"
 #include "google/protobuf/arenastring.h"
+#include "google/protobuf/generated_message_bases.h"
 #include "google/protobuf/generated_message_util.h"
 #include "google/protobuf/metadata_lite.h"
 #include "google/protobuf/generated_message_reflection.h"
@@ -60,9 +61,15 @@ extern DefaultReplyDefaultTypeInternal _DefaultReply_default_instance_;
 class DefaultRequest;
 struct DefaultRequestDefaultTypeInternal;
 extern DefaultRequestDefaultTypeInternal _DefaultRequest_default_instance_;
+class EmptyRequest;
+struct EmptyRequestDefaultTypeInternal;
+extern EmptyRequestDefaultTypeInternal _EmptyRequest_default_instance_;
 class IndexInfo;
 struct IndexInfoDefaultTypeInternal;
 extern IndexInfoDefaultTypeInternal _IndexInfo_default_instance_;
+class IndexList;
+struct IndexListDefaultTypeInternal;
+extern IndexListDefaultTypeInternal _IndexList_default_instance_;
 class SearchReply;
 struct SearchReplyDefaultTypeInternal;
 extern SearchReplyDefaultTypeInternal _SearchReply_default_instance_;
@@ -78,7 +85,11 @@ template <>
 template <>
 ::vecsearchgrpc::DefaultRequest* Arena::CreateMaybeMessage<::vecsearchgrpc::DefaultRequest>(Arena*);
 template <>
+::vecsearchgrpc::EmptyRequest* Arena::CreateMaybeMessage<::vecsearchgrpc::EmptyRequest>(Arena*);
+template <>
 ::vecsearchgrpc::IndexInfo* Arena::CreateMaybeMessage<::vecsearchgrpc::IndexInfo>(Arena*);
+template <>
+::vecsearchgrpc::IndexList* Arena::CreateMaybeMessage<::vecsearchgrpc::IndexList>(Arena*);
 template <>
 ::vecsearchgrpc::SearchReply* Arena::CreateMaybeMessage<::vecsearchgrpc::SearchReply>(Arena*);
 template <>
@@ -91,6 +102,351 @@ namespace vecsearchgrpc {
 
 
 // -------------------------------------------------------------------
+
+class EmptyRequest final :
+    public ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase /* @@protoc_insertion_point(class_definition:vecsearchgrpc.EmptyRequest) */ {
+ public:
+  inline EmptyRequest() : EmptyRequest(nullptr) {}
+  template<typename = void>
+  explicit PROTOBUF_CONSTEXPR EmptyRequest(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  EmptyRequest(const EmptyRequest& from);
+  EmptyRequest(EmptyRequest&& from) noexcept
+    : EmptyRequest() {
+    *this = ::std::move(from);
+  }
+
+  inline EmptyRequest& operator=(const EmptyRequest& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline EmptyRequest& operator=(EmptyRequest&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance);
+  }
+  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const EmptyRequest& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const EmptyRequest* internal_default_instance() {
+    return reinterpret_cast<const EmptyRequest*>(
+               &_EmptyRequest_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    0;
+
+  friend void swap(EmptyRequest& a, EmptyRequest& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(EmptyRequest* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(EmptyRequest* other) {
+    if (other == this) return;
+    ABSL_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  EmptyRequest* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<EmptyRequest>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyFrom;
+  inline void CopyFrom(const EmptyRequest& from) {
+    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyImpl(*this, from);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeFrom;
+  void MergeFrom(const EmptyRequest& from) {
+    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeImpl(*this, from);
+  }
+  public:
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::absl::string_view FullMessageName() {
+    return "vecsearchgrpc.EmptyRequest";
+  }
+  protected:
+  explicit EmptyRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // @@protoc_insertion_point(class_scope:vecsearchgrpc.EmptyRequest)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+  };
+  friend struct ::TableStruct_vecsearch_2eproto;
+};// -------------------------------------------------------------------
+
+class IndexList final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vecsearchgrpc.IndexList) */ {
+ public:
+  inline IndexList() : IndexList(nullptr) {}
+  ~IndexList() override;
+  template<typename = void>
+  explicit PROTOBUF_CONSTEXPR IndexList(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  IndexList(const IndexList& from);
+  IndexList(IndexList&& from) noexcept
+    : IndexList() {
+    *this = ::std::move(from);
+  }
+
+  inline IndexList& operator=(const IndexList& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline IndexList& operator=(IndexList&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance);
+  }
+  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const IndexList& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const IndexList* internal_default_instance() {
+    return reinterpret_cast<const IndexList*>(
+               &_IndexList_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    1;
+
+  friend void swap(IndexList& a, IndexList& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(IndexList* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(IndexList* other) {
+    if (other == this) return;
+    ABSL_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  IndexList* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<IndexList>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const IndexList& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const IndexList& from) {
+    IndexList::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  ::size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  ::uint8_t* _InternalSerialize(
+      ::uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(IndexList* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::absl::string_view FullMessageName() {
+    return "vecsearchgrpc.IndexList";
+  }
+  protected:
+  explicit IndexList(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kIndexNameFieldNumber = 1,
+    kNumVectorsFieldNumber = 2,
+    kDimFieldNumber = 3,
+  };
+  // repeated string indexName = 1;
+  int indexname_size() const;
+  private:
+  int _internal_indexname_size() const;
+
+  public:
+  void clear_indexname() ;
+  const std::string& indexname(int index) const;
+  std::string* mutable_indexname(int index);
+  void set_indexname(int index, const std::string& value);
+  void set_indexname(int index, std::string&& value);
+  void set_indexname(int index, const char* value);
+  void set_indexname(int index, const char* value, std::size_t size);
+  void set_indexname(int index, absl::string_view value);
+  std::string* add_indexname();
+  void add_indexname(const std::string& value);
+  void add_indexname(std::string&& value);
+  void add_indexname(const char* value);
+  void add_indexname(const char* value, std::size_t size);
+  void add_indexname(absl::string_view value);
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>& indexname() const;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>* mutable_indexname();
+
+  private:
+  const std::string& _internal_indexname(int index) const;
+  std::string* _internal_add_indexname();
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>& _internal_indexname() const;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>* _internal_mutable_indexname();
+
+  public:
+  // repeated uint64 numVectors = 2;
+  int numvectors_size() const;
+  private:
+  int _internal_numvectors_size() const;
+
+  public:
+  void clear_numvectors() ;
+  ::uint64_t numvectors(int index) const;
+  void set_numvectors(int index, ::uint64_t value);
+  void add_numvectors(::uint64_t value);
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField<::uint64_t>& numvectors() const;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField<::uint64_t>* mutable_numvectors();
+
+  private:
+  ::uint64_t _internal_numvectors(int index) const;
+  void _internal_add_numvectors(::uint64_t value);
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField<::uint64_t>& _internal_numvectors() const;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField<::uint64_t>* _internal_mutable_numvectors();
+
+  public:
+  // repeated uint32 dim = 3;
+  int dim_size() const;
+  private:
+  int _internal_dim_size() const;
+
+  public:
+  void clear_dim() ;
+  ::uint32_t dim(int index) const;
+  void set_dim(int index, ::uint32_t value);
+  void add_dim(::uint32_t value);
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField<::uint32_t>& dim() const;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField<::uint32_t>* mutable_dim();
+
+  private:
+  ::uint32_t _internal_dim(int index) const;
+  void _internal_add_dim(::uint32_t value);
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField<::uint32_t>& _internal_dim() const;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField<::uint32_t>* _internal_mutable_dim();
+
+  public:
+  // @@protoc_insertion_point(class_scope:vecsearchgrpc.IndexList)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string> indexname_;
+    ::PROTOBUF_NAMESPACE_ID::RepeatedField<::uint64_t> numvectors_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _numvectors_cached_byte_size_;
+    ::PROTOBUF_NAMESPACE_ID::RepeatedField<::uint32_t> dim_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _dim_cached_byte_size_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_vecsearch_2eproto;
+};// -------------------------------------------------------------------
 
 class IndexInfo final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:vecsearchgrpc.IndexInfo) */ {
@@ -148,7 +504,7 @@ class IndexInfo final :
                &_IndexInfo_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    0;
+    2;
 
   friend void swap(IndexInfo& a, IndexInfo& b) {
     a.Swap(&b);
@@ -335,7 +691,7 @@ class CreateIndexRequest final :
                &_CreateIndexRequest_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    1;
+    3;
 
   friend void swap(CreateIndexRequest& a, CreateIndexRequest& b) {
     a.Swap(&b);
@@ -546,7 +902,7 @@ class SearchRequest final :
                &_SearchRequest_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    2;
+    4;
 
   friend void swap(SearchRequest& a, SearchRequest& b) {
     a.Swap(&b);
@@ -769,7 +1125,7 @@ class SearchReply final :
                &_SearchReply_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    3;
+    5;
 
   friend void swap(SearchReply& a, SearchReply& b) {
     a.Swap(&b);
@@ -1025,7 +1381,7 @@ class DefaultRequest final :
                &_DefaultRequest_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    4;
+    6;
 
   friend void swap(DefaultRequest& a, DefaultRequest& b) {
     a.Swap(&b);
@@ -1190,7 +1546,7 @@ class DefaultReply final :
                &_DefaultReply_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    5;
+    7;
 
   friend void swap(DefaultReply& a, DefaultReply& b) {
     a.Swap(&b);
@@ -1333,6 +1689,195 @@ class DefaultReply final :
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wstrict-aliasing"
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
+// EmptyRequest
+
+// -------------------------------------------------------------------
+
+// IndexList
+
+// repeated string indexName = 1;
+inline int IndexList::_internal_indexname_size() const {
+  return _impl_.indexname_.size();
+}
+inline int IndexList::indexname_size() const {
+  return _internal_indexname_size();
+}
+inline void IndexList::clear_indexname() {
+  _internal_mutable_indexname()->Clear();
+}
+inline std::string* IndexList::add_indexname() {
+  std::string* _s = _internal_add_indexname();
+  // @@protoc_insertion_point(field_add_mutable:vecsearchgrpc.IndexList.indexName)
+  return _s;
+}
+inline const std::string& IndexList::indexname(int index) const {
+  // @@protoc_insertion_point(field_get:vecsearchgrpc.IndexList.indexName)
+  return _internal_indexname(index);
+}
+inline std::string* IndexList::mutable_indexname(int index) {
+  // @@protoc_insertion_point(field_mutable:vecsearchgrpc.IndexList.indexName)
+  return _internal_mutable_indexname()->Mutable(index);
+}
+inline void IndexList::set_indexname(int index, const std::string& value) {
+  _internal_mutable_indexname()->Mutable(index)->assign(value);
+  // @@protoc_insertion_point(field_set:vecsearchgrpc.IndexList.indexName)
+}
+inline void IndexList::set_indexname(int index, std::string&& value) {
+  _internal_mutable_indexname()->Mutable(index)->assign(std::move(value));
+  // @@protoc_insertion_point(field_set:vecsearchgrpc.IndexList.indexName)
+}
+inline void IndexList::set_indexname(int index, const char* value) {
+  ABSL_DCHECK(value != nullptr);
+  _internal_mutable_indexname()->Mutable(index)->assign(value);
+  // @@protoc_insertion_point(field_set_char:vecsearchgrpc.IndexList.indexName)
+}
+inline void IndexList::set_indexname(int index, const char* value,
+                              std::size_t size) {
+  _internal_mutable_indexname()->Mutable(index)->assign(
+      reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_set_pointer:vecsearchgrpc.IndexList.indexName)
+}
+inline void IndexList::set_indexname(int index, absl::string_view value) {
+  _internal_mutable_indexname()->Mutable(index)->assign(value.data(),
+                                                     value.size());
+  // @@protoc_insertion_point(field_set_string_piece:vecsearchgrpc.IndexList.indexName)
+}
+inline void IndexList::add_indexname(const std::string& value) {
+  _internal_mutable_indexname()->Add()->assign(value);
+  // @@protoc_insertion_point(field_add:vecsearchgrpc.IndexList.indexName)
+}
+inline void IndexList::add_indexname(std::string&& value) {
+  _internal_mutable_indexname()->Add(std::move(value));
+  // @@protoc_insertion_point(field_add:vecsearchgrpc.IndexList.indexName)
+}
+inline void IndexList::add_indexname(const char* value) {
+  ABSL_DCHECK(value != nullptr);
+  _internal_mutable_indexname()->Add()->assign(value);
+  // @@protoc_insertion_point(field_add_char:vecsearchgrpc.IndexList.indexName)
+}
+inline void IndexList::add_indexname(const char* value, std::size_t size) {
+  _internal_mutable_indexname()->Add()->assign(
+      reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_add_pointer:vecsearchgrpc.IndexList.indexName)
+}
+inline void IndexList::add_indexname(absl::string_view value) {
+  _internal_mutable_indexname()->Add()->assign(value.data(), value.size());
+  // @@protoc_insertion_point(field_add_string_piece:vecsearchgrpc.IndexList.indexName)
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>&
+IndexList::indexname() const {
+  // @@protoc_insertion_point(field_list:vecsearchgrpc.IndexList.indexName)
+  return _internal_indexname();
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>* IndexList::mutable_indexname() {
+  // @@protoc_insertion_point(field_mutable_list:vecsearchgrpc.IndexList.indexName)
+  return _internal_mutable_indexname();
+}
+inline const std::string& IndexList::_internal_indexname(int index) const {
+  return _internal_indexname().Get(index);
+}
+inline std::string* IndexList::_internal_add_indexname() {
+  return _internal_mutable_indexname()->Add();
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>&
+IndexList::_internal_indexname() const {
+  return _impl_.indexname_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>*
+IndexList::_internal_mutable_indexname() {
+  return &_impl_.indexname_;
+}
+
+// repeated uint64 numVectors = 2;
+inline int IndexList::_internal_numvectors_size() const {
+  return _impl_.numvectors_.size();
+}
+inline int IndexList::numvectors_size() const {
+  return _internal_numvectors_size();
+}
+inline void IndexList::clear_numvectors() {
+  _internal_mutable_numvectors()->Clear();
+}
+inline ::uint64_t IndexList::numvectors(int index) const {
+  // @@protoc_insertion_point(field_get:vecsearchgrpc.IndexList.numVectors)
+  return _internal_numvectors(index);
+}
+inline void IndexList::set_numvectors(int index, ::uint64_t value) {
+  _internal_mutable_numvectors()->Set(index, value);
+  // @@protoc_insertion_point(field_set:vecsearchgrpc.IndexList.numVectors)
+}
+inline void IndexList::add_numvectors(::uint64_t value) {
+  _internal_add_numvectors(value);
+  // @@protoc_insertion_point(field_add:vecsearchgrpc.IndexList.numVectors)
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField<::uint64_t>& IndexList::numvectors() const {
+  // @@protoc_insertion_point(field_list:vecsearchgrpc.IndexList.numVectors)
+  return _internal_numvectors();
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField<::uint64_t>* IndexList::mutable_numvectors() {
+  // @@protoc_insertion_point(field_mutable_list:vecsearchgrpc.IndexList.numVectors)
+  return _internal_mutable_numvectors();
+}
+
+inline ::uint64_t IndexList::_internal_numvectors(int index) const {
+  return _internal_numvectors().Get(index);
+}
+inline void IndexList::_internal_add_numvectors(::uint64_t value) {
+  _internal_mutable_numvectors()->Add(value);
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField<::uint64_t>& IndexList::_internal_numvectors() const {
+  return _impl_.numvectors_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField<::uint64_t>* IndexList::_internal_mutable_numvectors() {
+  return &_impl_.numvectors_;
+}
+
+// repeated uint32 dim = 3;
+inline int IndexList::_internal_dim_size() const {
+  return _impl_.dim_.size();
+}
+inline int IndexList::dim_size() const {
+  return _internal_dim_size();
+}
+inline void IndexList::clear_dim() {
+  _internal_mutable_dim()->Clear();
+}
+inline ::uint32_t IndexList::dim(int index) const {
+  // @@protoc_insertion_point(field_get:vecsearchgrpc.IndexList.dim)
+  return _internal_dim(index);
+}
+inline void IndexList::set_dim(int index, ::uint32_t value) {
+  _internal_mutable_dim()->Set(index, value);
+  // @@protoc_insertion_point(field_set:vecsearchgrpc.IndexList.dim)
+}
+inline void IndexList::add_dim(::uint32_t value) {
+  _internal_add_dim(value);
+  // @@protoc_insertion_point(field_add:vecsearchgrpc.IndexList.dim)
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField<::uint32_t>& IndexList::dim() const {
+  // @@protoc_insertion_point(field_list:vecsearchgrpc.IndexList.dim)
+  return _internal_dim();
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField<::uint32_t>* IndexList::mutable_dim() {
+  // @@protoc_insertion_point(field_mutable_list:vecsearchgrpc.IndexList.dim)
+  return _internal_mutable_dim();
+}
+
+inline ::uint32_t IndexList::_internal_dim(int index) const {
+  return _internal_dim().Get(index);
+}
+inline void IndexList::_internal_add_dim(::uint32_t value) {
+  _internal_mutable_dim()->Add(value);
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField<::uint32_t>& IndexList::_internal_dim() const {
+  return _impl_.dim_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField<::uint32_t>* IndexList::_internal_mutable_dim() {
+  return &_impl_.dim_;
+}
+
 // -------------------------------------------------------------------
 
 // IndexInfo

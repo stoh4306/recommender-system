@@ -2,6 +2,25 @@
 
 #include <chrono>
 
+Status VectorSearchGrpcImpl::listLoadedIndex(ServerContext* context, const EmptyRequest* request, IndexList* reply) {
+    std::cout << "- ListLoadedIndex() called..." << std::endl;
+
+    std::vector<std::string> indexName;
+    std::vector<unsigned long> numVectors;
+    std::vector<unsigned int> dim;
+
+    vecSearch_.getListOfIndicesInContainer(indexName, numVectors, dim);
+
+    for(size_t i = 0; i < indexName.size(); ++i) {
+        reply->add_indexname(indexName[i]);
+        reply->add_numvectors(numVectors[i]);
+        reply->add_dim(dim[i]);
+    }
+
+    std::cout << "- ListLoadedIndex() successfully executed" << std::endl;
+    return Status::OK;
+}
+
 Status VectorSearchGrpcImpl::getIndexFromContainer(ServerContext* context, const DefaultRequest* request, IndexInfo* reply) {
     std::cout << "- GetIndexFromContainer() called..." << std::endl;
 

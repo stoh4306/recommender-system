@@ -327,6 +327,12 @@ void VectorSearch::setIndexDataPathBase(std::string path) {
     std::cout << "- Set IndexDataPathBase : " << path << std::endl;
 }
 
+int  VectorSearch::getListOfIndicesInContainer(std::vector<std::string>& indexName, 
+                                 std::vector<unsigned long>& numVectors, std::vector<unsigned int>& dim) {
+    indexContainer_.getListOfIndices(indexName, numVectors, dim);
+    return 0;
+}
+
 int VectorSearch::loadIndexFromDB(std::string indexName, std::string& err) {
     std::string dataPath;
     try {
@@ -557,6 +563,19 @@ std::string IndexContainer::getIndexFilePath(std::string indexName) {
         return it->dataFilePath;
     } else {
         return std::string("");
+    }
+}
+
+void IndexContainer::getListOfIndices(std::vector<std::string>& name, std::vector<unsigned long>& numVectors, std::vector<unsigned int>& dim) {
+    name.resize(0);
+    numVectors.resize(0);
+    dim.resize(0);
+
+    std::list<Index>::iterator it = indexArray_.begin();
+    for( ; it != indexArray_.end(); ++it) {
+        name.push_back(it->name);
+        numVectors.push_back(it->ntotal);
+        dim.push_back(it->dim);
     }
 }
 
