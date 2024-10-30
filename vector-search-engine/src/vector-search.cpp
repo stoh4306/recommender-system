@@ -299,6 +299,55 @@ int VectorSearch::deleteIndexDataFile(std::string indexName, std::string& err) {
     return 0;
 }
 
+int VectorSearch::deleteIndexDataFileWithDB(std::string indexName, std::string& err) {
+    std::string dataPath;
+
+    try {
+        sql::mysql::MySQL_Driver *driver = sql::mysql::get_mysql_driver_instance();
+        std::unique_ptr<sql::Connection> con(
+            driver->connect("tcp://"+dbUrl_, dbUserName_, dbPassWord_)
+        );
+        std::cout << "A connection made : mysql" << std::endl;
+
+        // Connect to the database schema (e.g., test)
+        con->setSchema("recommender");
+
+        std::unique_ptr<sql::PreparedStatement> pstmt_1(
+            con->prepareStatement("SELECT * FROM search_index WHERE name = ? LIMIT 1")
+        );
+        pstmt_1->setString(1, indexName);
+        std::unique_ptr<sql::ResultSet> res(pstmt_1->executeQuery());
+        if (res->next()) {
+            dataPath = res->getString("data_path");
+            if (deleteIndexDataFileWithFullPath(dataPath, err)!=0) {
+                err = "Can't delete index data file from disk : " + err;
+                return 2;
+            }
+
+        } else {
+            err = "Can't find an index in DB : " + indexName;
+            return 1;
+        }
+
+    } catch (sql::SQLException& e) {
+        std::ostringstream ss;
+        ss << "SQLException: " << e.what()  
+                  << " (MySQL error code: " << e.getErrorCode()
+                  << ", SQLState: " << e.getSQLState() << " )";
+        err = ss.str();
+        return 3;
+    } catch (std::exception& e) {
+        std::ostringstream ss;
+        ss << "Standard exception: " << e.what();
+        err = ss.str();
+        return 4;
+    }
+
+    
+    err = "";
+    return 0;
+}
+
 int VectorSearch::deleteIndexDataFileWithFullPath(std::string indexDataFilePath, std::string& err) {
     if (remove(indexDataFilePath.c_str()) != 0) {
         err = "Failed to delete the index data file : " + indexDataFilePath;
@@ -308,6 +357,19 @@ int VectorSearch::deleteIndexDataFileWithFullPath(std::string indexDataFilePath,
     std::cout << "- Index data file deleted : " << indexDataFilePath << std::endl;
     err = "";
     return 0;
+}
+
+int VectorSearch::checkExistenceOfIndex(std::string indexName, bool& isInMemory, bool& isInDB, std::string& err) {
+    err = "";
+    isInMemory = indexContainer_.hasIndex(indexName);
+    if (existsIndexInDB(indexName, isInDB, err) > 0) {
+        return 1;
+    }
+    return 0;
+}
+
+bool VectorSearch::isLoadedIndex(std::string indexName) {
+    return indexContainer_.hasIndex(indexName);
 }
 
 unsigned long  VectorSearch::numIndices() {
@@ -330,6 +392,49 @@ void VectorSearch::setIndexDataPathBase(std::string path) {
 int  VectorSearch::getListOfIndicesInContainer(std::vector<std::string>& indexName, 
                                  std::vector<unsigned long>& numVectors, std::vector<unsigned int>& dim) {
     indexContainer_.getListOfIndices(indexName, numVectors, dim);
+    return 0;
+}
+
+int VectorSearch::existsIndexInDB(std::string indexName, bool& isInDB, std::string& err) {
+    isInDB = false;
+    try {
+        sql::mysql::MySQL_Driver *driver = sql::mysql::get_mysql_driver_instance();
+        std::unique_ptr<sql::Connection> con(
+            driver->connect("tcp://"+dbUrl_, dbUserName_, dbPassWord_)
+        );
+        std::cout << "A connection made : mysql" << std::endl;
+
+        // Connect to the database schema (e.g., test)
+        con->setSchema("recommender");
+
+        std::unique_ptr<sql::PreparedStatement> pstmt_1(
+            con->prepareStatement("SELECT * FROM search_index WHERE name = ? LIMIT 1")
+        );
+        pstmt_1->setString(1, indexName);
+        std::unique_ptr<sql::ResultSet> res(pstmt_1->executeQuery());
+        if (res->next()) {
+            isInDB = true;
+            err = "";
+        } else {
+            isInDB = false;
+            err = "";
+        }
+        return 0;
+
+    } catch (sql::SQLException& e) {
+        std::ostringstream ss;
+        ss << "SQLException: " << e.what()  
+                  << " (MySQL error code: " << e.getErrorCode()
+                  << ", SQLState: " << e.getSQLState() << " )";
+        err = ss.str();
+        return 1;
+    } catch (std::exception& e) {
+        std::ostringstream ss;
+        ss << "Standard exception: " << e.what();
+        err = ss.str();
+        return 2;
+    }
+
     return 0;
 }
 

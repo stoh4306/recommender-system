@@ -59,6 +59,35 @@ Status VectorSearchGrpcImpl::createIndex(ServerContext* context, const CreateInd
 
     std::string err;
 
+    // Check if the inpute request is valid
+    bool isInMemory = false, isInDB = false;
+    if (vecSearch_.checkExistenceOfIndex(indexName, isInMemory, isInDB, err) != 0) {
+        reply->set_status("Failure");
+        reply->set_message("Unable to connecto DB");
+        return Status(grpc::StatusCode::INTERNAL,  err);
+    }
+
+    if (indexName == "") {
+        reply->set_status("Failure");
+        reply->set_message("No index name");
+        return Status(grpc::StatusCode::INVALID_ARGUMENT,  "Missing index name");
+    }
+
+    if (isInMemory || isInDB) {
+        reply->set_status("Failure");
+        reply->set_message("The index with the same name already exists");
+        return Status(grpc::StatusCode::INVALID_ARGUMENT,  "The index with the same name already exists. Use a different name");
+    }
+
+
+    if (xb.size() != dim*nb) {
+        reply->set_status("Failure");
+        reply->set_message("Inconsistency among dim, numVectors and vecData");
+
+        return Status(grpc::StatusCode::INVALID_ARGUMENT,  "Check dim, numVectors and the size of vecData");
+    }
+
+
     // Add index to container
     int result = vecSearch_.addIndexToContainer(indexName, dim, nb, xb.data(), dataFileName, false, err);
     if (result != 0) {
@@ -76,6 +105,10 @@ Status VectorSearchGrpcImpl::createIndex(ServerContext* context, const CreateInd
         reply->set_status("Failure");
         reply->set_message("Failed to save the index to disk");
 
+        // Remove the previously added index from the container
+        std::string tmpErr;
+        vecSearch_.deleteIndexFromContainer(indexName, tmpErr);
+
         return Status(grpc::StatusCode::INTERNAL,  "Failed to createIndex() : unable to save the index to disk");
     }
     //std::cout << "- CreateIndex() : saved index to disk" << std::endl;
@@ -86,6 +119,14 @@ Status VectorSearchGrpcImpl::createIndex(ServerContext* context, const CreateInd
     if (result!=0) {
         reply->set_status("Failure");
         reply->set_message("Failed to store the index to DB");
+
+        std::string tmpErr;
+        // Delete the data file stored in disk in the previous step
+        vecSearch_.deleteIndexDataFile(indexName, tmpErr);
+
+        // Remove the previously added index from the container
+        vecSearch_.deleteIndexFromContainer(indexName, tmpErr);
+        
         return Status(grpc::StatusCode::INTERNAL,  "Failed to createIndex() : unable to store the index to DB");
     }
     std::cout << "- CreateIndex() successfully executed" << std::endl;
@@ -101,39 +142,47 @@ Status VectorSearchGrpcImpl::deleteIndex(ServerContext* context, const DefaultRe
     
     std::string indexName = request->indexname();
     
-    int result;
-    std::string err;
+    int result[3];
+    std::string err[3];
 
-    // First, delete the data file
-    result = vecSearch_.deleteIndexDataFile(indexName, err);
-    if (result !=0) {
-        reply->set_status("Failure");
-        reply->set_message("Failed to delete index: " + indexName + ", "+ err);
-        std::cout << "Failed to delete index: " + indexName + ", "+ err << std::endl;
-        return Status(grpc::StatusCode::INTERNAL, "Failed to delete index: " + indexName + ", "+ err);
+    // Check if the index is loaded
+    bool isLoaded = vecSearch_.isLoadedIndex(indexName);
+
+    if (isLoaded) {
+        // First, delete the data file
+        result[0] = vecSearch_.deleteIndexDataFile(indexName, err[0]);
+    } else {
+        result[0] = vecSearch_.deleteIndexDataFileWithDB(indexName, err[0]);
     }
-
     // Remove the index from DB 
-    result = vecSearch_.removeIndexFromDB(indexName, err);
-    if (result !=0) {
-        reply->set_status("Failure");
-        reply->set_message("Failed to delete index: " + indexName + ", "+ err);
-        std::cout << "Failed to delete index: " + indexName + ", "+ err << std::endl;
-        return Status(grpc::StatusCode::INTERNAL, "Failed to delete index: " + indexName + ", "+ err);
-    }
+    result[1] = vecSearch_.removeIndexFromDB(indexName, err[1]);
 
     // Delete the index from container
-    result = vecSearch_.deleteIndexFromContainer(indexName, err);
-    if (result != 0) {
-        reply->set_status("Failure");
-        reply->set_message("Failed to delete index: " + indexName + ", " + err);
-        std::cout << "Failed to delete index: " + indexName + ", "+ err << std::endl;
-        return Status(grpc::StatusCode::INTERNAL, "Failed to delete index: " + indexName + ", "+ err);
+    result[2] = vecSearch_.deleteIndexFromContainer(indexName, err[2]);
+
+    if ( result[0] != 0 || result[1] != 0 || result[2] != 0 ) 
+    {
+        reply->set_status("Success");
+
+        std::string mesg;
+        if (!err[0].empty()) mesg += "failed to delete data file (the file may not exist)";
+        if (!err[1].empty()) {
+            if (!mesg.empty()) mesg += ", ";
+            mesg += "failed to delete from DB (the index may not exist in DB)";
+        }
+        if (!err[2].empty()) {
+            if (!mesg.empty()) mesg += ", ";
+            mesg += "failed to delete from memory (the index may not be loaded)";
+        }
+
+        reply->set_message("WARNING : The index deleted, but " + mesg);
+        std::cout << "Deleted index: " + indexName + ", but " +  mesg << std::endl;
+        return Status::OK;
     }
 
     std::cout << "- deleteIndex() successfully executed" << std::endl;
     reply->set_status("Success");
-    reply->set_message("Deleted the index : " + indexName);
+    reply->set_message("Deleted index : " + indexName);
     return Status::OK;
 }
 
@@ -141,13 +190,21 @@ Status VectorSearchGrpcImpl::loadIndex(ServerContext* context, const DefaultRequ
     std::cout << "- loadIndex() called..." << std::endl;
 
     std::string indexName = request->indexname();
+
+    if (indexName == "") {
+        reply->set_status("Failure");
+        reply->set_message("No index name");
+        std::cout << "Failed to load index: missing index name" << std::endl;
+        return Status(grpc::StatusCode::INVALID_ARGUMENT, "No index name");
+    }
+
     std::string err;
     int result = vecSearch_.loadIndexFromDB(indexName, err);
     if (result != 0) {
         reply->set_status("Failure");
-        reply->set_message("Failed to load index: " + indexName + ", " + err);
+        reply->set_message(err);
         std::cout << "Failed to load index: " + indexName + ", "+ err << std::endl;
-        return Status(grpc::StatusCode::INTERNAL, "Failed to load index: " + indexName + ", "+ err);
+        return Status(grpc::StatusCode::INTERNAL, err);
     }
 
     reply->set_status("Success");
@@ -162,6 +219,13 @@ Status VectorSearchGrpcImpl::unloadIndex(ServerContext* context, const DefaultRe
 
     std::string indexName = request->indexname();
 
+    if (indexName == "") {
+        reply->set_status("Failure");
+        reply->set_message("No index name");
+        std::cout << "Failed to unload index: missing index name" << std::endl;
+        return Status(grpc::StatusCode::INVALID_ARGUMENT, "No index name");
+    }
+
     std::string err;
     int result = vecSearch_.deleteIndexFromContainer(indexName, err);
 
@@ -169,7 +233,7 @@ Status VectorSearchGrpcImpl::unloadIndex(ServerContext* context, const DefaultRe
         reply->set_status("Failure");
         reply->set_message("Failed to unload index: " + indexName + ", " + err);
         std::cout << "Failed to unload index: " + indexName + ", "+ err << std::endl;
-        return Status(grpc::StatusCode::INTERNAL, "Failed to unload index: " + indexName + ", "+ err);
+        return Status(grpc::StatusCode::INTERNAL, err);
     }
 
     reply->set_status("Success");
@@ -200,7 +264,7 @@ Status VectorSearchGrpcImpl::searchNeighbors(ServerContext* context, const Searc
         reply->set_numqueryvectors(nq);
         
         std::cout << "Failed to search in the index: " + indexName + ", "+ err << std::endl;
-        return Status(grpc::StatusCode::INTERNAL, "Failed to search in the index: " + indexName + ", "+ err);
+        return Status(grpc::StatusCode::INTERNAL, err);
     }
 
     reply->set_status("Success");

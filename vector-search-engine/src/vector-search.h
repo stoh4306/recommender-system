@@ -57,7 +57,10 @@ public:
     int loadIndexFromDiskToContainer(std::string indexName, std::string indexFilePath, std::string& err);
     int loadIndexFromDisk(std::string indexFilePath, void*& indexPtr, std::string& err);
     int deleteIndexDataFile(std::string indexName, std::string& err);
+    int deleteIndexDataFileWithDB(std::string indexName, std::string& err);
     int deleteIndexDataFileWithFullPath(std::string indexDataFilePath, std::string& err);
+    int checkExistenceOfIndex(std::string indexName, bool& isInMemory, bool& isInDB, std::string& err);
+    bool isLoadedIndex(std::string indexName);
 
     unsigned        long numIndices();
     void*           indexPtr(std::string indexName);
@@ -74,6 +77,7 @@ public:
     int storeIndexToDB(std::string indexName, std::string& err);
     int removeIndexFromDB(std::string indexName, std::string& err);
     int loadIndexFromDB(std::string indexName, std::string& err);
+    int existsIndexInDB(std::string indexName, bool& isInDB, std::string& err);
 
     VectorSearch();
     ~VectorSearch();

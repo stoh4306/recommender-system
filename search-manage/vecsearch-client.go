@@ -407,17 +407,17 @@ func createSearchIndex(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, response)
 }
 
-func deleteIndex(client pb.VectorSearchGrpcClient, ctx context.Context, indexName string) error {
+func deleteIndex(client pb.VectorSearchGrpcClient, ctx context.Context, indexName string) (*pb.DefaultReply, error) {
 	var request pb.DefaultRequest
 	request.IndexName = indexName
 
-	_, err := client.DeleteIndex(ctx, &request)
+	response, err := client.DeleteIndex(ctx, &request)
 	if err != nil {
 		logger.Errorf("could not delete the index: %v, %v", indexName, err)
-		return err
+		return response, err
 	}
 	logger.Infof("- Successfully deleted index : %v", indexName)
-	return nil
+	return response, nil
 }
 
 func deleteSearchIndex(c *gin.Context) {
@@ -436,7 +436,7 @@ func deleteSearchIndex(c *gin.Context) {
 	// Delete index from both container and DB
 	var req VsDefaultRequest
 	c.BindJSON(&req)
-	err = deleteIndex(client, ctx, req.IndexName)
+	grpc_response, err := deleteIndex(client, ctx, req.IndexName)
 
 	var response VsDefaultResponse
 	if err != nil {
@@ -449,7 +449,7 @@ func deleteSearchIndex(c *gin.Context) {
 	// Set response from feature vector
 
 	response.Status = "Success"
-	response.Message = "Delete the index : " + req.IndexName
+	response.Message = grpc_response.Message
 	c.IndentedJSON(http.StatusOK, response)
 }
 
