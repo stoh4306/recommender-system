@@ -222,7 +222,7 @@ int vector_search_test_() {
 
     // Set database
     std::string dbUrl = "192.168.0.5:3306";
-    vecSearch.setDatabase(dbUrl, "recommder", "grida", "MM22mm01#");
+    vecSearch.setDatabase(dbUrl, "recommender", "grida", "MM22mm01#");
     
     if (vecSearch.storeIndexToDB("test-index-3", err)!=0) {
         std::cout << "[ERROR] " << err << std::endl;
@@ -249,7 +249,7 @@ int main(int argc, char** argv) {
 
     // Set database
     std::string dbUrl = "192.168.0.5:3306";
-    vecSearch.setDatabase(dbUrl, "recommder", "grida", "MM22mm01#");
+    vecSearch.setDatabase(dbUrl, "recommender", "grida", "MM22mm01#");
 
     std::string err;
 

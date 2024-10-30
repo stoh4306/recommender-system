@@ -10,7 +10,7 @@ int main() {
         con = driver->connect("tcp://192.168.0.5:3306", "grida", "MM22mm01#");
 
         // Connect to the database schema (e.g., test)
-        con->setSchema("recommder");
+        con->setSchema("recommender");
 
         // Create a new statement
         sql::Statement *stmt;

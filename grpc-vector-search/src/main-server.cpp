@@ -8,7 +8,7 @@ void RunServer(uint16_t port) {
     std::string server_address = "0.0.0.0:"+std::to_string(port);
 
     VectorSearchGrpcImpl service;
-    if (service.setDatabase("192.168.0.5:3306", "recommder", "grida", "MM22mm01#") != 0) {
+    if (service.setDatabase("192.168.0.5:3306", "recommender", "grida", "MM22mm01#") != 0) {
         std::cerr << "[ERROR] Cannot start the gRPC server because of connection failure to database " << std::endl;
         return;
     }

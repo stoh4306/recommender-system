@@ -18,7 +18,7 @@
 const std::string DB_URL = "tcp://192.168.0.5:3306";
 const std::string DB_USER = "grida";
 const std::string DB_PASSWORD = "MM22mm01#";
-const std::string DB_SCHEMA= "recommder";
+const std::string DB_SCHEMA= "recommender";
 
 VectorSearchGrpcClient* vecsearch_client = nullptr;
 Par2VecGrpcClient* par2vec_client = nullptr;

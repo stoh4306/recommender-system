@@ -15,7 +15,7 @@ func main() {
 }
 
 func create_initial_data_from_csv() {
-	dbinfo := "grida:MM22mm01#@tcp(192.168.0.5:3306)/recommder"
+	dbinfo := "grida:MM22mm01#@tcp(192.168.0.5:3306)/recommender"
 
 	db, err := sql.Open("mysql", dbinfo)
 

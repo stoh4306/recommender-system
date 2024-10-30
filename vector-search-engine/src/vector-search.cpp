@@ -343,7 +343,7 @@ int VectorSearch::loadIndexFromDB(std::string indexName, std::string& err) {
         std::cout << "A connection made : mysql" << std::endl;
 
         // Connect to the database schema (e.g., test)
-        con->setSchema("recommder");
+        con->setSchema("recommender");
 
         std::unique_ptr<sql::PreparedStatement> pstmt_1(
             con->prepareStatement("SELECT * FROM search_index WHERE name = ? LIMIT 1")
@@ -389,7 +389,7 @@ int VectorSearch::removeIndexFromDB(std::string indexName, std::string& err) {
         std::cout << "A connection made : mysql" << std::endl;
 
         // Connect to the database schema (e.g., test)
-        con->setSchema("recommder");
+        con->setSchema("recommender");
 
         std::unique_ptr<sql::PreparedStatement> pstmt_1(
             con->prepareStatement("SELECT * FROM search_index WHERE name = ?  LIMIT 1")
@@ -448,7 +448,7 @@ int VectorSearch::storeIndexToDB(std::string indexName, std::string& err) {
         std::cout << "A connection made : mysql" << std::endl;
 
         // Connect to the database schema (e.g., test)
-        con->setSchema("recommder");
+        con->setSchema("recommender");
 
         std::unique_ptr<sql::PreparedStatement> pstmt_1(
             con->prepareStatement("SELECT * FROM search_index WHERE name = ?  LIMIT 1")
