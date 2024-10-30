@@ -165,14 +165,14 @@ Status VectorSearchGrpcImpl::deleteIndex(ServerContext* context, const DefaultRe
         reply->set_status("Success");
 
         std::string mesg;
-        if (!err[0].empty()) mesg += "failed to delete data file (the file may not exist)";
+        if (!err[0].empty()) mesg += "failed to delete data file (the file might not exist)";
         if (!err[1].empty()) {
             if (!mesg.empty()) mesg += ", ";
-            mesg += "failed to delete from DB (the index may not exist in DB)";
+            mesg += "failed to delete from DB (the index might not exist in DB)";
         }
         if (!err[2].empty()) {
             if (!mesg.empty()) mesg += ", ";
-            mesg += "failed to delete from memory (the index may not be loaded)";
+            mesg += "failed to delete from memory (the index might be in a unloaded state)";
         }
 
         reply->set_message("WARNING : The index deleted, but " + mesg);

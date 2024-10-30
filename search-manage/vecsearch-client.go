@@ -385,14 +385,21 @@ func createSearchIndex(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	// Create index with the
-	//paragraph := c.Param("par")
+	// Create an index
 	var req VsCreateIndexRequest
 	c.BindJSON(&req)
-	//logger.Infof("paragraph= %v", req.Paragraph)
-	err = createIndex(client, ctx, req.IndexName, req.Dim, req.NumVectors, req.VecData)
 
 	var response VsDefaultResponse
+
+	if req.IndexName == "" {
+		response.Status = "Failure"
+		response.Message = "No index name"
+		c.IndentedJSON(http.StatusBadRequest, response)
+		return
+	}
+
+	err = createIndex(client, ctx, req.IndexName, req.Dim, req.NumVectors, req.VecData)
+
 	if err != nil {
 		response.Status = "Failure"
 		response.Message = "Unable to create index : " + req.IndexName + ", " + err.Error()
