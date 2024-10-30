@@ -28,12 +28,12 @@ func main() {
 	// Create, get and delete a search index
 	//router.GET(basePath+"/index/:name", retrieveSearchIndex)
 	router.POST(basePath+"/index", createSearchIndex)
-	//router.DELETE(basePath+"/index", deleteSearchIndex)
+	router.DELETE(basePath+"/index", deleteSearchIndex)
 	router.GET(basePath+"/index/getList", getSearchIndexList)
 
 	// Load index from DB to memory
 	router.POST(basePath+"/index/load", loadSearchIndex)
-	//router.POST(basePath+"/index/unload", unloadSearchIndex)
+	router.POST(basePath+"/index/unload", unloadSearchIndex)
 
 	// Add, delete and update an element
 	//router.GET(basePath+"/index/elements", getElementsOfIndex)

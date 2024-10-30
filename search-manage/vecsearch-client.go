@@ -287,6 +287,73 @@ func loadSearchIndex(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, response)
 }
 
+func unloadIndex(client pb.VectorSearchGrpcClient, ctx context.Context, indexName string) error {
+	var grpc_req pb.DefaultRequest
+	grpc_req.IndexName = indexName
+
+	_, err := client.UnloadIndex(ctx, &grpc_req)
+
+	if err != nil {
+		logger.Infof("Failed to unload the index from the container : %v, %v", indexName, err.Error())
+		return err
+	}
+
+	logger.Infof("Unloaded the index from memory : %v", indexName)
+
+	return nil
+}
+
+func unloadSearchIndex(c *gin.Context) {
+	// Make a connection to the grpc server
+	connVecSearchGrpc, err := grpc.NewClient(vecSearchGrpcURL_, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		fmt.Printf("Failed to connect gRPC server: %v", vecSearchGrpcURL_)
+		return
+	}
+	defer connVecSearchGrpc.Close()
+
+	client := pb.NewVectorSearchGrpcClient(connVecSearchGrpc)
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	// Load the index from DB to memory
+	var req VsDefaultRequest
+	c.BindJSON(&req)
+
+	var response VsDefaultResponse
+
+	// Return if the index name is empty
+	if req.IndexName == "" {
+		response.Status = "Failure"
+		response.Message = "Name parameter is required"
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	err = getIndexFromContainer(client, ctx, req.IndexName)
+	if err != nil {
+		response.Status = "Failure"
+		response.Message = "Not found in the container: " + req.IndexName
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	// Now, try to unload index from memory(container)
+	err = unloadIndex(client, ctx, req.IndexName)
+	if err != nil {
+		response.Status = "Failure"
+		response.Message = "Unable to unload index : " + req.IndexName + ", " + err.Error()
+		c.JSON(http.StatusInternalServerError, response)
+		return
+	}
+
+	//
+	response.Status = "Success"
+	response.Message = "Unloaded an index : " + req.IndexName
+	c.IndentedJSON(http.StatusOK, response)
+}
+
 func createIndex(client pb.VectorSearchGrpcClient, ctx context.Context,
 	indexName string, dim uint32, nb uint64, xb []float32) error {
 
@@ -339,3 +406,83 @@ func createSearchIndex(c *gin.Context) {
 	response.Message = "Created an index : " + req.IndexName
 	c.IndentedJSON(http.StatusOK, response)
 }
+
+func deleteIndex(client pb.VectorSearchGrpcClient, ctx context.Context, indexName string) error {
+	var request pb.DefaultRequest
+	request.IndexName = indexName
+
+	_, err := client.DeleteIndex(ctx, &request)
+	if err != nil {
+		logger.Errorf("could not delete the index: %v, %v", indexName, err)
+		return err
+	}
+	logger.Infof("- Successfully deleted index : %v", indexName)
+	return nil
+}
+
+func deleteSearchIndex(c *gin.Context) {
+	connVecSearchGrpc, err := grpc.NewClient(vecSearchGrpcURL_, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		fmt.Printf("Failed to connect gRPC server: %v", vecSearchGrpcURL_)
+		return
+	}
+	defer connVecSearchGrpc.Close()
+
+	client := pb.NewVectorSearchGrpcClient(connVecSearchGrpc)
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	// Delete index from both container and DB
+	var req VsDefaultRequest
+	c.BindJSON(&req)
+	err = deleteIndex(client, ctx, req.IndexName)
+
+	var response VsDefaultResponse
+	if err != nil {
+		response.Status = "Failure"
+		response.Message = "Unable to delete index : " + req.IndexName + ", " + err.Error()
+		c.IndentedJSON(http.StatusInternalServerError, response)
+		return
+	}
+	//
+	// Set response from feature vector
+
+	response.Status = "Success"
+	response.Message = "Delete the index : " + req.IndexName
+	c.IndentedJSON(http.StatusOK, response)
+}
+
+/*func retrieveSearchIndex(c * gin.Context) {
+	// Create a grpc connection
+	connVecSearchGrpc, err := grpc.NewClient(vecSearchGrpcURL_, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		fmt.Printf("Failed to connect gRPC server: %v", vecSearchGrpcURL_)
+		return
+	}
+	defer connVecSearchGrpc.Close()
+
+	client := pb.NewVectorSearchGrpcClient(connVecSearchGrpc)
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	// Get index information
+	var req VsDefaultRequest
+	c.BindJSON(&req)
+	err = Index(client, ctx, req.IndexName)
+
+	var response VsDefaultResponse
+	if err != nil {
+		response.Status = "Failure"
+		response.Message = "Unable to delete index : " + req.IndexName + ", " + err.Error()
+		c.IndentedJSON(http.StatusInternalServerError, response)
+		return
+	}
+	//
+	// Set response from feature vector
+
+	response.Status = "Success"
+	response.Message = "Delete the index : " + req.IndexName
+	c.IndentedJSON(http.StatusOK, response)
+}//*/
