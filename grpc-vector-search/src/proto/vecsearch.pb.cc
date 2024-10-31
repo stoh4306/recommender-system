@@ -330,7 +330,7 @@ const char descriptor_table_protodef_vecsearch_2eproto[] PROTOBUF_SECTION_VARIAB
     " \001(\r\022\024\n\014numNeighbors\030\004 \001(\r\022\t\n\001I\030\005 \003(\003\022\t\n"
     "\001D\030\006 \003(\002\"#\n\016DefaultRequest\022\021\n\tindexName\030"
     "\001 \001(\t\"/\n\014DefaultReply\022\016\n\006status\030\001 \001(\t\022\017\n"
-    "\007message\030\002 \001(\t2\253\004\n\020VectorSearchGrpc\022H\n\017l"
+    "\007message\030\002 \001(\t2\371\004\n\020VectorSearchGrpc\022H\n\017l"
     "istLoadedIndex\022\033.vecsearchgrpc.EmptyRequ"
     "est\032\030.vecsearchgrpc.IndexList\022P\n\025getInde"
     "xFromContainer\022\035.vecsearchgrpc.DefaultRe"
@@ -338,20 +338,22 @@ const char descriptor_table_protodef_vecsearch_2eproto[] PROTOBUF_SECTION_VARIAB
     "eIndex\022!.vecsearchgrpc.CreateIndexReques"
     "t\032\033.vecsearchgrpc.DefaultReply\022I\n\013delete"
     "Index\022\035.vecsearchgrpc.DefaultRequest\032\033.v"
-    "ecsearchgrpc.DefaultReply\022G\n\tloadIndex\022\035"
-    ".vecsearchgrpc.DefaultRequest\032\033.vecsearc"
-    "hgrpc.DefaultReply\022I\n\013unloadIndex\022\035.vecs"
-    "earchgrpc.DefaultRequest\032\033.vecsearchgrpc"
-    ".DefaultReply\022M\n\017searchNeighbors\022\034.vecse"
-    "archgrpc.SearchRequest\032\032.vecsearchgrpc.S"
-    "earchReply\"\000B\035Z\033./recommender/vecsearchg"
-    "rpcb\006proto3"
+    "ecsearchgrpc.DefaultReply\022L\n\naddVectors\022"
+    "!.vecsearchgrpc.CreateIndexRequest\032\033.vec"
+    "searchgrpc.DefaultReply\022G\n\tloadIndex\022\035.v"
+    "ecsearchgrpc.DefaultRequest\032\033.vecsearchg"
+    "rpc.DefaultReply\022I\n\013unloadIndex\022\035.vecsea"
+    "rchgrpc.DefaultRequest\032\033.vecsearchgrpc.D"
+    "efaultReply\022M\n\017searchNeighbors\022\034.vecsear"
+    "chgrpc.SearchRequest\032\032.vecsearchgrpc.Sea"
+    "rchReply\"\000B\035Z\033./recommender/vecsearchgrp"
+    "cb\006proto3"
 };
 static ::absl::once_flag descriptor_table_vecsearch_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_vecsearch_2eproto = {
     false,
     false,
-    1171,
+    1249,
     descriptor_table_protodef_vecsearch_2eproto,
     "vecsearch.proto",
     &descriptor_table_vecsearch_2eproto_once,

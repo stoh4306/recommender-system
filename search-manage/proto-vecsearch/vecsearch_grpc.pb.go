@@ -23,6 +23,7 @@ const (
 	VectorSearchGrpc_GetIndexFromContainer_FullMethodName = "/vecsearchgrpc.VectorSearchGrpc/getIndexFromContainer"
 	VectorSearchGrpc_CreateIndex_FullMethodName           = "/vecsearchgrpc.VectorSearchGrpc/createIndex"
 	VectorSearchGrpc_DeleteIndex_FullMethodName           = "/vecsearchgrpc.VectorSearchGrpc/deleteIndex"
+	VectorSearchGrpc_AddVectors_FullMethodName            = "/vecsearchgrpc.VectorSearchGrpc/addVectors"
 	VectorSearchGrpc_LoadIndex_FullMethodName             = "/vecsearchgrpc.VectorSearchGrpc/loadIndex"
 	VectorSearchGrpc_UnloadIndex_FullMethodName           = "/vecsearchgrpc.VectorSearchGrpc/unloadIndex"
 	VectorSearchGrpc_SearchNeighbors_FullMethodName       = "/vecsearchgrpc.VectorSearchGrpc/searchNeighbors"
@@ -36,6 +37,7 @@ type VectorSearchGrpcClient interface {
 	GetIndexFromContainer(ctx context.Context, in *DefaultRequest, opts ...grpc.CallOption) (*IndexInfo, error)
 	CreateIndex(ctx context.Context, in *CreateIndexRequest, opts ...grpc.CallOption) (*DefaultReply, error)
 	DeleteIndex(ctx context.Context, in *DefaultRequest, opts ...grpc.CallOption) (*DefaultReply, error)
+	AddVectors(ctx context.Context, in *CreateIndexRequest, opts ...grpc.CallOption) (*DefaultReply, error)
 	LoadIndex(ctx context.Context, in *DefaultRequest, opts ...grpc.CallOption) (*DefaultReply, error)
 	UnloadIndex(ctx context.Context, in *DefaultRequest, opts ...grpc.CallOption) (*DefaultReply, error)
 	SearchNeighbors(ctx context.Context, in *SearchRequest, opts ...grpc.CallOption) (*SearchReply, error)
@@ -85,6 +87,15 @@ func (c *vectorSearchGrpcClient) DeleteIndex(ctx context.Context, in *DefaultReq
 	return out, nil
 }
 
+func (c *vectorSearchGrpcClient) AddVectors(ctx context.Context, in *CreateIndexRequest, opts ...grpc.CallOption) (*DefaultReply, error) {
+	out := new(DefaultReply)
+	err := c.cc.Invoke(ctx, VectorSearchGrpc_AddVectors_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *vectorSearchGrpcClient) LoadIndex(ctx context.Context, in *DefaultRequest, opts ...grpc.CallOption) (*DefaultReply, error) {
 	out := new(DefaultReply)
 	err := c.cc.Invoke(ctx, VectorSearchGrpc_LoadIndex_FullMethodName, in, out, opts...)
@@ -120,6 +131,7 @@ type VectorSearchGrpcServer interface {
 	GetIndexFromContainer(context.Context, *DefaultRequest) (*IndexInfo, error)
 	CreateIndex(context.Context, *CreateIndexRequest) (*DefaultReply, error)
 	DeleteIndex(context.Context, *DefaultRequest) (*DefaultReply, error)
+	AddVectors(context.Context, *CreateIndexRequest) (*DefaultReply, error)
 	LoadIndex(context.Context, *DefaultRequest) (*DefaultReply, error)
 	UnloadIndex(context.Context, *DefaultRequest) (*DefaultReply, error)
 	SearchNeighbors(context.Context, *SearchRequest) (*SearchReply, error)
@@ -141,6 +153,9 @@ func (UnimplementedVectorSearchGrpcServer) CreateIndex(context.Context, *CreateI
 }
 func (UnimplementedVectorSearchGrpcServer) DeleteIndex(context.Context, *DefaultRequest) (*DefaultReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteIndex not implemented")
+}
+func (UnimplementedVectorSearchGrpcServer) AddVectors(context.Context, *CreateIndexRequest) (*DefaultReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddVectors not implemented")
 }
 func (UnimplementedVectorSearchGrpcServer) LoadIndex(context.Context, *DefaultRequest) (*DefaultReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method LoadIndex not implemented")
@@ -236,6 +251,24 @@ func _VectorSearchGrpc_DeleteIndex_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _VectorSearchGrpc_AddVectors_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateIndexRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(VectorSearchGrpcServer).AddVectors(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: VectorSearchGrpc_AddVectors_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(VectorSearchGrpcServer).AddVectors(ctx, req.(*CreateIndexRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _VectorSearchGrpc_LoadIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(DefaultRequest)
 	if err := dec(in); err != nil {
@@ -312,6 +345,10 @@ var VectorSearchGrpc_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "deleteIndex",
 			Handler:    _VectorSearchGrpc_DeleteIndex_Handler,
+		},
+		{
+			MethodName: "addVectors",
+			Handler:    _VectorSearchGrpc_AddVectors_Handler,
 		},
 		{
 			MethodName: "loadIndex",

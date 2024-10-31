@@ -62,6 +62,8 @@ public:
     int checkExistenceOfIndex(std::string indexName, bool& isInMemory, bool& isInDB, std::string& err);
     bool isLoadedIndex(std::string indexName);
 
+    int addVectorsToLoadedIndex(std::string indexName, unsigned long dim, unsigned long nb, float* xb, std::string& err);
+
     unsigned        long numIndices();
     void*           indexPtr(std::string indexName);
     IndexContainer*  indexContainer();

@@ -28,6 +28,8 @@ public:
     Status createIndex(ServerContext* context, const CreateIndexRequest* request, DefaultReply* reply) override;
     Status deleteIndex(ServerContext* context, const DefaultRequest* request, DefaultReply* reply) override;
 
+    Status addVectors(ServerContext* context, const CreateIndexRequest*, DefaultReply* reply) override;
+
     Status loadIndex(ServerContext* context, const DefaultRequest* request, DefaultReply* reply) override;
     Status unloadIndex(ServerContext* context, const DefaultRequest* request, DefaultReply* reply) override;
 

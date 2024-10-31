@@ -5,6 +5,7 @@
 #include <chrono>
 #include <memory>
 #include <cstdio>
+#include <sys/stat.h>
 
 #include <mysql/jdbc.h>
 
@@ -224,11 +225,21 @@ int VectorSearch::saveIndexInContainerToDisk(std::string indexName, std::string&
 
     std::list<Index>::iterator it = indexContainer_.getIndexIterator(indexName);
 
-    std::string indexFilePath = indexDataPathBase_ + "/" + fileName;
+    std::string indexFilePath = it->dataFilePath;
+    if (fileName!="") indexFilePath = fileName;
 
-    if (fileName=="") indexFilePath = it->dataFilePath;
-
+    struct stat buffer;
+    std::string bakfile = "";
+    if (stat(indexFilePath.c_str(), &buffer) == 0) {
+        std::cout << "- Data file already exists" << std::endl;
+        bakfile = indexFilePath+".bak";
+        std::rename(indexFilePath.c_str(), bakfile.c_str());
+    }
+    
     faiss::write_index((faiss::IndexFlatL2*)it->indexPtr, indexFilePath.c_str());
+
+    if ( bakfile != "" && stat(bakfile.c_str(), &buffer) == 0 )
+        std::remove(bakfile.c_str());
     
     err = "";
     return 0;
@@ -355,6 +366,42 @@ int VectorSearch::deleteIndexDataFileWithFullPath(std::string indexDataFilePath,
     }
 
     std::cout << "- Index data file deleted : " << indexDataFilePath << std::endl;
+    err = "";
+    return 0;
+}
+
+int VectorSearch::addVectorsToLoadedIndex(std::string indexName, unsigned long dim, unsigned long nb, float* xb, std::string& err) {
+    if (!indexContainer_.hasIndex(indexName)) {
+        err = "Index not found in memory";
+        return 1;
+    }
+
+    std::list<Index>::iterator it = indexContainer_.getIndexIterator(indexName);
+    
+    faiss::IndexFlatL2* findex = (faiss::IndexFlatL2*) it->indexPtr;
+    unsigned long tnb = findex->ntotal;
+    findex->add(nb, xb);
+
+    // Update the index data in the container
+    it->ntotal = findex->ntotal;
+    std::cout << "- # of added vectors = " << it->ntotal-tnb << std::endl;
+
+    float* xb_before = it->vecData;
+    it->vecData = findex->get_xb();
+
+    if (xb_before != it->vecData) {
+        std::cout << "- CAUTION: vector pointer has changed!" << std::endl;
+    }
+
+    // Save the data to disk
+    std::cout << "- data file path = " << it->dataFilePath << std::endl;
+    if (saveIndexInContainerToDisk(indexName, err) != 0 ) {
+    //if (saveIndexInContainerToDisk(indexName, err, it->dataFilePath) != 0 ) {
+        return 2;
+    }
+
+    std::cout << "- Added " << (unsigned long)findex->ntotal-tnb << " vectors : " << indexName << std::endl;
+
     err = "";
     return 0;
 }
@@ -565,11 +612,12 @@ int VectorSearch::storeIndexToDB(std::string indexName, std::string& err) {
             
             std::unique_ptr<sql::PreparedStatement> pstmt_2( 
                 con->prepareStatement(
-                    "UPDATE search_index SET data_path = ? WHERE name = ?"
+                    "UPDATE search_index SET num_vectors = ?, data_path = ? WHERE name = ?"
                 )
             );
-            pstmt_2->setString(1, it->dataFilePath);
-            pstmt_2->setString(2, indexName);
+            pstmt_2->setBigInt(1, std::to_string(it->ntotal));
+            pstmt_2->setString(2, it->dataFilePath);
+            pstmt_2->setString(3, indexName);
 
             pstmt_2->executeUpdate();
 
@@ -578,12 +626,13 @@ int VectorSearch::storeIndexToDB(std::string indexName, std::string& err) {
         } else {
             std::unique_ptr<sql::PreparedStatement> pstmt_2( 
                 con->prepareStatement(
-                    "INSERT INTO search_index (name, data_path) VALUES (?, ?)"
+                    "INSERT INTO search_index (name, num_vectors, data_path) VALUES (?, ?, ?)"
                 )
             );
         
             pstmt_2->setString(1, indexName);
-            pstmt_2->setString(2, it->dataFilePath);
+            pstmt_2->setBigInt(2, std::to_string(it->ntotal));
+            pstmt_2->setString(3, it->dataFilePath);
 
             pstmt_2->executeUpdate();
             std::cout << "Inserted a row succesfully" << std::endl;
@@ -672,9 +721,15 @@ std::string IndexContainer::getIndexFilePath(std::string indexName) {
 }
 
 void IndexContainer::getListOfIndices(std::vector<std::string>& name, std::vector<unsigned long>& numVectors, std::vector<unsigned int>& dim) {
+    name.clear();
+    numVectors.clear();
+    dim.clear();
+
     name.resize(0);
     numVectors.resize(0);
     dim.resize(0);
+
+    std::cout << "- # of indexes in memory = " << indexArray_.size() << std::endl;
 
     std::list<Index>::iterator it = indexArray_.begin();
     for( ; it != indexArray_.end(); ++it) {

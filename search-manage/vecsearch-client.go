@@ -13,6 +13,12 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 )
 
+type VsVectors struct {
+	NumVectors uint64    `json:"numVectors"`
+	Dim        uint32    `json:"dim"`
+	VecData    []float32 `json:"vecData"`
+}
+
 type VsIndexList struct {
 	IndexName  []string `json:"indexName"`
 	NumVectors []uint64 `json:"numVectors"`
@@ -25,6 +31,8 @@ type VsCreateIndexRequest struct {
 	Dim        uint32    `json:"dim"`
 	VecData    []float32 `json:"vecData"`
 }
+
+type VsAddVectorsRequest = VsCreateIndexRequest
 
 type VsDefaultRequest struct {
 	IndexName string `json:"indexName"`
@@ -365,7 +373,7 @@ func createIndex(client pb.VectorSearchGrpcClient, ctx context.Context,
 
 	_, err := client.CreateIndex(ctx, &request)
 	if err != nil {
-		logger.Errorf("could not convert: %v", err)
+		logger.Errorf("could not create: %v", err)
 		return err
 	}
 	logger.Infof("- Successfully created index : %v", indexName)
@@ -457,6 +465,124 @@ func deleteSearchIndex(c *gin.Context) {
 
 	response.Status = "Success"
 	response.Message = grpc_response.Message
+	c.IndentedJSON(http.StatusOK, response)
+}
+
+/* func addVectors(client pb.VectorSearchGrpcClient, ctx context.Context,
+	indexName string, dim uint32, nb uint64, xb []float32) error {
+
+	var request pb.CreateIndexRequest
+	request.IndexName = indexName
+	request.NumVectors = nb
+	request.Dim = dim
+	request.VecData = xb
+
+	_, err := client.AddVectors(ctx, &request)
+	if err != nil {
+		logger.Errorf("could not add vectors: %v", err)
+		return err
+	}
+	logger.Infof("- Successfully add vectors to index : %v", indexName)
+	return nil
+}
+
+func addElementsToIndex(c *gin.Context) {
+	connVecSearchGrpc, err := grpc.NewClient(vecSearchGrpcURL_, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		fmt.Printf("Failed to connect gRPC server: %v", vecSearchGrpcURL_)
+		return
+	}
+	defer connVecSearchGrpc.Close()
+
+	client := pb.NewVectorSearchGrpcClient(connVecSearchGrpc)
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	// Create an index
+	var req VsAddVectorsRequest
+	c.BindJSON(&req)
+
+	var response VsDefaultResponse
+
+	if req.IndexName == "" {
+		response.Status = "Failure"
+		response.Message = "No index name"
+		c.IndentedJSON(http.StatusBadRequest, response)
+		return
+	}
+
+	err = addVectors(client, ctx, req.IndexName, req.Dim, req.NumVectors, req.VecData)
+
+	if err != nil {
+		response.Status = "Failure"
+		response.Message = "Unable to add vectors to index : " + req.IndexName + ", " + err.Error()
+		c.IndentedJSON(http.StatusInternalServerError, response)
+		return
+	}
+	//
+	// Set response from feature vector
+
+	response.Status = "Success"
+	response.Message = "Added vectors to index : " + req.IndexName
+	c.IndentedJSON(http.StatusOK, response)
+} */
+
+func addVectors(indexName string, dim uint32, nb uint64, xb *[]float32) error {
+	connVecSearchGrpc, err := grpc.NewClient(vecSearchGrpcURL_, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		fmt.Printf("Failed to connect gRPC server: %v", vecSearchGrpcURL_)
+		return err
+	}
+	defer connVecSearchGrpc.Close()
+
+	client := pb.NewVectorSearchGrpcClient(connVecSearchGrpc)
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	var request pb.CreateIndexRequest
+	request.IndexName = indexName
+	request.NumVectors = nb
+	request.Dim = dim
+	request.VecData = *xb
+
+	_, err = client.AddVectors(ctx, &request)
+	if err != nil {
+		logger.Errorf("could not add vectors: %v", err)
+		return err
+	}
+	logger.Infof("- Successfully add vectors to index : %v", indexName)
+	return nil
+}
+
+func addElementsToIndex(c *gin.Context) {
+	// Create an index
+	var req VsAddVectorsRequest
+	c.BindJSON(&req)
+
+	var response VsDefaultResponse
+
+	if req.IndexName == "" {
+		response.Status = "Failure"
+		response.Message = "No index name"
+		c.IndentedJSON(http.StatusBadRequest, response)
+		return
+	}
+
+	err := addVectors(req.IndexName, req.Dim, req.NumVectors, &req.VecData)
+
+	if err != nil {
+		response.Status = "Failure"
+		response.Message = "Unable to add vectors to index : " + req.IndexName + ", " + err.Error()
+		c.IndentedJSON(http.StatusInternalServerError, response)
+		return
+	}
+
+	// Set response from feature vector
+
+	response.Status = "Success"
+	response.Message = "Added vectors to index : " + req.IndexName
 	c.IndentedJSON(http.StatusOK, response)
 }
 

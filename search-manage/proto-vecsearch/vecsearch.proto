@@ -9,6 +9,8 @@ service VectorSearchGrpc {
     rpc createIndex(CreateIndexRequest)     returns (DefaultReply);
     rpc deleteIndex(DefaultRequest)         returns (DefaultReply);
 
+    rpc addVectors(CreateIndexRequest)      returns (DefaultReply);
+
     rpc loadIndex(DefaultRequest)           returns (DefaultReply);
     rpc unloadIndex(DefaultRequest)         returns (DefaultReply);
 

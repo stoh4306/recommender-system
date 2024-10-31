@@ -79,7 +79,6 @@ Status VectorSearchGrpcImpl::createIndex(ServerContext* context, const CreateInd
         return Status(grpc::StatusCode::INVALID_ARGUMENT,  "The index with the same name already exists. Use a different name");
     }
 
-
     if (xb.size() != dim*nb) {
         reply->set_status("Failure");
         reply->set_message("Inconsistency among dim, numVectors and vecData");
@@ -112,7 +111,6 @@ Status VectorSearchGrpcImpl::createIndex(ServerContext* context, const CreateInd
         return Status(grpc::StatusCode::INTERNAL,  "Failed to createIndex() : unable to save the index to disk");
     }
     //std::cout << "- CreateIndex() : saved index to disk" << std::endl;
-        
 
     // Store the index to DB
     result = vecSearch_.storeIndexToDB(indexName, err);
@@ -185,6 +183,67 @@ Status VectorSearchGrpcImpl::deleteIndex(ServerContext* context, const DefaultRe
     reply->set_message("Deleted index : " + indexName);
     return Status::OK;
 }
+
+Status VectorSearchGrpcImpl::addVectors(ServerContext* context, const CreateIndexRequest* request, DefaultReply* reply) {
+    std::cout << "- AddVectors() called..." << std::endl;
+    std::string indexName = request->indexname();
+    unsigned long dim = request->dim();
+    unsigned long nb = request->numvectors();
+
+    std::vector<float>  xb(request->vecdata().begin(), request->vecdata().end());
+
+    std::string err;
+
+    // Return if the index name is empty
+    if (indexName == "") {
+        reply->set_status("Failure");
+        reply->set_message("No index name");
+        return Status(grpc::StatusCode::INVALID_ARGUMENT,  "Missing index name");
+    }
+
+    // Check if the size of vecData is correct
+    if (xb.size() != dim*nb) {
+        reply->set_status("Failure");
+        reply->set_message("Inconsistency among dim, numVectors and vecData");
+
+        return Status(grpc::StatusCode::INVALID_ARGUMENT,  "Check dim, numVectors and the size of vecData");
+    }
+
+    // Load the index if not loaded
+    if (vecSearch_.indexPtr(indexName) == nullptr && vecSearch_.loadIndexFromDB(indexName, err) !=0 ) {
+        reply->set_status("Failure");
+        reply->set_message(err);
+        return Status(grpc::StatusCode::INVALID_ARGUMENT,  err);
+    }  
+
+    // Add vectors to the index loaded
+    int result = vecSearch_.addVectorsToLoadedIndex(indexName, dim, nb, xb.data(), err);
+    if (result != 0) {
+        std::cout << "error code=" << result << ", " << err << std::endl;
+        reply->set_status("Failure");
+        reply->set_message("Could not add vectors to index: " + err);
+
+        return Status(grpc::StatusCode::INTERNAL,  err);
+    }
+
+    // Update num_vectors in the search_index table
+    result = vecSearch_.storeIndexToDB(indexName, err);
+    if (result != 0) {
+        std::cout << "error code=" << result << ", " << err << std::endl;
+        reply->set_status("Failure");
+        reply->set_message("Could not add vectors to index: " + err);
+
+        return Status(grpc::StatusCode::INTERNAL,  err);
+    }
+
+    std::cout << "- AddVectors() successfully executed" << std::endl;
+
+    reply->set_status("Success");
+    reply->set_message("Add vectors to index : " + indexName);
+
+    return Status::OK;
+}
+
 
 Status VectorSearchGrpcImpl::loadIndex(ServerContext* context, const DefaultRequest* request, DefaultReply* reply) {
     std::cout << "- loadIndex() called..." << std::endl;

@@ -37,12 +37,14 @@ func main() {
 
 	// Add, delete and update an element
 	//router.GET(basePath+"/index/elements", getElementsOfIndex)
-	//router.POST(basePath+"/index/elements", addElementsToIndex)
-	//router.DELETE(basePath+"/index/elements", deleteElementsFromIndex)
+	router.POST(basePath+"/index/elements", addElementsToIndex)
 	//router.PUT(basePath+"/index/elements", updateElementsOfIndex)
 
 	// Search similar elements
 	router.POST(basePath+"/index/elements/search", searchNeighbors)
+
+	// Add projects
+	router.POST(basePath+"/projects/add", addProjects)
 
 	router.Run("0.0.0.0:8090")
 }
