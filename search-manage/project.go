@@ -19,6 +19,118 @@ type ProjectList struct {
 	Projects []Project `json:"projects"`
 }
 
+type SearchFreelancerResponse struct {
+	Status          string    `json:"status"`
+	Message         string    `json:"message"`
+	NumQueryVectors uint32    `json:"numQueryVectors"`
+	NumNeighbors    uint32    `json:"numNeighbors"`
+	Name            []string  `json:"name"`
+	D               []float32 `json:"D"`
+}
+
+func getProjectDescription(id uint32) (string, error) {
+	// Connect to DB
+	db, err := sql.Open("mysql", dsn)
+	if err != nil {
+		logger.Errorf("Error opening database connection: %v", err)
+		return "", err
+	}
+	defer db.Close()
+
+	if err := db.Ping(); err != nil {
+		logger.Errorf("Error pinging database: %v", err)
+		return "", err
+	}
+	logger.Infoln("Successfully connected to the database")
+
+	proj_table := "project"
+	query := "SELECT description FROM " + proj_table + " WHERE id = ?"
+
+	descr := ""
+	err = db.QueryRow(query, id).Scan(&descr)
+	if err != nil {
+		logger.Errorf("Error retrieving database: %v", err)
+		return "", err
+	}
+
+	return descr, nil
+}
+
+func getFreelancers(ids []int64) ([]string, error) {
+	// Connect to DB
+	db, err := sql.Open("mysql", dsn)
+	if err != nil {
+		logger.Errorf("Error opening database connection: %v", err)
+		return nil, err
+	}
+	defer db.Close()
+
+	if err := db.Ping(); err != nil {
+		logger.Errorf("Error pinging database: %v", err)
+		return nil, err
+	}
+	logger.Infoln("Successfully connected to the database")
+
+	table := "vec_to_freelancer"
+	query := "SELECT freelancer_id FROM " + table + " WHERE vector_id = ?"
+
+	free_id := uint64(0)
+	freelist := make([]string, len(ids))
+
+	query_2 := "SELECT name FROM freelancer WHERE id = ?"
+	for i, vid := range ids {
+		db.QueryRow(query, vid).Scan(&free_id)
+		db.QueryRow(query_2, free_id).Scan(&freelist[i])
+	}
+
+	return freelist, nil
+}
+
+func findFreelancersCloseToProject(c *gin.Context) {
+	proj_id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		logger.Errorf("Missing project ID: %v", err)
+		c.IndentedJSON(http.StatusBadRequest,
+			gin.H{"Status": "Failure", "Message": err})
+		return
+	}
+
+	proj_descr, err := getProjectDescription(uint32(proj_id))
+	if err != nil {
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"status": "Failure", "message": err.Error()})
+		return
+	}
+
+	logger.Infof("project description for id=%v: %v", proj_id, proj_descr)
+	fvec, err := par2vec(proj_descr)
+	if err != nil {
+		c.IndentedJSON(http.StatusInternalServerError,
+			gin.H{"status": "Failure", "message": err})
+		return
+	}
+
+	indexName := "freelancer_collection"
+	k := uint32(5)
+	I, D, err := searchIndex(indexName, 1, uint32(len(fvec)), k, &fvec)
+	if err != nil {
+		c.IndentedJSON(http.StatusInternalServerError,
+			gin.H{"status": "Failure", "message": err})
+		return
+	}
+
+	freelist, err := getFreelancers(I)
+
+	var response SearchFreelancerResponse
+	response.Status = "Success"
+	response.Message = "Found " + strconv.Itoa(int(k)) + "neighbors"
+	response.NumQueryVectors = 1
+	response.NumNeighbors = k
+	response.Name = freelist
+	response.D = D
+
+	c.IndentedJSON(http.StatusOK, response)
+}
+
 func addProjectsToDB(proj *[]Project) error {
 	if len(*proj) == 0 {
 		return nil

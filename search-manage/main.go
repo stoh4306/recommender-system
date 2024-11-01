@@ -12,6 +12,9 @@ var logger = logrus.New()
 var par2VecGrpcURL_ string = "192.168.0.20:50052"
 var vecSearchGrpcURL_ string = "192.168.0.20:50053"
 
+// Connect to DB
+var dsn string = "grida:MM22mm01#" + "@tcp(192.168.0.5:3306)/" + "recommender"
+
 func main() {
 	fmt.Println("*********************************************")
 	fmt.Println(" Similarity Search Management Server")
@@ -31,22 +34,18 @@ func main() {
 	router.DELETE(basePath+"/index", deleteSearchIndex)
 	router.GET(basePath+"/index/getList", getSearchIndexList)
 
-	// Load index from DB to memory
+	// Load, unload index
 	router.POST(basePath+"/index/load", loadSearchIndex)
 	router.POST(basePath+"/index/unload", unloadSearchIndex)
-
-	// Add, delete and update an element
-	//router.GET(basePath+"/index/elements", getElementsOfIndex)
-	//router.POST(basePath+"/index/elements", addElementsToIndex)
-	//router.PUT(basePath+"/index/elements", updateElementsOfIndex)
 
 	// Search similar elements
 	router.POST(basePath+"/index/search", searchNeighbors)
 
-	// Add projects
+	// Projects
 	router.POST(basePath+"/projects/add", addProjects)
+	router.POST(basePath+"/projects/:id/find/freelancers", findFreelancersCloseToProject)
 
-	// Add freelancers
+	// Freelancers
 	router.POST(basePath+"/freelancers/add", addFreelancers)
 
 	router.Run("0.0.0.0:8090")
