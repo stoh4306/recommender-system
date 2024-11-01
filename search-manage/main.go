@@ -46,5 +46,8 @@ func main() {
 	// Add projects
 	router.POST(basePath+"/projects/add", addProjects)
 
+	// Add freelancers
+	router.POST(basePath+"/freelancers/add", addFreelancers)
+
 	router.Run("0.0.0.0:8090")
 }
