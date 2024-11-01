@@ -37,11 +37,11 @@ func main() {
 
 	// Add, delete and update an element
 	//router.GET(basePath+"/index/elements", getElementsOfIndex)
-	router.POST(basePath+"/index/elements", addElementsToIndex)
+	//router.POST(basePath+"/index/elements", addElementsToIndex)
 	//router.PUT(basePath+"/index/elements", updateElementsOfIndex)
 
 	// Search similar elements
-	router.POST(basePath+"/index/elements/search", searchNeighbors)
+	router.POST(basePath+"/index/search", searchNeighbors)
 
 	// Add projects
 	router.POST(basePath+"/projects/add", addProjects)

@@ -60,40 +60,12 @@ type VsSearchResponse struct {
 	D               []float32 `json:"D"`
 }
 
-func searchIndex(client pb.VectorSearchGrpcClient, ctx context.Context,
-	restapi_req *VsSearchRequest) (VsSearchResponse, error) {
-	var tmpSearchRequest pb.SearchRequest
-	tmpSearchRequest.IndexName = restapi_req.IndexName
-	tmpSearchRequest.NumQueryVectors = restapi_req.NumQueryVectors
-	tmpSearchRequest.Dim = restapi_req.Dim
-	tmpSearchRequest.NumNeighbors = restapi_req.NumNeighbors
-	tmpSearchRequest.VecData = restapi_req.VecData
-
-	var tmpSearchResponse VsSearchResponse
-
-	searchResponse, err := client.SearchNeighbors(ctx, &tmpSearchRequest)
-	if err != nil {
-		tmpSearchResponse.Status = "Failure"
-		tmpSearchResponse.Message = "Unable to find neighbors for the given query vectors"
-		return tmpSearchResponse, err
-	}
-
-	tmpSearchResponse.Status = "Success"
-	tmpSearchResponse.Message = "Found " + strconv.Itoa(int(searchResponse.NumNeighbors)) + " neighbors"
-	tmpSearchResponse.NumNeighbors = searchResponse.GetNumNeighbors()
-	tmpSearchResponse.NumQueryVectors = searchResponse.GetNumQueryVectors()
-	tmpSearchResponse.I = searchResponse.GetI()
-	tmpSearchResponse.D = searchResponse.GetD()
-
-	return tmpSearchResponse, nil
-}
-
-func searchNeighbors(c *gin.Context) {
+func searchIndex(indexName string, nq uint32, dim uint32, k uint32, xq *[]float32) ([]int64, []float32, error) {
 	// Make a connection to the grpc server
 	connVecSearchGrpc, err := grpc.NewClient(vecSearchGrpcURL_, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
-		fmt.Printf("Failed to connect gRPC server: %v", vecSearchGrpcURL_)
-		return
+		logger.Errorf("Failed to connect gRPC server: %v", vecSearchGrpcURL_)
+		return nil, nil, err
 	}
 	defer connVecSearchGrpc.Close()
 
@@ -102,7 +74,28 @@ func searchNeighbors(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	// Load the index from DB to memory
+	_, err = client.GetIndexFromContainer(ctx, &pb.DefaultRequest{IndexName: indexName})
+	if err != nil {
+		logger.Errorf("Request index not found in memory. Try to load index first")
+		return nil, nil, err
+	}
+
+	var request pb.SearchRequest
+	request.IndexName = indexName
+	request.NumQueryVectors = nq
+	request.Dim = dim
+	request.NumNeighbors = k
+	request.VecData = *xq
+
+	response, err := client.SearchNeighbors(ctx, &request)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	return response.I, response.D, nil
+}
+
+func searchNeighbors(c *gin.Context) {
 	var req VsSearchRequest
 	c.BindJSON(&req)
 
@@ -136,17 +129,8 @@ func searchNeighbors(c *gin.Context) {
 		return
 	}
 
-	// Check if the index was loaded to memory => status=200
-	err = getIndexFromContainer(client, ctx, req.IndexName)
-	if err != nil {
-		response.Status = "Failure"
-		response.Message = "Needs to load the index first : " + req.IndexName
-		c.JSON(http.StatusBadRequest, response)
-		return
-	}
-
 	// Now, try to search neighbors
-	response, err = searchIndex(client, ctx, &req)
+	I, D, err := searchIndex(req.IndexName, req.NumQueryVectors, req.Dim, req.NumNeighbors, &req.VecData)
 	if err != nil {
 		response.Status = "Failure"
 		response.Message = "Unable to search neighbors : " + err.Error()
@@ -155,6 +139,12 @@ func searchNeighbors(c *gin.Context) {
 	}
 
 	//
+	response.Status = "Success"
+	response.Message = "Found " + strconv.Itoa(int(req.NumNeighbors)) + " neighbors"
+	response.NumNeighbors = req.NumNeighbors
+	response.NumQueryVectors = req.NumQueryVectors
+	response.I = I
+	response.D = D
 	c.IndentedJSON(http.StatusOK, response)
 }
 
@@ -227,42 +217,45 @@ func getIndexFromContainer(client pb.VectorSearchGrpcClient, ctx context.Context
 	return nil
 }
 
-func loadIndex(client pb.VectorSearchGrpcClient, ctx context.Context, indexName string) error {
+func loadIndex(indexName string) error {
+	// Make a connection to the grpc server
+	connVecSearchGrpc, err := grpc.NewClient(vecSearchGrpcURL_, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		logger.Errorf("Failed to connect gRPC server: %v", vecSearchGrpcURL_)
+		return err
+	}
+	defer connVecSearchGrpc.Close()
+
+	client := pb.NewVectorSearchGrpcClient(connVecSearchGrpc)
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
 	var grpc_req pb.DefaultRequest
 	grpc_req.IndexName = indexName
 
-	_, err := client.LoadIndex(ctx, &grpc_req)
+	// Check if the index is already loaded
+	_, err = client.GetIndexFromContainer(ctx, &grpc_req)
+	if err == nil {
+		logger.Infof("The index already loaded : %v", indexName)
+		return nil
+	}
 
+	// Load index to memory
+	_, err = client.LoadIndex(ctx, &grpc_req)
 	if err != nil {
 		logger.Infof("Failed to load the index in the container : %v, %v", indexName, err.Error())
 		return err
 	}
-
 	logger.Infof("Loaded the index to memory : %v", indexName)
-
 	return nil
 }
 
 func loadSearchIndex(c *gin.Context) {
-	// Make a connection to the grpc server
-	connVecSearchGrpc, err := grpc.NewClient(vecSearchGrpcURL_, grpc.WithTransportCredentials(insecure.NewCredentials()))
-	if err != nil {
-		fmt.Printf("Failed to connect gRPC server: %v", vecSearchGrpcURL_)
-		return
-	}
-	defer connVecSearchGrpc.Close()
-
-	client := pb.NewVectorSearchGrpcClient(connVecSearchGrpc)
-
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-
-	// Load the index from DB to memory
 	var req VsDefaultRequest
 	c.BindJSON(&req)
 
 	var response VsDefaultResponse
-
 	// Return if the index name is empty
 	if req.IndexName == "" {
 		response.Status = "Failure"
@@ -271,52 +264,26 @@ func loadSearchIndex(c *gin.Context) {
 		return
 	}
 
-	// Check if the index was loaded to memory => status=200
-	err = getIndexFromContainer(client, ctx, req.IndexName)
-	if err == nil {
-		response.Status = "Success"
-		response.Message = "The index was already loaded : " + req.IndexName
-		c.JSON(http.StatusOK, response)
-		return
-	}
-
-	// Now, try to load index from DB
-	err = loadIndex(client, ctx, req.IndexName)
+	// Load the index from DB to memory
+	err := loadIndex(req.IndexName)
 	if err != nil {
 		response.Status = "Failure"
-		response.Message = "Unable to load index : " + req.IndexName + ", " + err.Error()
+		response.Message = err.Error()
 		c.JSON(http.StatusInternalServerError, response)
-		return
 	}
 
 	//
 	response.Status = "Success"
-	response.Message = "Loaded an index : " + req.IndexName
+	response.Message = "Loaded index : " + req.IndexName
 	c.IndentedJSON(http.StatusOK, response)
 }
 
-func unloadIndex(client pb.VectorSearchGrpcClient, ctx context.Context, indexName string) error {
-	var grpc_req pb.DefaultRequest
-	grpc_req.IndexName = indexName
-
-	_, err := client.UnloadIndex(ctx, &grpc_req)
-
-	if err != nil {
-		logger.Infof("Failed to unload the index from the container : %v, %v", indexName, err.Error())
-		return err
-	}
-
-	logger.Infof("Unloaded the index from memory : %v", indexName)
-
-	return nil
-}
-
-func unloadSearchIndex(c *gin.Context) {
+func unloadIndex(indexName string) error {
 	// Make a connection to the grpc server
 	connVecSearchGrpc, err := grpc.NewClient(vecSearchGrpcURL_, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
-		fmt.Printf("Failed to connect gRPC server: %v", vecSearchGrpcURL_)
-		return
+		logger.Errorf("Failed to connect gRPC server: %v", vecSearchGrpcURL_)
+		return err
 	}
 	defer connVecSearchGrpc.Close()
 
@@ -325,7 +292,24 @@ func unloadSearchIndex(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	// Load the index from DB to memory
+	var grpc_req pb.DefaultRequest
+	grpc_req.IndexName = indexName
+	_, err = client.GetIndexFromContainer(ctx, &grpc_req)
+	if err != nil {
+		logger.Infof("The index not found in memory")
+		return nil
+	}
+
+	_, err = client.UnloadIndex(ctx, &grpc_req)
+	if err != nil {
+		logger.Errorf("Failed to unload index: %v", err)
+		return err
+	}
+	logger.Infof("Successfully unloaded index: %v", indexName)
+	return nil
+}
+
+func unloadSearchIndex(c *gin.Context) {
 	var req VsDefaultRequest
 	c.BindJSON(&req)
 
@@ -335,20 +319,12 @@ func unloadSearchIndex(c *gin.Context) {
 	if req.IndexName == "" {
 		response.Status = "Failure"
 		response.Message = "Name parameter is required"
-		c.JSON(http.StatusBadRequest, response)
-		return
-	}
-
-	err = getIndexFromContainer(client, ctx, req.IndexName)
-	if err != nil {
-		response.Status = "Failure"
-		response.Message = "Not found in the container: " + req.IndexName
 		c.JSON(http.StatusBadRequest, response)
 		return
 	}
 
 	// Now, try to unload index from memory(container)
-	err = unloadIndex(client, ctx, req.IndexName)
+	err := unloadIndex(req.IndexName)
 	if err != nil {
 		response.Status = "Failure"
 		response.Message = "Unable to unload index : " + req.IndexName + ", " + err.Error()
@@ -556,6 +532,7 @@ func addVectors(indexName string, dim uint32, nb uint64, xb *[]float32) error {
 	return nil
 }
 
+/*
 func addElementsToIndex(c *gin.Context) {
 	// Create an index
 	var req VsAddVectorsRequest
@@ -585,6 +562,7 @@ func addElementsToIndex(c *gin.Context) {
 	response.Message = "Added vectors to index : " + req.IndexName
 	c.IndentedJSON(http.StatusOK, response)
 }
+*/
 
 /*func retrieveSearchIndex(c * gin.Context) {
 	// Create a grpc connection
