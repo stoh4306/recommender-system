@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"math"
 	"net/http"
 	pb "recommender/proto"
 	"time"
@@ -106,6 +107,17 @@ func convertParToVec(c *gin.Context) {
 	var response Par2VecResponse
 	response.Dim = len(fvec)
 	response.FVec = fvec
-	logger.Infof("dim=%v, fv=%v...%v", len(fvec), fvec[0], fvec[len(fvec)-1])
+	length2 := float32(0.0)
+	for _, v := range fvec {
+		length2 = length2 + v*v
+	}
+
+	length := float32(math.Sqrt(float64(length2)))
+	newLength2 := float32(0.0)
+	for i := 0; i < len(fvec); i++ {
+		fvec[i] = fvec[i] / length
+		newLength2 += fvec[i] * fvec[i]
+	}
+	logger.Infof("dim=%v, fv=%v...%v, length=%v -> %v", len(fvec), fvec[0], fvec[len(fvec)-1], length2, newLength2)
 	c.JSON(http.StatusOK, response)
 }

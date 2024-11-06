@@ -20,6 +20,62 @@ namespace _pb = ::PROTOBUF_NAMESPACE_ID;
 namespace _pbi = ::PROTOBUF_NAMESPACE_ID::internal;
 namespace vecsearchgrpc {
 template <typename>
+PROTOBUF_CONSTEXPR EmptyRequest::EmptyRequest(
+    ::_pbi::ConstantInitialized) {}
+struct EmptyRequestDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR EmptyRequestDefaultTypeInternal() : _instance(::_pbi::ConstantInitialized{}) {}
+  ~EmptyRequestDefaultTypeInternal() {}
+  union {
+    EmptyRequest _instance;
+  };
+};
+
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
+    PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 EmptyRequestDefaultTypeInternal _EmptyRequest_default_instance_;
+template <typename>
+PROTOBUF_CONSTEXPR IndexList::IndexList(
+    ::_pbi::ConstantInitialized): _impl_{
+    /*decltype(_impl_.indexname_)*/{}
+  , /*decltype(_impl_.numvectors_)*/ {}
+  ,/* _impl_._numvectors_cached_byte_size_ = */ { 0 }
+
+  , /*decltype(_impl_.dim_)*/ {}
+  ,/* _impl_._dim_cached_byte_size_ = */ { 0 }
+
+  , /*decltype(_impl_._cached_size_)*/{}} {}
+struct IndexListDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR IndexListDefaultTypeInternal() : _instance(::_pbi::ConstantInitialized{}) {}
+  ~IndexListDefaultTypeInternal() {}
+  union {
+    IndexList _instance;
+  };
+};
+
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
+    PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 IndexListDefaultTypeInternal _IndexList_default_instance_;
+template <typename>
+PROTOBUF_CONSTEXPR IndexInfo::IndexInfo(
+    ::_pbi::ConstantInitialized): _impl_{
+    /*decltype(_impl_.indexname_)*/ {
+    &::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized {}
+  }
+
+  , /*decltype(_impl_.datafilepath_)*/ {
+    &::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized {}
+  }
+
+  , /*decltype(_impl_._cached_size_)*/{}} {}
+struct IndexInfoDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR IndexInfoDefaultTypeInternal() : _instance(::_pbi::ConstantInitialized{}) {}
+  ~IndexInfoDefaultTypeInternal() {}
+  union {
+    IndexInfo _instance;
+  };
+};
+
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
+    PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 IndexInfoDefaultTypeInternal _IndexInfo_default_instance_;
+template <typename>
 PROTOBUF_CONSTEXPR CreateIndexRequest::CreateIndexRequest(
     ::_pbi::ConstantInitialized): _impl_{
     /*decltype(_impl_.vecdata_)*/ {}
@@ -141,13 +197,42 @@ struct DefaultReplyDefaultTypeInternal {
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
     PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 DefaultReplyDefaultTypeInternal _DefaultReply_default_instance_;
 }  // namespace vecsearchgrpc
-static ::_pb::Metadata file_level_metadata_vecsearch_2eproto[5];
+static ::_pb::Metadata file_level_metadata_vecsearch_2eproto[8];
 static constexpr const ::_pb::EnumDescriptor**
     file_level_enum_descriptors_vecsearch_2eproto = nullptr;
 static constexpr const ::_pb::ServiceDescriptor**
     file_level_service_descriptors_vecsearch_2eproto = nullptr;
 const ::uint32_t TableStruct_vecsearch_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(
     protodesc_cold) = {
+    ~0u,  // no _has_bits_
+    PROTOBUF_FIELD_OFFSET(::vecsearchgrpc::EmptyRequest, _internal_metadata_),
+    ~0u,  // no _extensions_
+    ~0u,  // no _oneof_case_
+    ~0u,  // no _weak_field_map_
+    ~0u,  // no _inlined_string_donated_
+    ~0u,  // no _split_
+    ~0u,  // no sizeof(Split)
+    ~0u,  // no _has_bits_
+    PROTOBUF_FIELD_OFFSET(::vecsearchgrpc::IndexList, _internal_metadata_),
+    ~0u,  // no _extensions_
+    ~0u,  // no _oneof_case_
+    ~0u,  // no _weak_field_map_
+    ~0u,  // no _inlined_string_donated_
+    ~0u,  // no _split_
+    ~0u,  // no sizeof(Split)
+    PROTOBUF_FIELD_OFFSET(::vecsearchgrpc::IndexList, _impl_.indexname_),
+    PROTOBUF_FIELD_OFFSET(::vecsearchgrpc::IndexList, _impl_.numvectors_),
+    PROTOBUF_FIELD_OFFSET(::vecsearchgrpc::IndexList, _impl_.dim_),
+    ~0u,  // no _has_bits_
+    PROTOBUF_FIELD_OFFSET(::vecsearchgrpc::IndexInfo, _internal_metadata_),
+    ~0u,  // no _extensions_
+    ~0u,  // no _oneof_case_
+    ~0u,  // no _weak_field_map_
+    ~0u,  // no _inlined_string_donated_
+    ~0u,  // no _split_
+    ~0u,  // no sizeof(Split)
+    PROTOBUF_FIELD_OFFSET(::vecsearchgrpc::IndexInfo, _impl_.indexname_),
+    PROTOBUF_FIELD_OFFSET(::vecsearchgrpc::IndexInfo, _impl_.datafilepath_),
     ~0u,  // no _has_bits_
     PROTOBUF_FIELD_OFFSET(::vecsearchgrpc::CreateIndexRequest, _internal_metadata_),
     ~0u,  // no _extensions_
@@ -210,14 +295,20 @@ const ::uint32_t TableStruct_vecsearch_2eproto::offsets[] PROTOBUF_SECTION_VARIA
 
 static const ::_pbi::MigrationSchema
     schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
-        { 0, -1, -1, sizeof(::vecsearchgrpc::CreateIndexRequest)},
-        { 12, -1, -1, sizeof(::vecsearchgrpc::SearchRequest)},
-        { 25, -1, -1, sizeof(::vecsearchgrpc::SearchReply)},
-        { 39, -1, -1, sizeof(::vecsearchgrpc::DefaultRequest)},
-        { 48, -1, -1, sizeof(::vecsearchgrpc::DefaultReply)},
+        { 0, -1, -1, sizeof(::vecsearchgrpc::EmptyRequest)},
+        { 8, -1, -1, sizeof(::vecsearchgrpc::IndexList)},
+        { 19, -1, -1, sizeof(::vecsearchgrpc::IndexInfo)},
+        { 29, -1, -1, sizeof(::vecsearchgrpc::CreateIndexRequest)},
+        { 41, -1, -1, sizeof(::vecsearchgrpc::SearchRequest)},
+        { 54, -1, -1, sizeof(::vecsearchgrpc::SearchReply)},
+        { 68, -1, -1, sizeof(::vecsearchgrpc::DefaultRequest)},
+        { 77, -1, -1, sizeof(::vecsearchgrpc::DefaultReply)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
+    &::vecsearchgrpc::_EmptyRequest_default_instance_._instance,
+    &::vecsearchgrpc::_IndexList_default_instance_._instance,
+    &::vecsearchgrpc::_IndexInfo_default_instance_._instance,
     &::vecsearchgrpc::_CreateIndexRequest_default_instance_._instance,
     &::vecsearchgrpc::_SearchRequest_default_instance_._instance,
     &::vecsearchgrpc::_SearchReply_default_instance_._instance,
@@ -225,40 +316,50 @@ static const ::_pb::Message* const file_default_instances[] = {
     &::vecsearchgrpc::_DefaultReply_default_instance_._instance,
 };
 const char descriptor_table_protodef_vecsearch_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
-    "\n\017vecsearch.proto\022\rvecsearchgrpc\"Y\n\022Crea"
-    "teIndexRequest\022\021\n\tindexName\030\001 \001(\t\022\022\n\nnum"
-    "Vectors\030\002 \001(\004\022\013\n\003dim\030\003 \001(\r\022\017\n\007vecData\030\004 "
-    "\003(\002\"o\n\rSearchRequest\022\021\n\tindexName\030\001 \001(\t\022"
-    "\027\n\017numQueryVectors\030\002 \001(\r\022\013\n\003dim\030\003 \001(\r\022\017\n"
-    "\007vecData\030\004 \003(\002\022\024\n\014numNeighbors\030\005 \001(\r\"s\n\013"
-    "SearchReply\022\016\n\006status\030\001 \001(\t\022\017\n\007message\030\002"
-    " \001(\t\022\027\n\017numQueryVectors\030\003 \001(\r\022\024\n\014numNeig"
-    "hbors\030\004 \001(\r\022\t\n\001I\030\005 \003(\003\022\t\n\001D\030\006 \003(\002\"#\n\016Def"
-    "aultRequest\022\021\n\tindexName\030\001 \001(\t\"/\n\014Defaul"
-    "tReply\022\016\n\006status\030\001 \001(\t\022\017\n\007message\030\002 \001(\t2"
-    "\217\003\n\020VectorSearchGrpc\022M\n\013createIndex\022!.ve"
-    "csearchgrpc.CreateIndexRequest\032\033.vecsear"
-    "chgrpc.DefaultReply\022I\n\013deleteIndex\022\035.vec"
-    "searchgrpc.DefaultRequest\032\033.vecsearchgrp"
-    "c.DefaultReply\022G\n\tloadIndex\022\035.vecsearchg"
-    "rpc.DefaultRequest\032\033.vecsearchgrpc.Defau"
-    "ltReply\022I\n\013unloadIndex\022\035.vecsearchgrpc.D"
-    "efaultRequest\032\033.vecsearchgrpc.DefaultRep"
-    "ly\022M\n\017searchNeighbors\022\034.vecsearchgrpc.Se"
-    "archRequest\032\032.vecsearchgrpc.SearchReply\""
-    "\000b\006proto3"
+    "\n\017vecsearch.proto\022\rvecsearchgrpc\"\016\n\014Empt"
+    "yRequest\"\?\n\tIndexList\022\021\n\tindexName\030\001 \003(\t"
+    "\022\022\n\nnumVectors\030\002 \003(\004\022\013\n\003dim\030\003 \003(\r\"4\n\tInd"
+    "exInfo\022\021\n\tindexName\030\001 \001(\t\022\024\n\014dataFilePat"
+    "h\030\002 \001(\t\"Y\n\022CreateIndexRequest\022\021\n\tindexNa"
+    "me\030\001 \001(\t\022\022\n\nnumVectors\030\002 \001(\004\022\013\n\003dim\030\003 \001("
+    "\r\022\017\n\007vecData\030\004 \003(\002\"o\n\rSearchRequest\022\021\n\ti"
+    "ndexName\030\001 \001(\t\022\027\n\017numQueryVectors\030\002 \001(\r\022"
+    "\013\n\003dim\030\003 \001(\r\022\017\n\007vecData\030\004 \003(\002\022\024\n\014numNeig"
+    "hbors\030\005 \001(\r\"s\n\013SearchReply\022\016\n\006status\030\001 \001"
+    "(\t\022\017\n\007message\030\002 \001(\t\022\027\n\017numQueryVectors\030\003"
+    " \001(\r\022\024\n\014numNeighbors\030\004 \001(\r\022\t\n\001I\030\005 \003(\003\022\t\n"
+    "\001D\030\006 \003(\002\"#\n\016DefaultRequest\022\021\n\tindexName\030"
+    "\001 \001(\t\"/\n\014DefaultReply\022\016\n\006status\030\001 \001(\t\022\017\n"
+    "\007message\030\002 \001(\t2\371\004\n\020VectorSearchGrpc\022H\n\017l"
+    "istLoadedIndex\022\033.vecsearchgrpc.EmptyRequ"
+    "est\032\030.vecsearchgrpc.IndexList\022P\n\025getInde"
+    "xFromContainer\022\035.vecsearchgrpc.DefaultRe"
+    "quest\032\030.vecsearchgrpc.IndexInfo\022M\n\013creat"
+    "eIndex\022!.vecsearchgrpc.CreateIndexReques"
+    "t\032\033.vecsearchgrpc.DefaultReply\022I\n\013delete"
+    "Index\022\035.vecsearchgrpc.DefaultRequest\032\033.v"
+    "ecsearchgrpc.DefaultReply\022L\n\naddVectors\022"
+    "!.vecsearchgrpc.CreateIndexRequest\032\033.vec"
+    "searchgrpc.DefaultReply\022G\n\tloadIndex\022\035.v"
+    "ecsearchgrpc.DefaultRequest\032\033.vecsearchg"
+    "rpc.DefaultReply\022I\n\013unloadIndex\022\035.vecsea"
+    "rchgrpc.DefaultRequest\032\033.vecsearchgrpc.D"
+    "efaultReply\022M\n\017searchNeighbors\022\034.vecsear"
+    "chgrpc.SearchRequest\032\032.vecsearchgrpc.Sea"
+    "rchReply\"\000B\035Z\033./recommender/vecsearchgrp"
+    "cb\006proto3"
 };
 static ::absl::once_flag descriptor_table_vecsearch_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_vecsearch_2eproto = {
     false,
     false,
-    849,
+    1249,
     descriptor_table_protodef_vecsearch_2eproto,
     "vecsearch.proto",
     &descriptor_table_vecsearch_2eproto_once,
     nullptr,
     0,
-    5,
+    8,
     schemas,
     file_default_instances,
     TableStruct_vecsearch_2eproto::offsets,
@@ -285,6 +386,562 @@ PROTOBUF_ATTRIBUTE_WEAK const ::_pbi::DescriptorTable* descriptor_table_vecsearc
 PROTOBUF_ATTRIBUTE_INIT_PRIORITY2
 static ::_pbi::AddDescriptorsRunner dynamic_init_dummy_vecsearch_2eproto(&descriptor_table_vecsearch_2eproto);
 namespace vecsearchgrpc {
+// ===================================================================
+
+class EmptyRequest::_Internal {
+ public:
+};
+
+EmptyRequest::EmptyRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena)
+  : ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase(arena) {
+  // @@protoc_insertion_point(arena_constructor:vecsearchgrpc.EmptyRequest)
+}
+EmptyRequest::EmptyRequest(const EmptyRequest& from)
+  : ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase() {
+  EmptyRequest* const _this = this; (void)_this;
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  // @@protoc_insertion_point(copy_constructor:vecsearchgrpc.EmptyRequest)
+}
+
+
+
+
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData EmptyRequest::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyImpl,
+    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeImpl,
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*EmptyRequest::GetClassData() const { return &_class_data_; }
+
+
+
+
+
+
+
+::PROTOBUF_NAMESPACE_ID::Metadata EmptyRequest::GetMetadata() const {
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_vecsearch_2eproto_getter, &descriptor_table_vecsearch_2eproto_once,
+      file_level_metadata_vecsearch_2eproto[0]);
+}
+// ===================================================================
+
+class IndexList::_Internal {
+ public:
+};
+
+IndexList::IndexList(::PROTOBUF_NAMESPACE_ID::Arena* arena)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena) {
+  SharedCtor(arena);
+  // @@protoc_insertion_point(arena_constructor:vecsearchgrpc.IndexList)
+}
+IndexList::IndexList(const IndexList& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  IndexList* const _this = this; (void)_this;
+  new (&_impl_) Impl_{
+      decltype(_impl_.indexname_){from._impl_.indexname_}
+    , decltype(_impl_.numvectors_) { from._impl_.numvectors_ }
+    ,/* _impl_._numvectors_cached_byte_size_ = */ { 0 }
+
+    , decltype(_impl_.dim_) { from._impl_.dim_ }
+    ,/* _impl_._dim_cached_byte_size_ = */ { 0 }
+
+    , /*decltype(_impl_._cached_size_)*/{}};
+
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  // @@protoc_insertion_point(copy_constructor:vecsearchgrpc.IndexList)
+}
+
+inline void IndexList::SharedCtor(::_pb::Arena* arena) {
+  (void)arena;
+  new (&_impl_) Impl_{
+      decltype(_impl_.indexname_){arena}
+    , decltype(_impl_.numvectors_) { arena }
+    ,/* _impl_._numvectors_cached_byte_size_ = */ { 0 }
+
+    , decltype(_impl_.dim_) { arena }
+    ,/* _impl_._dim_cached_byte_size_ = */ { 0 }
+
+    , /*decltype(_impl_._cached_size_)*/{}
+  };
+}
+
+IndexList::~IndexList() {
+  // @@protoc_insertion_point(destructor:vecsearchgrpc.IndexList)
+  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
+  (void)arena;
+    return;
+  }
+  SharedDtor();
+}
+
+inline void IndexList::SharedDtor() {
+  ABSL_DCHECK(GetArenaForAllocation() == nullptr);
+  _internal_mutable_indexname()->~RepeatedPtrField();
+  _impl_.numvectors_.~RepeatedField();
+  _impl_.dim_.~RepeatedField();
+}
+
+void IndexList::SetCachedSize(int size) const {
+  _impl_._cached_size_.Set(size);
+}
+
+void IndexList::Clear() {
+// @@protoc_insertion_point(message_clear_start:vecsearchgrpc.IndexList)
+  ::uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  _internal_mutable_indexname()->Clear();
+  _internal_mutable_numvectors()->Clear();
+  _internal_mutable_dim()->Clear();
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* IndexList::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    ::uint32_t tag;
+    ptr = ::_pbi::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // repeated string indexName = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::uint8_t>(tag) == 10)) {
+          ptr -= 1;
+          do {
+            ptr += 1;
+            auto str = _internal_add_indexname();
+            ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
+            CHK_(ptr);
+            CHK_(::_pbi::VerifyUTF8(str, "vecsearchgrpc.IndexList.indexName"));
+            if (!ctx->DataAvailable(ptr)) break;
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<10>(ptr));
+        } else {
+          goto handle_unusual;
+        }
+        continue;
+      // repeated uint64 numVectors = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::uint8_t>(tag) == 18)) {
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::PackedUInt64Parser(_internal_mutable_numvectors(), ptr, ctx);
+          CHK_(ptr);
+        } else if (static_cast<::uint8_t>(tag) == 16) {
+          _internal_add_numvectors(::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr));
+          CHK_(ptr);
+        } else {
+          goto handle_unusual;
+        }
+        continue;
+      // repeated uint32 dim = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::uint8_t>(tag) == 26)) {
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::PackedUInt32Parser(_internal_mutable_dim(), ptr, ctx);
+          CHK_(ptr);
+        } else if (static_cast<::uint8_t>(tag) == 24) {
+          _internal_add_dim(::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr));
+          CHK_(ptr);
+        } else {
+          goto handle_unusual;
+        }
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+::uint8_t* IndexList::_InternalSerialize(
+    ::uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:vecsearchgrpc.IndexList)
+  ::uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // repeated string indexName = 1;
+  for (int i = 0, n = this->_internal_indexname_size(); i < n; ++i) {
+    const auto& s = this->_internal_indexname(i);
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+        s.data(), static_cast<int>(s.length()), ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE, "vecsearchgrpc.IndexList.indexName");
+    target = stream->WriteString(1, s, target);
+  }
+
+  // repeated uint64 numVectors = 2;
+  {
+    int byte_size = _impl_._numvectors_cached_byte_size_.Get();
+    if (byte_size > 0) {
+      target = stream->WriteUInt64Packed(2, _internal_numvectors(),
+                                                 byte_size, target);
+    }
+  }
+
+  // repeated uint32 dim = 3;
+  {
+    int byte_size = _impl_._dim_cached_byte_size_.Get();
+    if (byte_size > 0) {
+      target = stream->WriteUInt32Packed(3, _internal_dim(),
+                                                 byte_size, target);
+    }
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:vecsearchgrpc.IndexList)
+  return target;
+}
+
+::size_t IndexList::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:vecsearchgrpc.IndexList)
+  ::size_t total_size = 0;
+
+  ::uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // repeated string indexName = 1;
+  total_size += 1 * ::PROTOBUF_NAMESPACE_ID::internal::FromIntSize(_internal_indexname().size());
+  for (int i = 0, n = _internal_indexname().size(); i < n; ++i) {
+    total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        _internal_indexname().Get(i));
+  }
+
+  // repeated uint64 numVectors = 2;
+  {
+    std::size_t data_size = ::_pbi::WireFormatLite::UInt64Size(
+        this->_internal_numvectors())
+    ;
+    _impl_._numvectors_cached_byte_size_.Set(::_pbi::ToCachedSize(data_size));
+    std::size_t tag_size = data_size == 0
+        ? 0
+        : 1 + ::_pbi::WireFormatLite::Int32Size(
+                            static_cast<int32_t>(data_size))
+    ;
+    total_size += tag_size + data_size;
+  }
+
+  // repeated uint32 dim = 3;
+  {
+    std::size_t data_size = ::_pbi::WireFormatLite::UInt32Size(
+        this->_internal_dim())
+    ;
+    _impl_._dim_cached_byte_size_.Set(::_pbi::ToCachedSize(data_size));
+    std::size_t tag_size = data_size == 0
+        ? 0
+        : 1 + ::_pbi::WireFormatLite::Int32Size(
+                            static_cast<int32_t>(data_size))
+    ;
+    total_size += tag_size + data_size;
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData IndexList::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
+    IndexList::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*IndexList::GetClassData() const { return &_class_data_; }
+
+
+void IndexList::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<IndexList*>(&to_msg);
+  auto& from = static_cast<const IndexList&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:vecsearchgrpc.IndexList)
+  ABSL_DCHECK_NE(&from, _this);
+  ::uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  _this->_internal_mutable_indexname()->MergeFrom(from._internal_indexname());
+  _this->_impl_.numvectors_.MergeFrom(from._impl_.numvectors_);
+  _this->_impl_.dim_.MergeFrom(from._impl_.dim_);
+  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void IndexList::CopyFrom(const IndexList& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:vecsearchgrpc.IndexList)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool IndexList::IsInitialized() const {
+  return true;
+}
+
+void IndexList::InternalSwap(IndexList* other) {
+  using std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  _internal_mutable_indexname()->InternalSwap(
+      other->_internal_mutable_indexname());
+  _impl_.numvectors_.InternalSwap(&other->_impl_.numvectors_);
+  _impl_.dim_.InternalSwap(&other->_impl_.dim_);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata IndexList::GetMetadata() const {
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_vecsearch_2eproto_getter, &descriptor_table_vecsearch_2eproto_once,
+      file_level_metadata_vecsearch_2eproto[1]);
+}
+// ===================================================================
+
+class IndexInfo::_Internal {
+ public:
+};
+
+IndexInfo::IndexInfo(::PROTOBUF_NAMESPACE_ID::Arena* arena)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena) {
+  SharedCtor(arena);
+  // @@protoc_insertion_point(arena_constructor:vecsearchgrpc.IndexInfo)
+}
+IndexInfo::IndexInfo(const IndexInfo& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  IndexInfo* const _this = this; (void)_this;
+  new (&_impl_) Impl_{
+      decltype(_impl_.indexname_) {}
+
+    , decltype(_impl_.datafilepath_) {}
+
+    , /*decltype(_impl_._cached_size_)*/{}};
+
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  _impl_.indexname_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+        _impl_.indexname_.Set("", GetArenaForAllocation());
+  #endif  // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (!from._internal_indexname().empty()) {
+    _this->_impl_.indexname_.Set(from._internal_indexname(), _this->GetArenaForAllocation());
+  }
+  _impl_.datafilepath_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+        _impl_.datafilepath_.Set("", GetArenaForAllocation());
+  #endif  // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (!from._internal_datafilepath().empty()) {
+    _this->_impl_.datafilepath_.Set(from._internal_datafilepath(), _this->GetArenaForAllocation());
+  }
+  // @@protoc_insertion_point(copy_constructor:vecsearchgrpc.IndexInfo)
+}
+
+inline void IndexInfo::SharedCtor(::_pb::Arena* arena) {
+  (void)arena;
+  new (&_impl_) Impl_{
+      decltype(_impl_.indexname_) {}
+
+    , decltype(_impl_.datafilepath_) {}
+
+    , /*decltype(_impl_._cached_size_)*/{}
+  };
+  _impl_.indexname_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+        _impl_.indexname_.Set("", GetArenaForAllocation());
+  #endif  // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  _impl_.datafilepath_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+        _impl_.datafilepath_.Set("", GetArenaForAllocation());
+  #endif  // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+}
+
+IndexInfo::~IndexInfo() {
+  // @@protoc_insertion_point(destructor:vecsearchgrpc.IndexInfo)
+  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
+  (void)arena;
+    return;
+  }
+  SharedDtor();
+}
+
+inline void IndexInfo::SharedDtor() {
+  ABSL_DCHECK(GetArenaForAllocation() == nullptr);
+  _impl_.indexname_.Destroy();
+  _impl_.datafilepath_.Destroy();
+}
+
+void IndexInfo::SetCachedSize(int size) const {
+  _impl_._cached_size_.Set(size);
+}
+
+void IndexInfo::Clear() {
+// @@protoc_insertion_point(message_clear_start:vecsearchgrpc.IndexInfo)
+  ::uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  _impl_.indexname_.ClearToEmpty();
+  _impl_.datafilepath_.ClearToEmpty();
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* IndexInfo::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    ::uint32_t tag;
+    ptr = ::_pbi::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // string indexName = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::uint8_t>(tag) == 10)) {
+          auto str = _internal_mutable_indexname();
+          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(ptr);
+          CHK_(::_pbi::VerifyUTF8(str, "vecsearchgrpc.IndexInfo.indexName"));
+        } else {
+          goto handle_unusual;
+        }
+        continue;
+      // string dataFilePath = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::uint8_t>(tag) == 18)) {
+          auto str = _internal_mutable_datafilepath();
+          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(ptr);
+          CHK_(::_pbi::VerifyUTF8(str, "vecsearchgrpc.IndexInfo.dataFilePath"));
+        } else {
+          goto handle_unusual;
+        }
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+::uint8_t* IndexInfo::_InternalSerialize(
+    ::uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:vecsearchgrpc.IndexInfo)
+  ::uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // string indexName = 1;
+  if (!this->_internal_indexname().empty()) {
+    const std::string& _s = this->_internal_indexname();
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+        _s.data(), static_cast<int>(_s.length()), ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE, "vecsearchgrpc.IndexInfo.indexName");
+    target = stream->WriteStringMaybeAliased(1, _s, target);
+  }
+
+  // string dataFilePath = 2;
+  if (!this->_internal_datafilepath().empty()) {
+    const std::string& _s = this->_internal_datafilepath();
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+        _s.data(), static_cast<int>(_s.length()), ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE, "vecsearchgrpc.IndexInfo.dataFilePath");
+    target = stream->WriteStringMaybeAliased(2, _s, target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:vecsearchgrpc.IndexInfo)
+  return target;
+}
+
+::size_t IndexInfo::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:vecsearchgrpc.IndexInfo)
+  ::size_t total_size = 0;
+
+  ::uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // string indexName = 1;
+  if (!this->_internal_indexname().empty()) {
+    total_size += 1 + ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+                                    this->_internal_indexname());
+  }
+
+  // string dataFilePath = 2;
+  if (!this->_internal_datafilepath().empty()) {
+    total_size += 1 + ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+                                    this->_internal_datafilepath());
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData IndexInfo::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
+    IndexInfo::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*IndexInfo::GetClassData() const { return &_class_data_; }
+
+
+void IndexInfo::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<IndexInfo*>(&to_msg);
+  auto& from = static_cast<const IndexInfo&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:vecsearchgrpc.IndexInfo)
+  ABSL_DCHECK_NE(&from, _this);
+  ::uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (!from._internal_indexname().empty()) {
+    _this->_internal_set_indexname(from._internal_indexname());
+  }
+  if (!from._internal_datafilepath().empty()) {
+    _this->_internal_set_datafilepath(from._internal_datafilepath());
+  }
+  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void IndexInfo::CopyFrom(const IndexInfo& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:vecsearchgrpc.IndexInfo)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool IndexInfo::IsInitialized() const {
+  return true;
+}
+
+void IndexInfo::InternalSwap(IndexInfo* other) {
+  using std::swap;
+  auto* lhs_arena = GetArenaForAllocation();
+  auto* rhs_arena = other->GetArenaForAllocation();
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  ::_pbi::ArenaStringPtr::InternalSwap(&_impl_.indexname_, lhs_arena,
+                                       &other->_impl_.indexname_, rhs_arena);
+  ::_pbi::ArenaStringPtr::InternalSwap(&_impl_.datafilepath_, lhs_arena,
+                                       &other->_impl_.datafilepath_, rhs_arena);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata IndexInfo::GetMetadata() const {
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_vecsearch_2eproto_getter, &descriptor_table_vecsearch_2eproto_once,
+      file_level_metadata_vecsearch_2eproto[2]);
+}
 // ===================================================================
 
 class CreateIndexRequest::_Internal {
@@ -587,7 +1244,7 @@ void CreateIndexRequest::InternalSwap(CreateIndexRequest* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata CreateIndexRequest::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_vecsearch_2eproto_getter, &descriptor_table_vecsearch_2eproto_once,
-      file_level_metadata_vecsearch_2eproto[0]);
+      file_level_metadata_vecsearch_2eproto[3]);
 }
 // ===================================================================
 
@@ -920,7 +1577,7 @@ void SearchRequest::InternalSwap(SearchRequest* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata SearchRequest::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_vecsearch_2eproto_getter, &descriptor_table_vecsearch_2eproto_once,
-      file_level_metadata_vecsearch_2eproto[1]);
+      file_level_metadata_vecsearch_2eproto[4]);
 }
 // ===================================================================
 
@@ -1316,7 +1973,7 @@ void SearchReply::InternalSwap(SearchReply* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata SearchReply::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_vecsearch_2eproto_getter, &descriptor_table_vecsearch_2eproto_once,
-      file_level_metadata_vecsearch_2eproto[2]);
+      file_level_metadata_vecsearch_2eproto[5]);
 }
 // ===================================================================
 
@@ -1512,7 +2169,7 @@ void DefaultRequest::InternalSwap(DefaultRequest* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata DefaultRequest::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_vecsearch_2eproto_getter, &descriptor_table_vecsearch_2eproto_once,
-      file_level_metadata_vecsearch_2eproto[3]);
+      file_level_metadata_vecsearch_2eproto[6]);
 }
 // ===================================================================
 
@@ -1755,11 +2412,23 @@ void DefaultReply::InternalSwap(DefaultReply* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata DefaultReply::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_vecsearch_2eproto_getter, &descriptor_table_vecsearch_2eproto_once,
-      file_level_metadata_vecsearch_2eproto[4]);
+      file_level_metadata_vecsearch_2eproto[7]);
 }
 // @@protoc_insertion_point(namespace_scope)
 }  // namespace vecsearchgrpc
 PROTOBUF_NAMESPACE_OPEN
+template<> PROTOBUF_NOINLINE ::vecsearchgrpc::EmptyRequest*
+Arena::CreateMaybeMessage< ::vecsearchgrpc::EmptyRequest >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::vecsearchgrpc::EmptyRequest >(arena);
+}
+template<> PROTOBUF_NOINLINE ::vecsearchgrpc::IndexList*
+Arena::CreateMaybeMessage< ::vecsearchgrpc::IndexList >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::vecsearchgrpc::IndexList >(arena);
+}
+template<> PROTOBUF_NOINLINE ::vecsearchgrpc::IndexInfo*
+Arena::CreateMaybeMessage< ::vecsearchgrpc::IndexInfo >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::vecsearchgrpc::IndexInfo >(arena);
+}
 template<> PROTOBUF_NOINLINE ::vecsearchgrpc::CreateIndexRequest*
 Arena::CreateMaybeMessage< ::vecsearchgrpc::CreateIndexRequest >(Arena* arena) {
   return Arena::CreateMessageInternal< ::vecsearchgrpc::CreateIndexRequest >(arena);

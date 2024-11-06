@@ -47,6 +47,7 @@ func main() {
 
 	// Freelancers
 	router.POST(basePath+"/freelancers/add", addFreelancers)
+	router.GET(basePath+"/freelancers/:id/find/projects", findProjectsCloseToFreelancer)
 
 	router.Run("0.0.0.0:8090")
 }

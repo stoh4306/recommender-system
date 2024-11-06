@@ -127,11 +127,29 @@ void printProject(const Project& proj) {
               << "  skill : " << proj.skills << std::endl;
 }
 
-void convertProjectsToVecs(std::string entity, uint32_t& dim, std::vector<float>& fvec) {
+void convertProjectsToVecs(std::string entity, uint32_t& dim, std::vector<float>& fvec, bool normalize = false) {
     if (entity=="description") {
         std::vector<float> tv;
         for(size_t i = 0; i < projectList.size(); ++i) {
             par2vec_client->par2vec(projectList[i].description, dim, tv);
+
+            if (normalize) {
+                double sqNorm = 0.0;
+                for (size_t j = 0; j < tv.size(); ++j) {
+                    sqNorm += (double)tv[j]*tv[j];
+                }
+                if (sqNorm > 0.0) {
+                    float norm = sqrt(sqNorm);
+                    float newNorm2 = 0.0f;
+                    for (size_t j = 0; j < tv.size(); ++j) {
+                        tv[j] /= norm;
+                        newNorm2 += tv[j]*tv[j];    
+                    }
+                    std::cout << "Successfully normalized vector [" << i << "], norm=" << norm << "->" << sqrt(newNorm2) << std::endl;
+                } else {
+                    std::cout << "WARNING : Failed to normalize vector because of zero norm" << std::endl;
+                }
+            }
 
             fvec.insert(fvec.end(), tv.begin(), tv.end());
         }
@@ -183,7 +201,7 @@ int createIndex(std::string indexName, uint32_t dim, std::vector<float>& fvec, s
     return 0;
 }
 
-void create_project_collection() {
+void create_project_collection(std::string indexName, std::string vecToProjectTable, bool normalize) {
     // 1. Read project data from DB
     std::string err;
     projectList.resize(0);
@@ -198,14 +216,14 @@ void create_project_collection() {
     // 2.1 convert project descriptions to vectors
     uint32_t dim = 1;
     std::vector<float> fvec;
-    convertProjectsToVecs("description", dim, fvec);
+    convertProjectsToVecs("description", dim, fvec, normalize);
     std::cout << "- # fvec = " << fvec.size()/dim << ", dim=" << dim << std::endl;
 
-    // 2.2 add a pair (vector_id, project_id) to the project_index table
-    insertDataToVec2ProjectTable("vec_to_project", err);
+    // 2.2 add a pair (vector_id, project_id) to the project_index table (default="vec_to_project")
+    insertDataToVec2ProjectTable(vecToProjectTable, err);
     
-    // 3. create index with fvec
-    createIndex("project_collection", dim, fvec, err);
+    // 3. create index with fvec (indexName = "project_collection")
+    createIndex(indexName, dim, fvec, err);
 }
 
 int readFreelancerListFromDB(std::string& err) {
@@ -259,11 +277,29 @@ void printFreelancer(const Freelancer& free) {
               << "  skill : " << free.skills << std::endl;
 }
 
-void convertFreelancersToVecs(std::string entity, uint32_t& dim, std::vector<float>& fvec) {
+void convertFreelancersToVecs(std::string entity, uint32_t& dim, std::vector<float>& fvec, bool normalize = false) {
     if (entity=="introduction") {
         std::vector<float> tv;
         for(size_t i = 0; i < freelancerList.size(); ++i) {
             par2vec_client->par2vec(freelancerList[i].introduction, dim, tv);
+
+            if (normalize) {
+                double sqNorm = 0.0;
+                for (size_t j = 0; j < tv.size(); ++j) {
+                    sqNorm += (double)tv[j]*tv[j];
+                }
+                if (sqNorm > 0.0) {
+                    float norm = sqrt(sqNorm);
+                    float newNorm2 = 0.0f;
+                    for (size_t j = 0; j < tv.size(); ++j) {
+                        tv[j] /= norm;
+                        newNorm2 += tv[j]*tv[j];
+                    }
+                    std::cout << "Successfully normalized vector [" << i << "] : norm = " << norm << "->" << sqrt(newNorm2) << std::endl;
+                } else {
+                    std::cout << "WARNING : Failed to normalize vector because of zero norm"  << std::endl;
+                }
+            }
 
             fvec.insert(fvec.end(), tv.begin(), tv.end());
         }
@@ -311,7 +347,7 @@ int insertDataToVec2FreelancerTable(std::string tableName, std::string& err) {
 }
 
 
-void create_freelancer_collection() {
+void create_freelancer_collection(std::string indexName, std::string vecToFreelancerTable, bool normalize) {
     // 1. Read freelancer data from DB
     std::string err;
     freelancerList.resize(0);
@@ -325,14 +361,14 @@ void create_freelancer_collection() {
     // 2.1 convert freelancer introduction to vectors
     uint32_t dim = 1;
     std::vector<float> fvec;
-    convertFreelancersToVecs("introduction", dim, fvec);
+    convertFreelancersToVecs("introduction", dim, fvec, normalize);
     std::cout << "- # fvec = " << fvec.size()/dim << ", dim=" << dim << std::endl;
 
     // 2.2 add a pair (vector_id, freelancer_id) to the freelancer_index table
     insertDataToVec2FreelancerTable("vec_to_freelancer", err);
     
-    // 3. create index with fvec
-    createIndex("freelancer_collection", dim, fvec, err);
+    // 3. create index with fvec (indexName = "freelancer_collection")
+    createIndex(indexName, dim, fvec, err);
 }
 
 int main(int argc, char** argv) {
@@ -342,13 +378,15 @@ int main(int argc, char** argv) {
     //        and create_freelancer_collection().
     //--------------------------------------------------------------
     make_clients();
-    test();
 
     // Create a project collection
-    //create_project_collection();
+    create_project_collection("project_collection", "vec_to_project", true);
 
     // Create a freelancer collection
-    //create_freelancer_collection();
+    //bool normalize = true;
+    create_freelancer_collection("freelancer_collection", "vec_to_freelancer", true);
+
+    //test();
 
     delete par2vec_client; par2vec_client = nullptr;
     delete vecsearch_client; vecsearch_client = nullptr;
