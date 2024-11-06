@@ -102,7 +102,7 @@ func findFreelancersCloseToProject(c *gin.Context) {
 	}
 
 	logger.Infof("project description for id=%v: %v", proj_id, proj_descr)
-	fvec, err := par2vec(proj_descr)
+	fvec, err := par2vec(proj_descr, true)
 	if err != nil {
 		c.IndentedJSON(http.StatusInternalServerError,
 			gin.H{"status": "Failure", "message": err})
@@ -198,7 +198,7 @@ func addProjectsToDB(proj *[]Project) error {
 	// Update search structure
 	fvec := make([]float32, 0)
 	for _, p := range *proj {
-		tfv, err := par2vec(p.Description)
+		tfv, err := par2vec(p.Description, true)
 		if err != nil {
 			logger.Errorf("Error converting to feature vector: %v", err)
 			return err

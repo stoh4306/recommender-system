@@ -67,7 +67,7 @@ func convertParToVec(c *gin.Context) {
 }
 */
 
-func par2vec(paragraph string) ([]float32, error) {
+func par2vec(paragraph string, normalize bool) ([]float32, error) {
 	connPar2vec, err := grpc.NewClient(par2VecGrpcURL_, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		fmt.Printf("Failed to connect gRPC server: %v", par2VecGrpcURL_)
@@ -89,6 +89,20 @@ func par2vec(paragraph string) ([]float32, error) {
 		return nil, nil
 	}
 
+	if normalize {
+
+		sqNorm := 0.0
+		for _, a := range r.FVec {
+			sqNorm += float64(a) * float64(a)
+		}
+
+		norm := float32(math.Sqrt(sqNorm))
+		N := len(r.FVec)
+		for i := 0; i < N; i++ {
+			r.FVec[i] /= norm
+		}
+	}
+
 	return r.GetFVec(), nil
 }
 
@@ -96,7 +110,7 @@ func convertParToVec(c *gin.Context) {
 	var req Par2VecRequest
 	c.BindJSON(&req)
 	logger.Infof("paragraph= %v", req.Paragraph)
-	fvec, err := par2vec(req.Paragraph)
+	fvec, err := par2vec(req.Paragraph, true)
 	if err != nil {
 		c.IndentedJSON(http.StatusInternalServerError,
 			SimpleResponse{"Failed to compute feature vector from input paragraph"})
@@ -107,7 +121,7 @@ func convertParToVec(c *gin.Context) {
 	var response Par2VecResponse
 	response.Dim = len(fvec)
 	response.FVec = fvec
-	length2 := float32(0.0)
+	/*length2 := float32(0.0)
 	for _, v := range fvec {
 		length2 = length2 + v*v
 	}
@@ -118,6 +132,6 @@ func convertParToVec(c *gin.Context) {
 		fvec[i] = fvec[i] / length
 		newLength2 += fvec[i] * fvec[i]
 	}
-	logger.Infof("dim=%v, fv=%v...%v, length=%v -> %v", len(fvec), fvec[0], fvec[len(fvec)-1], length2, newLength2)
+	logger.Infof("dim=%v, fv=%v...%v, length=%v -> %v", len(fvec), fvec[0], fvec[len(fvec)-1], length2, newLength2)*/
 	c.JSON(http.StatusOK, response)
 }
