@@ -86,6 +86,17 @@ func getProjects(ids []int64) ([]string, error) {
 	return projlist, nil
 }
 
+// Find projects  godoc
+// @Summary      Find projects
+// @Description  Find freelancers clost to a given project
+// @Tags         Search
+// @Accept       json
+// @Produce      json
+// @Param		 id 	path   int true  "Freelancer Id"
+// @Success      200  {object}  SearchProjectResponse "Found projects close to the input freelancer"
+// @Failure		 400  {object}  VsDefaultResponse "Freelancer ID missing in the path"
+// @Failure 	 500  {object}  VsDefaultResponse "Internal server error"
+// @Router       /freelancer/{id}/find/projects [get]
 func findProjectsCloseToFreelancer(c *gin.Context) {
 	free_id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {

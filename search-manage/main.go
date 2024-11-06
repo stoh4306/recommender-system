@@ -2,9 +2,14 @@ package main
 
 import (
 	"fmt"
+	"net/http"
+	"recommender/docs"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
+
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 var logger = logrus.New()
@@ -15,14 +20,33 @@ var vecSearchGrpcURL_ string = "192.168.0.20:50053"
 // Connect to DB
 var dsn string = "grida:MM22mm01#" + "@tcp(192.168.0.5:3306)/" + "recommender"
 
+func setupSwagger(r *gin.Engine) {
+	r.GET("/", func(c *gin.Context) {
+		c.Redirect(http.StatusFound, "/swagger/index.html")
+	})
+
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+}
+
 func main() {
 	fmt.Println("*********************************************")
 	fmt.Println(" Similarity Search Management Server")
 	fmt.Println("*********************************************")
 
+	// Set swagger info
+	docs.SwaggerInfo.Title = "Recommender API"
+	docs.SwaggerInfo.Description = "This is a recommender backend server"
+	docs.SwaggerInfo.Version = "1.0"
+	docs.SwaggerInfo.Host = "192.168.0.20:8090"
+	docs.SwaggerInfo.BasePath = "/recommend"
+	docs.SwaggerInfo.Schemes = []string{"http", "https"}
+
 	// For Rest API
 	router := gin.New()
 	router.Use(gin.Logger())
+
+	// For swagger
+	setupSwagger(router)
 
 	basePath := "/recommend/"
 
@@ -43,7 +67,7 @@ func main() {
 
 	// Projects
 	router.POST(basePath+"/projects/add", addProjects)
-	router.POST(basePath+"/projects/:id/find/freelancers", findFreelancersCloseToProject)
+	router.GET(basePath+"/projects/:id/find/freelancers", findFreelancersCloseToProject)
 
 	// Freelancers
 	router.POST(basePath+"/freelancers/add", addFreelancers)

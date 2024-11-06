@@ -106,6 +106,16 @@ func par2vec(paragraph string, normalize bool) ([]float32, error) {
 	return r.GetFVec(), nil
 }
 
+// convertParToVec godoc
+// @Summary      Convert a paragraph to feature vector
+// @Description  Convert a paragraph to feature vector
+// @Tags         Par2Vec
+// @Accept       json
+// @Produce      json
+// @Param        paragraph   body Par2VecRequest  true  "Paragraph"
+// @Success      200  {object}  Par2VecResponse "Successfully converted paragraph to feature vector"
+// @Failure 	 500  {object}	SimpleResponse "Internal server error"
+// @Router       /par2vec [post]
 func convertParToVec(c *gin.Context) {
 	var req Par2VecRequest
 	c.BindJSON(&req)

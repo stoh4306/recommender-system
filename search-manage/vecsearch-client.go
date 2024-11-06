@@ -95,6 +95,17 @@ func searchIndex(indexName string, nq uint32, dim uint32, k uint32, xq *[]float3
 	return response.I, response.D, nil
 }
 
+// Search neighbors  godoc
+// @Summary      Find neighbor items for a given feature vector
+// @Description  Find neighbor items for a given feature vector
+// @Tags         Index
+// @Accept       json
+// @Produce      json
+// @Param		 Request body VsSearchRequest true "Search request"
+// @Success      200  {object}  VsSearchResponse "Found neighbors close to the input feature vector"
+// @Failure		 400  {object}  VsSearchResponse ""
+// @Failure 	 500  {object}  VsSearchResponse "Internal server error"
+// @Router       /index/search [post]
 func searchNeighbors(c *gin.Context) {
 	var req VsSearchRequest
 	c.BindJSON(&req)
@@ -166,6 +177,15 @@ func getListOfLoadedIndex(client pb.VectorSearchGrpcClient, ctx context.Context,
 	return nil
 }
 
+// Get a list of loaded indices godoc
+// @Summary      Get a list of all loadded indices
+// @Description  Get a list of all loaded indices
+// @Tags         Index
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  VsIndexList ""
+// @Failure 	 500  {object}	VsDefaultResponse "Internal server error"
+// @Router       /index/getList [get]
 func getSearchIndexList(c *gin.Context) {
 	// Make a connection to the grpc server
 	connVecSearchGrpc, err := grpc.NewClient(vecSearchGrpcURL_, grpc.WithTransportCredentials(insecure.NewCredentials()))
@@ -217,12 +237,12 @@ func getIndexFromContainer(client pb.VectorSearchGrpcClient, ctx context.Context
 	return nil
 }
 
-func loadIndex(indexName string) error {
+func loadIndex(indexName string) (string, error) {
 	// Make a connection to the grpc server
 	connVecSearchGrpc, err := grpc.NewClient(vecSearchGrpcURL_, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		logger.Errorf("Failed to connect gRPC server: %v", vecSearchGrpcURL_)
-		return err
+		return "", err
 	}
 	defer connVecSearchGrpc.Close()
 
@@ -237,20 +257,32 @@ func loadIndex(indexName string) error {
 	// Check if the index is already loaded
 	_, err = client.GetIndexFromContainer(ctx, &grpc_req)
 	if err == nil {
-		logger.Infof("The index already loaded : %v", indexName)
-		return nil
+		tmpMesg := fmt.Sprintf("The index already loaded: %v", indexName)
+		logger.Infof(tmpMesg)
+		return tmpMesg, nil
 	}
 
 	// Load index to memory
 	_, err = client.LoadIndex(ctx, &grpc_req)
 	if err != nil {
 		logger.Infof("Failed to load the index in the container : %v, %v", indexName, err.Error())
-		return err
+		return "", err
 	}
 	logger.Infof("Loaded the index to memory : %v", indexName)
-	return nil
+	return "", nil
 }
 
+// Load index godoc
+// @Summary      Load index
+// @Description  Load index from DB to memory
+// @Tags         Index
+// @Accept       json
+// @Produce      json
+// @Param        Request   body VsDefaultRequest  true  "Default request"
+// @Success      200  {object}  VsDefaultResponse "Loaded index"
+// @Failure		 400  {object}  VsDefaultResponse "Name parameter required"
+// @Failure 	 500  {object}  VsDefaultResponse "Internal server error"
+// @Router       /index/load [post]
 func loadSearchIndex(c *gin.Context) {
 	var req VsDefaultRequest
 	c.BindJSON(&req)
@@ -265,25 +297,30 @@ func loadSearchIndex(c *gin.Context) {
 	}
 
 	// Load the index from DB to memory
-	err := loadIndex(req.IndexName)
+	mesg, err := loadIndex(req.IndexName)
 	if err != nil {
 		response.Status = "Failure"
 		response.Message = err.Error()
 		c.JSON(http.StatusInternalServerError, response)
+		return
 	}
 
 	//
 	response.Status = "Success"
-	response.Message = "Loaded index : " + req.IndexName
+	if mesg != "" {
+		response.Message = mesg
+	} else {
+		response.Message = "Loaded index : " + req.IndexName
+	}
 	c.IndentedJSON(http.StatusOK, response)
 }
 
-func unloadIndex(indexName string) error {
+func unloadIndex(indexName string) (string, error) {
 	// Make a connection to the grpc server
 	connVecSearchGrpc, err := grpc.NewClient(vecSearchGrpcURL_, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		logger.Errorf("Failed to connect gRPC server: %v", vecSearchGrpcURL_)
-		return err
+		return "", err
 	}
 	defer connVecSearchGrpc.Close()
 
@@ -296,19 +333,31 @@ func unloadIndex(indexName string) error {
 	grpc_req.IndexName = indexName
 	_, err = client.GetIndexFromContainer(ctx, &grpc_req)
 	if err != nil {
-		logger.Infof("The index not found in memory")
-		return nil
+		mesg := fmt.Sprintf("The index not found in memory: %v", indexName)
+		logger.Infof(mesg)
+		return mesg, nil
 	}
 
 	_, err = client.UnloadIndex(ctx, &grpc_req)
 	if err != nil {
 		logger.Errorf("Failed to unload index: %v", err)
-		return err
+		return "", err
 	}
 	logger.Infof("Successfully unloaded index: %v", indexName)
-	return nil
+	return "", nil
 }
 
+// Unload index godoc
+// @Summary      Unload index
+// @Description  Unload index from memory
+// @Tags         Index
+// @Accept       json
+// @Produce      json
+// @Param        Request   body VsDefaultRequest  true  "Default request"
+// @Success      200  {object}  VsDefaultResponse "Unloaded index"
+// @Failure		 400  {object}  VsDefaultResponse "Name parameter required"
+// @Failure 	 500  {object}  VsDefaultResponse "Internal server error"
+// @Router       /index/unload [post]
 func unloadSearchIndex(c *gin.Context) {
 	var req VsDefaultRequest
 	c.BindJSON(&req)
@@ -324,17 +373,21 @@ func unloadSearchIndex(c *gin.Context) {
 	}
 
 	// Now, try to unload index from memory(container)
-	err := unloadIndex(req.IndexName)
+	mesg, err := unloadIndex(req.IndexName)
 	if err != nil {
 		response.Status = "Failure"
-		response.Message = "Unable to unload index : " + req.IndexName + ", " + err.Error()
+		response.Message = err.Error()
 		c.JSON(http.StatusInternalServerError, response)
 		return
 	}
 
 	//
 	response.Status = "Success"
-	response.Message = "Unloaded an index : " + req.IndexName
+	if mesg != "" {
+		response.Message = mesg
+	} else {
+		response.Message = "Unloaded an index : " + req.IndexName
+	}
 	c.IndentedJSON(http.StatusOK, response)
 }
 
