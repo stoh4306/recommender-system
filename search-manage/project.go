@@ -142,6 +142,160 @@ func findFreelancersCloseToProject(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, response)
 }
 
+func getProjectData(ids []uint64) ([]Project, error) {
+	projData := []Project{}
+
+	// Connect to DB
+	db, err := sql.Open("mysql", dsn)
+	if err != nil {
+		logger.Errorf("Error opening database connection: %v", err)
+		return projData, err
+	}
+	defer db.Close()
+
+	if err := db.Ping(); err != nil {
+		logger.Errorf("Error pinging database: %v", err)
+		return projData, err
+	}
+	logger.Infoln("Successfully connected to the database")
+
+	proj_table := "project"
+	query := "SELECT title, description, skills FROM " + proj_table + " WHERE id = ?"
+
+	for _, proj_id := range ids {
+		rows, err := db.Query(query, proj_id)
+		if err != nil {
+			logger.Errorf("Error retrieving database: %v", err)
+			return projData, err
+		}
+
+		var title, descr, skills string
+		for rows.Next() {
+			err = rows.Scan(&title, &descr, &skills)
+			if err != nil {
+				logger.Errorf("Error retrieving database: %v", err)
+				return projData, err
+			}
+
+			projData = append(projData, Project{Title: title, Description: descr, Skills: skills})
+			break
+		}
+	}
+
+	return projData, nil
+}
+
+// Retrieve project data  godoc
+// @Summary      Retrieve project data with project id
+// @Description  Retrieve project data with project id
+// @Tags         Project/Freelancer
+// @Accept       json
+// @Produce      json
+// @Param		 id 	path   int true  "Project Id"
+// @Success      200  {object}  ProjectList "Retrieved project data"
+// @Failure		 400  {object}  VsDefaultResponse "Project ID missing in the path or is not a proper integer"
+// @Failure 	 500  {object}  VsDefaultResponse "Internal server error"
+// @Router       /projects/{id} [get]
+func retrieveProjectData(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{
+			"status":  "Failure",
+			"message": "id parameter is not a proper integer",
+		})
+		return
+	}
+
+	ids := make([]uint64, 1)
+	ids[0] = uint64(id)
+	projData, err := getProjectData(ids)
+	if err != nil {
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{
+			"status":  "Failure",
+			"message": err.Error(),
+		})
+		return
+	}
+
+	c.IndentedJSON(http.StatusOK, ProjectList{Projects: projData})
+}
+
+func findProjectId(vid int) (uint64, error) {
+	// Connect to DB
+	db, err := sql.Open("mysql", dsn)
+	if err != nil {
+		logger.Errorf("Error opening database connection: %v", err)
+		return 0, err
+	}
+	defer db.Close()
+
+	if err := db.Ping(); err != nil {
+		logger.Errorf("Error pinging database: %v", err)
+		return 0, err
+	}
+	logger.Infoln("Successfully connected to the database")
+
+	table := "vec_to_project"
+	query := "SELECT project_id FROM " + table + " WHERE vector_id = ?"
+
+	var pid uint64 = 0
+	err = db.QueryRow(query, vid).Scan(&pid)
+	if err != nil {
+		logger.Errorf("Error retrieving database: %v", err)
+		return 0, err
+	}
+
+	return uint64(pid), nil
+}
+
+// Retrieve project data  godoc
+// @Summary      Retrieve project data with a vector id
+// @Description  Retrieve project data with a vector id
+// @Tags         Project/Freelancer
+// @Accept       json
+// @Produce      json
+// @Param		 vid 	path   int true  "Vector Id"
+// @Success      200  {object}  ProjectList "Retrieved project data"
+// @Failure		 400  {object}  VsDefaultResponse "Project ID missing in the path or is not a proper integer"
+// @Failure 	 500  {object}  VsDefaultResponse "Internal server error"
+// @Router       /projects/getDataWithVid/{vid} [get]
+func getProjectDataWithVecId(c *gin.Context) {
+	vid, err := strconv.Atoi(c.Param("vid"))
+	if err != nil {
+		mesg := "Vector index missing or invalid vector index"
+		logger.Errorf(mesg)
+		c.IndentedJSON(http.StatusBadRequest, gin.H{
+			"status":  "Failure",
+			"message": mesg,
+		})
+		return
+	}
+
+	pid := make([]uint64, 1)
+	pid[0], err = findProjectId(vid)
+	if err != nil {
+		mesg := "Failed to find the project id with the input"
+		logger.Errorf(mesg)
+		c.IndentedJSON(http.StatusBadRequest, gin.H{
+			"status":  "Failure",
+			"message": err,
+		})
+		return
+	}
+
+	proj, err := getProjectData(pid)
+	if err != nil {
+		mesg := "Failed to retrieve the project  data with the project id"
+		logger.Errorf(mesg)
+		c.IndentedJSON(http.StatusBadRequest, gin.H{
+			"status":  "Failure",
+			"message": err,
+		})
+		return
+	}
+	c.IndentedJSON(http.StatusOK, ProjectList{Projects: proj})
+}
+
 func addProjectsToDB(proj *[]Project) error {
 	if len(*proj) == 0 {
 		return nil

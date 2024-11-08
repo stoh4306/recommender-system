@@ -1,4 +1,20 @@
 definitions:
+  main.Freelancer:
+    properties:
+      introduction:
+        type: string
+      name:
+        type: string
+      skills:
+        type: string
+    type: object
+  main.FreelancerList:
+    properties:
+      freelancers:
+        items:
+          $ref: '#/definitions/main.Freelancer'
+        type: array
+    type: object
   main.Par2VecRequest:
     properties:
       paragraph:
@@ -11,6 +27,22 @@ definitions:
       fvec:
         items:
           type: number
+        type: array
+    type: object
+  main.Project:
+    properties:
+      description:
+        type: string
+      skills:
+        type: string
+      title:
+        type: string
+    type: object
+  main.ProjectList:
+    properties:
+      projects:
+        items:
+          $ref: '#/definitions/main.Project'
         type: array
     type: object
   main.SearchFreelancerResponse:
@@ -117,10 +149,50 @@ definitions:
       status:
         type: string
     type: object
+  main.VsUnloadedIndexList:
+    properties:
+      indexName:
+        items:
+          type: string
+        type: array
+      numVectors:
+        items:
+          type: integer
+        type: array
+    type: object
 info:
   contact: {}
 paths:
-  /freelancer/{id}/find/projects:
+  /freelancers/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve freelancer data with project id
+      parameters:
+      - description: Freelancer Id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Retrieved project data
+          schema:
+            $ref: '#/definitions/main.FreelancerList'
+        "400":
+          description: Freelancer ID missing in the path or is not a proper integer
+          schema:
+            $ref: '#/definitions/main.VsDefaultResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/main.VsDefaultResponse'
+      summary: Retrieve freelancer data with project id
+      tags:
+      - Project/Freelancer
+  /freelancers/{id}/find/projects:
     get:
       consumes:
       - application/json
@@ -149,6 +221,35 @@ paths:
       summary: Find projects
       tags:
       - Search
+  /freelancers/getDataWithVid/{vid}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve freelancer data with a vector id
+      parameters:
+      - description: Vector Id
+        in: path
+        name: vid
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Retrieved freelancer data
+          schema:
+            $ref: '#/definitions/main.FreelancerList'
+        "400":
+          description: Project ID missing in the path or is not a proper integer
+          schema:
+            $ref: '#/definitions/main.VsDefaultResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/main.VsDefaultResponse'
+      summary: Retrieve freelancer data with a vector id
+      tags:
+      - Project/Freelancer
   /index/getList:
     get:
       consumes:
@@ -161,6 +262,25 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/main.VsIndexList'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/main.VsDefaultResponse'
+      summary: Get a list of all loadded indices
+      tags:
+      - Index
+  /index/getListUnloaded:
+    get:
+      consumes:
+      - application/json
+      description: Get a list of all loaded indices
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.VsUnloadedIndexList'
         "500":
           description: Internal server error
           schema:
@@ -284,6 +404,35 @@ paths:
       summary: Convert a paragraph to feature vector
       tags:
       - Par2Vec
+  /projects/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve project data with project id
+      parameters:
+      - description: Project Id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Retrieved project data
+          schema:
+            $ref: '#/definitions/main.ProjectList'
+        "400":
+          description: Project ID missing in the path or is not a proper integer
+          schema:
+            $ref: '#/definitions/main.VsDefaultResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/main.VsDefaultResponse'
+      summary: Retrieve project data with project id
+      tags:
+      - Project/Freelancer
   /projects/{id}/find/freelancers:
     get:
       consumes:
@@ -313,4 +462,33 @@ paths:
       summary: Find freelancers
       tags:
       - Search
+  /projects/getDataWithVid/{vid}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve project data with a vector id
+      parameters:
+      - description: Vector Id
+        in: path
+        name: vid
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Retrieved project data
+          schema:
+            $ref: '#/definitions/main.ProjectList'
+        "400":
+          description: Project ID missing in the path or is not a proper integer
+          schema:
+            $ref: '#/definitions/main.VsDefaultResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/main.VsDefaultResponse'
+      summary: Retrieve project data with a vector id
+      tags:
+      - Project/Freelancer
 swagger: "2.0"

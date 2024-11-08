@@ -15,7 +15,95 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/freelancer/{id}/find/projects": {
+        "/freelancers/getDataWithVid/{vid}": {
+            "get": {
+                "description": "Retrieve freelancer data with a vector id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Project/Freelancer"
+                ],
+                "summary": "Retrieve freelancer data with a vector id",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Vector Id",
+                        "name": "vid",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Retrieved freelancer data",
+                        "schema": {
+                            "$ref": "#/definitions/main.FreelancerList"
+                        }
+                    },
+                    "400": {
+                        "description": "Project ID missing in the path or is not a proper integer",
+                        "schema": {
+                            "$ref": "#/definitions/main.VsDefaultResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/main.VsDefaultResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/freelancers/{id}": {
+            "get": {
+                "description": "Retrieve freelancer data with project id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Project/Freelancer"
+                ],
+                "summary": "Retrieve freelancer data with project id",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Freelancer Id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Retrieved project data",
+                        "schema": {
+                            "$ref": "#/definitions/main.FreelancerList"
+                        }
+                    },
+                    "400": {
+                        "description": "Freelancer ID missing in the path or is not a proper integer",
+                        "schema": {
+                            "$ref": "#/definitions/main.VsDefaultResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/main.VsDefaultResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/freelancers/{id}/find/projects": {
             "get": {
                 "description": "Find freelancers clost to a given project",
                 "consumes": [
@@ -77,6 +165,35 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/main.VsIndexList"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/main.VsDefaultResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/index/getListUnloaded": {
+            "get": {
+                "description": "Get a list of all loaded indices",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Index"
+                ],
+                "summary": "Get a list of all loadded indices",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/main.VsUnloadedIndexList"
                         }
                     },
                     "500": {
@@ -266,6 +383,94 @@ const docTemplate = `{
                 }
             }
         },
+        "/projects/getDataWithVid/{vid}": {
+            "get": {
+                "description": "Retrieve project data with a vector id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Project/Freelancer"
+                ],
+                "summary": "Retrieve project data with a vector id",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Vector Id",
+                        "name": "vid",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Retrieved project data",
+                        "schema": {
+                            "$ref": "#/definitions/main.ProjectList"
+                        }
+                    },
+                    "400": {
+                        "description": "Project ID missing in the path or is not a proper integer",
+                        "schema": {
+                            "$ref": "#/definitions/main.VsDefaultResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/main.VsDefaultResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/projects/{id}": {
+            "get": {
+                "description": "Retrieve project data with project id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Project/Freelancer"
+                ],
+                "summary": "Retrieve project data with project id",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Project Id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Retrieved project data",
+                        "schema": {
+                            "$ref": "#/definitions/main.ProjectList"
+                        }
+                    },
+                    "400": {
+                        "description": "Project ID missing in the path or is not a proper integer",
+                        "schema": {
+                            "$ref": "#/definitions/main.VsDefaultResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/main.VsDefaultResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/projects/{id}/find/freelancers": {
             "get": {
                 "description": "Find freelancers clost to a given project",
@@ -312,6 +517,31 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "main.Freelancer": {
+            "type": "object",
+            "properties": {
+                "introduction": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "skills": {
+                    "type": "string"
+                }
+            }
+        },
+        "main.FreelancerList": {
+            "type": "object",
+            "properties": {
+                "freelancers": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/main.Freelancer"
+                    }
+                }
+            }
+        },
         "main.Par2VecRequest": {
             "type": "object",
             "properties": {
@@ -330,6 +560,31 @@ const docTemplate = `{
                     "type": "array",
                     "items": {
                         "type": "number"
+                    }
+                }
+            }
+        },
+        "main.Project": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "skills": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "main.ProjectList": {
+            "type": "object",
+            "properties": {
+                "projects": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/main.Project"
                     }
                 }
             }
@@ -491,6 +746,23 @@ const docTemplate = `{
                 },
                 "status": {
                     "type": "string"
+                }
+            }
+        },
+        "main.VsUnloadedIndexList": {
+            "type": "object",
+            "properties": {
+                "indexName": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "numVectors": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
                 }
             }
         }

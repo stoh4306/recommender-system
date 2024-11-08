@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	"net/http"
 	pb "recommender/proto-vecsearch"
@@ -23,6 +24,11 @@ type VsIndexList struct {
 	IndexName  []string `json:"indexName"`
 	NumVectors []uint64 `json:"numVectors"`
 	Dim        []uint32 `json:"dim"`
+}
+
+type VsUnloadedIndexList struct {
+	IndexName  []string `json:"indexName"`
+	NumVectors []uint64 `json:"numVectors"`
 }
 
 type VsCreateIndexRequest struct {
@@ -219,6 +225,125 @@ func getSearchIndexList(c *gin.Context) {
 	success_response.IndexName = indexName
 	success_response.NumVectors = numVectors
 	success_response.Dim = dim
+	c.JSON(http.StatusOK, success_response)
+}
+
+func subtractArrays(arr1, arr2 []string) ([]string, []int) {
+	result := []string{}
+	id := []int{}
+
+	for i, e1 := range arr1 {
+		found := false
+		for _, e2 := range arr2 {
+			if e1 == e2 {
+				found = true
+				break
+			}
+		}
+		if !found {
+			result = append(result, e1)
+			id = append(id, i)
+		}
+	}
+	return result, id
+}
+
+func getListOfIndexInDB(indexNameInDB *[]string, numVectorsInDB *[]uint64) error {
+	// Connect to DB
+	db, err := sql.Open("mysql", dsn)
+	if err != nil {
+		logger.Errorf("Error opening database connection: %v", err)
+		return err
+	}
+	defer db.Close()
+
+	if err := db.Ping(); err != nil {
+		logger.Errorf("Error pinging database: %v", err)
+		return err
+	}
+	logger.Infoln("Successfully connected to the database")
+
+	proj_table := "search_index"
+	query := "SELECT name, num_vectors FROM " + proj_table
+
+	rows, err := db.Query(query)
+	if err != nil {
+		logger.Errorf("Error retrieving database: %v", err)
+		return err
+	}
+	var name string
+	var numVec uint64
+	for rows.Next() {
+		err = rows.Scan(&name, &numVec)
+		if err != nil {
+			logger.Errorf("Error retrieving database: %v", err)
+			return err
+		}
+		*indexNameInDB = append(*indexNameInDB, name)
+		*numVectorsInDB = append(*numVectorsInDB, numVec)
+	}
+
+	return nil
+}
+
+// Get a list of unloaded indices godoc
+// @Summary      Get a list of all loadded indices
+// @Description  Get a list of all loaded indices
+// @Tags         Index
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  VsUnloadedIndexList ""
+// @Failure 	 500  {object}	VsDefaultResponse "Internal server error"
+// @Router       /index/getListUnloaded [get]
+func getSearchIndexListUnloaded(c *gin.Context) {
+	// Make a connection to the grpc server
+	connVecSearchGrpc, err := grpc.NewClient(vecSearchGrpcURL_, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		fmt.Printf("Failed to connect gRPC server: %v", vecSearchGrpcURL_)
+		return
+	}
+	defer connVecSearchGrpc.Close()
+
+	client := pb.NewVectorSearchGrpcClient(connVecSearchGrpc)
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	// Get the list of indices in the container
+	indexNameInMem := []string{}
+	numVectorsInMem := []uint64{}
+	dim := []uint32{}
+
+	err = getListOfLoadedIndex(client, ctx, &indexNameInMem, &numVectorsInMem, &dim)
+	if err != nil {
+		var response VsDefaultResponse
+		response.Status = "Failure"
+		response.Message = err.Error()
+		c.JSON(http.StatusInternalServerError, response)
+		return
+	}
+
+	// Get the list of indices stored in DB
+	indexNameInDB := []string{}
+	numVectorsInDB := []uint64{}
+	err = getListOfIndexInDB(&indexNameInDB, &numVectorsInDB)
+	if err != nil {
+		var response VsDefaultResponse
+		response.Status = "Failure"
+		response.Message = err.Error()
+		c.JSON(http.StatusInternalServerError, response)
+		return
+	}
+
+	indexNameUnloaded, id_unloaded := subtractArrays(indexNameInDB, indexNameInMem)
+	numVectorsUnloaded := []uint64{}
+	for _, id := range id_unloaded {
+		numVectorsUnloaded = append(numVectorsUnloaded, numVectorsInDB[id])
+	}
+
+	var success_response VsUnloadedIndexList
+	success_response.IndexName = indexNameUnloaded
+	success_response.NumVectors = numVectorsUnloaded
 	c.JSON(http.StatusOK, success_response)
 }
 

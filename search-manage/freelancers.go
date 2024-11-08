@@ -148,6 +148,160 @@ func findProjectsCloseToFreelancer(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, response)
 }
 
+func getFreelancerData(ids []uint64) ([]Freelancer, error) {
+	freeData := []Freelancer{}
+
+	// Connect to DB
+	db, err := sql.Open("mysql", dsn)
+	if err != nil {
+		logger.Errorf("Error opening database connection: %v", err)
+		return freeData, err
+	}
+	defer db.Close()
+
+	if err := db.Ping(); err != nil {
+		logger.Errorf("Error pinging database: %v", err)
+		return freeData, err
+	}
+	logger.Infoln("Successfully connected to the database")
+
+	table := "freelancer"
+	query := "SELECT name, introduction, skills FROM " + table + " WHERE id = ?"
+
+	for _, free_id := range ids {
+		rows, err := db.Query(query, free_id)
+		if err != nil {
+			logger.Errorf("Error retrieving database: %v", err)
+			return freeData, err
+		}
+
+		var name, intro, skills string
+		for rows.Next() {
+			err = rows.Scan(&name, &intro, &skills)
+			if err != nil {
+				logger.Errorf("Error retrieving database: %v", err)
+				return freeData, err
+			}
+
+			freeData = append(freeData, Freelancer{Name: name, Introduction: intro, Skills: skills})
+			break
+		}
+	}
+
+	return freeData, nil
+}
+
+// Retrieve freelancer data  godoc
+// @Summary      Retrieve freelancer data with project id
+// @Description  Retrieve freelancer data with project id
+// @Tags         Project/Freelancer
+// @Accept       json
+// @Produce      json
+// @Param		 id 	path   int true  "Freelancer Id"
+// @Success      200  {object}  FreelancerList "Retrieved project data"
+// @Failure		 400  {object}  VsDefaultResponse "Freelancer ID missing in the path or is not a proper integer"
+// @Failure 	 500  {object}  VsDefaultResponse "Internal server error"
+// @Router       /freelancers/{id} [get]
+func retrieveFreelancerData(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{
+			"status":  "Failure",
+			"message": "id parameter is missing or is not a proper integer",
+		})
+		return
+	}
+
+	ids := make([]uint64, 1)
+	ids[0] = uint64(id)
+	freelancerData, err := getFreelancerData(ids)
+	if err != nil {
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{
+			"status":  "Failure",
+			"message": err.Error(),
+		})
+		return
+	}
+
+	c.IndentedJSON(http.StatusOK, FreelancerList{Freelancers: freelancerData})
+}
+
+func findFreelancerId(vid int) (uint64, error) {
+	// Connect to DB
+	db, err := sql.Open("mysql", dsn)
+	if err != nil {
+		logger.Errorf("Error opening database connection: %v", err)
+		return 0, err
+	}
+	defer db.Close()
+
+	if err := db.Ping(); err != nil {
+		logger.Errorf("Error pinging database: %v", err)
+		return 0, err
+	}
+	logger.Infoln("Successfully connected to the database")
+
+	table := "vec_to_freelancer"
+	query := "SELECT freelancer_id FROM " + table + " WHERE vector_id = ?"
+
+	var fid uint64 = 0
+	err = db.QueryRow(query, vid).Scan(&fid)
+	if err != nil {
+		logger.Errorf("Error retrieving database: %v", err)
+		return 0, err
+	}
+
+	return uint64(fid), nil
+}
+
+// Retrieve freelancer data  godoc
+// @Summary      Retrieve freelancer data with a vector id
+// @Description  Retrieve freelancer data with a vector id
+// @Tags         Project/Freelancer
+// @Accept       json
+// @Produce      json
+// @Param		 vid 	path   int true  "Vector Id"
+// @Success      200  {object}  FreelancerList "Retrieved freelancer data"
+// @Failure		 400  {object}  VsDefaultResponse "Project ID missing in the path or is not a proper integer"
+// @Failure 	 500  {object}  VsDefaultResponse "Internal server error"
+// @Router       /freelancers/getDataWithVid/{vid} [get]
+func getFreelancerDataWithVecId(c *gin.Context) {
+	vid, err := strconv.Atoi(c.Param("vid"))
+	if err != nil {
+		mesg := "Vector index missing or invalid vector index"
+		logger.Errorf(mesg)
+		c.IndentedJSON(http.StatusBadRequest, gin.H{
+			"status":  "Failure",
+			"message": mesg,
+		})
+		return
+	}
+
+	fid := make([]uint64, 1)
+	fid[0], err = findFreelancerId(vid)
+	if err != nil {
+		mesg := "Failed to find the freelancer id with the input"
+		logger.Errorf(mesg)
+		c.IndentedJSON(http.StatusBadRequest, gin.H{
+			"status":  "Failure",
+			"message": err,
+		})
+		return
+	}
+
+	free, err := getFreelancerData(fid)
+	if err != nil {
+		mesg := "Failed to retrieve the freelancer data with the freelancer id"
+		logger.Errorf(mesg)
+		c.IndentedJSON(http.StatusBadRequest, gin.H{
+			"status":  "Failure",
+			"message": err,
+		})
+		return
+	}
+	c.IndentedJSON(http.StatusOK, FreelancerList{Freelancers: free})
+}
+
 func addFreelancersToDB(free *[]Freelancer) error {
 	if len(*free) == 0 {
 		return nil

@@ -57,6 +57,7 @@ func main() {
 	router.POST(basePath+"/index", createSearchIndex)
 	router.DELETE(basePath+"/index", deleteSearchIndex)
 	router.GET(basePath+"/index/getList", getSearchIndexList)
+	router.GET(basePath+"/index/getListUnloaded", getSearchIndexListUnloaded)
 
 	// Load, unload index
 	router.POST(basePath+"/index/load", loadSearchIndex)
@@ -66,12 +67,16 @@ func main() {
 	router.POST(basePath+"/index/search", searchNeighbors)
 
 	// Projects
+	router.GET(basePath+"/projects/:id", retrieveProjectData)
 	router.POST(basePath+"/projects/add", addProjects)
 	router.GET(basePath+"/projects/:id/find/freelancers", findFreelancersCloseToProject)
+	router.GET(basePath+"/projects/getDataWithVid/:vid", getProjectDataWithVecId)
 
 	// Freelancers
+	router.GET(basePath+"/freelancers/:id", retrieveFreelancerData)
 	router.POST(basePath+"/freelancers/add", addFreelancers)
 	router.GET(basePath+"/freelancers/:id/find/projects", findProjectsCloseToFreelancer)
+	router.GET(basePath+"/freelancers/getDataWithVid/:vid", getFreelancerDataWithVecId)
 
 	router.Run("0.0.0.0:8090")
 }
