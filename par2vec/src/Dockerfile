@@ -1,5 +1,5 @@
 # Use the official Ubuntu 20.04 as the base image
-FROM ubuntu:20.04
+FROM ubuntu:jammy-20250126
 
 # Set environment variable to prevent user interaction during package installation
 ENV DEBIAN_FRONTEND=noninteractive
@@ -27,11 +27,11 @@ RUN apt-get update && \
     python3-dev
 
 # Install Python manually
-RUN apt-get install -y python3.9 python3.9-dev python3.9-venv
+RUN apt-get install -y python3 python3-dev python3-venv
 
 # Set Python 3.8 as the default version of Python
-RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.9 1 && \
-    update-alternatives --install /usr/bin/python python /usr/bin/python3.9 1
+RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.10 1 && \
+    update-alternatives --install /usr/bin/python python /usr/bin/python3.10 1
 
 # Verify the installation
 RUN python3 --version && pip3 --version
