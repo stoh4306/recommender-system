@@ -37,7 +37,7 @@ func main() {
 	docs.SwaggerInfo.Title = "Recommender API"
 	docs.SwaggerInfo.Description = "This is a recommender backend server"
 	docs.SwaggerInfo.Version = "1.0"
-	docs.SwaggerInfo.Host = "192.168.0.20:8090"
+	docs.SwaggerInfo.Host = "localhost:8090"
 	docs.SwaggerInfo.BasePath = "/recommend"
 	docs.SwaggerInfo.Schemes = []string{"http", "https"}
 
