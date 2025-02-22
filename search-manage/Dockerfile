@@ -1,5 +1,5 @@
 # Building 
-FROM golang:1.23 as builder
+FROM golang:1.23.6 as builder
 RUN go install github.com/swaggo/swag/cmd/swag@latest
 WORKDIR /app
 COPY . .
